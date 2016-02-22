@@ -62,6 +62,13 @@ namespace PlayerProfilerNameSpace
             //! Create Settings and let it's BaseSettings class assign Defaultvalues where it can.
             // 
             settings = new PlayerProfilerSettings();
+
+            //preventing multiple asset creation
+            if (AssetManager.Instance.findAssetsByClass(this.Class).Count > 1)
+            {
+                this.Log(Severity.Error, "There is only one instance of the PlayerProfiler permitted!");
+                throw new Exception("EXCEPTION: There is only one instance of the PlayerProfiler permitted!");
+            }
         }
 
         #endregion Constructors
