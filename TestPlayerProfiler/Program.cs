@@ -15,13 +15,17 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   
-  Development done by Cognitive Science Section (CSS) 
-  at Knowlge Technologies Institute (KTI)at Graz University of Technology (TUGraz).
+  This software has been created in the context of the EU-funded RAGE project.
+  Realising and Applied Gaming Eco-System (RAGE), Grant agreement No 644187, 
+  http://rageproject.eu/
+
+  Development was done by Cognitive Science Section (CSS) 
+  at Knowledge Technologies Institute (KTI)at Graz University of Technology (TUGraz).
   http://kti.tugraz.at/css/
 
   Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
   Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
-  Changed on: 2016-02-10
+  Changed on: 2016-02-22
 */
 
 using AssetManagerPackage;
