@@ -50,7 +50,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\PlayerProfiler.VersionAndDependencies.xml">
+    <EmbeddedResource Include="Resources\PlayerProfilingAsset.VersionAndDependencies.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <version>
-  <id>PlayerProfiler</id>
+  <id>PlayerProfilingAsset</id>
   <major>0</major>
   <minor>1</minor>
   <build>1</build>

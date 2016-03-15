@@ -106,7 +106,6 @@ namespace PlayerProfilingAssetNameSpace
 
         public void test()
         {
-            Console.WriteLine("A");
             PlayerProfilerHandler.Instance.performAllTests();
         }
 
