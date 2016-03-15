@@ -1,8 +1,0 @@
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\bin\Debug\PlayerProfiler.dll
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\bin\Debug\PlayerProfiler.pdb
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\bin\Debug\RageAssetManager.dll
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\bin\Debug\RageAssetManager.pdb
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\obj\Debug\PlayerProfiler.csprojResolveAssemblyReference.cache
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\obj\Debug\PlayerProfiler.dll
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\obj\Debug\PlayerProfiler.pdb
-C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\bin\Debug\RageAssetManager.xml

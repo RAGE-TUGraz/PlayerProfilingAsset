@@ -39,14 +39,14 @@ namespace AssetPackage
     /// 
     /// BaseSettings contains the (de-)serialization methods.
     /// </summary>
-    public class PlayerProfilerSettings : BaseSettings
+    public class PlayerProfilingAssetSettings : BaseSettings
     {
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the PlayerProfiler.AssetSettings class.
         /// </summary>
-        public PlayerProfilerSettings()
+        public PlayerProfilingAssetSettings()
             : base()
         {
             // Set Default values here.

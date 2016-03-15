@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="RageAssetManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\AssetManager\RageAssetManager\bin\Debug\RageAssetManager.dll</HintPath>
+      <HintPath>..\..\AssetManager\RageAssetManager\obj\Debug\RageAssetManager.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,9 +48,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PlayerProfiler\PlayerProfiler.csproj">
+    <ProjectReference Include="..\PlayerProfilingAsset\PlayerProfilingAsset.csproj">
       <Project>{4d1f98c7-6827-4f99-b676-f5c9af632609}</Project>
-      <Name>PlayerProfiler</Name>
+      <Name>PlayerProfilingAsset</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

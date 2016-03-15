@@ -28,7 +28,7 @@
   Changed on: 2016-02-22
 */
 
-namespace PlayerProfilerNameSpace
+namespace PlayerProfilingAssetNameSpace
 {
     using System;
     using System.Collections.Generic;
@@ -40,14 +40,14 @@ namespace PlayerProfilerNameSpace
     /// <summary>
     /// An asset.
     /// </summary>
-    public class PlayerProfiler : BaseAsset
+    public class PlayerProfilingAsset : BaseAsset
     {
         #region Fields
 
         /// <summary>
         /// Options for controlling the operation.
         /// </summary>
-        private PlayerProfilerSettings settings = null;
+        private PlayerProfilingAssetSettings settings = null;
 
         #endregion Fields
 
@@ -56,18 +56,18 @@ namespace PlayerProfilerNameSpace
         /// <summary>
         /// Initializes a new instance of the PlayerProfiler.Asset class.
         /// </summary>
-        public PlayerProfiler()
+        public PlayerProfilingAsset()
             : base()
         {
             //! Create Settings and let it's BaseSettings class assign Defaultvalues where it can.
             // 
-            settings = new PlayerProfilerSettings();
+            settings = new PlayerProfilingAssetSettings();
 
             //preventing multiple asset creation
             if (AssetManager.Instance.findAssetsByClass(this.Class).Count > 1)
             {
-                this.Log(Severity.Error, "There is only one instance of the PlayerProfiler permitted!");
-                throw new Exception("EXCEPTION: There is only one instance of the PlayerProfiler permitted!");
+                this.Log(Severity.Error, "There is only one instance of the PlayerProfilingAsset permitted!");
+                throw new Exception("EXCEPTION: There is only one instance of the PlayerProfilingAsset permitted!");
             }
         }
 
@@ -96,7 +96,7 @@ namespace PlayerProfilerNameSpace
             }
             set
             {
-                settings = (value as PlayerProfilerSettings);
+                settings = (value as PlayerProfilingAssetSettings);
             }
         }
 
@@ -104,7 +104,11 @@ namespace PlayerProfilerNameSpace
 
         #region Methods
 
-        // Your code goes here.
+        public void test()
+        {
+            Console.WriteLine("A");
+            PlayerProfilerHandler.Instance.performAllTests();
+        }
 
         #endregion Methods
     }

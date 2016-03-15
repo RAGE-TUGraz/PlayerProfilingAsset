@@ -7,7 +7,7 @@
     <ProjectGuid>{A441FEE9-482A-418E-B046-795B2233B910}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PlayerProfiler_Portable</RootNamespace>
+    <RootNamespace>PlayerProfilingAsset_Portable</RootNamespace>
     <AssemblyName>MyFirstAsset_Portable_Portable</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
@@ -35,22 +35,22 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\PlayerProfiler.cs">
-      <Link>PlayerProfiler.cs</Link>
+    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\PlayerProfilingAsset.cs">
+      <Link>PlayerProfilingAsset.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\PlayerProfilerSettings.cs">
-      <Link>PlayerProfilerSettings.cs</Link>
+    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\PlayerProfilingAssetSettings.cs">
+      <Link>PlayerProfilingAssetSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\Properties\AssemblyInfo.cs">
+    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\PlayerProfilerFunctionality.cs">
-      <Link>PlayerProfilerFunctionality.cs</Link>
+    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\PlayerProfilingAssetFunctionality.cs">
+      <Link>PlayerProfilingAssetFunctionality.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfiler\Resources\PlayerProfiler.VersionAndDependencies.xml">
-      <Link>Resources\PlayerProfiler.VersionAndDependencies.xml</Link>
+    <Content Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\Resources\PlayerProfilingAsset.VersionAndDependencies.xml">
+      <Link>Resources\PlayerProfilingAsset.VersionAndDependencies.xml</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>
