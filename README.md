@@ -1,3 +1,3 @@
-# PlayerProfiler
+# PlayerProfiling Asset
 
-The Player Profiler is an Asset developed from TU Graz for the RAGE Project (http://rageproject.eu/).
+The Player Profiling Asset is an Asset developed from TU Graz for the RAGE Project (http://rageproject.eu/).
