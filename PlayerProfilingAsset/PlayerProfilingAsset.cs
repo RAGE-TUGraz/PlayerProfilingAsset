@@ -104,9 +104,40 @@ namespace PlayerProfilingAssetNameSpace
 
         #region Methods
 
+        /// <summary>
+        /// Method for testing asset functionality
+        /// </summary>
         public void test()
         {
             PlayerProfilerHandler.Instance.performAllTests();
+        }
+
+        /// <summary>
+        /// Method for requesting the questionares fileId.
+        /// </summary>
+        /// <returns></returns>
+        public string getQuestionnaireFileId()
+        {
+            return PlayerProfilerHandler.Instance.getHTMLQuestionnaire();
+        } 
+
+        /// <summary>
+        /// Method for requesting questionnaire results by identifier string.
+        /// </summary>
+        /// <param name="text"> Quantity for which the questionnaire should return a value.</param>
+        /// <returns> Value for the requested quantity.</returns>
+        public double getValue(string text)
+        {
+            return 0;
+        }
+
+        /// <summary>
+        /// Method returning the Asset settings.
+        /// </summary>
+        /// <returns> Settings of the Asset. </returns>
+        internal PlayerProfilingAssetSettings getPPASettings()
+        {
+            return this.settings;
         }
 
         #endregion Methods

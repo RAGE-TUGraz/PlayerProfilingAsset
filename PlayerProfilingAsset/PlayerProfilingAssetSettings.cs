@@ -50,9 +50,8 @@ namespace AssetPackage
             : base()
         {
             // Set Default values here.
-            TestProperty = "Hello Default World";
-            TestList = new String[] { "Red", "Green", "Blue" };
-            TestPrivate = true;
+            QuestionnaireDataXMLFileId = "QuestionnaireData.xml";
+            HTMLQuestionnaireFileId = "QuestionnaireData.html";
         }
 
         #endregion Constructors
@@ -60,61 +59,25 @@ namespace AssetPackage
         #region Properties
 
         /// <summary>
-        /// Gets or sets the test property.
+        /// File Id under which the questionareData is loaded.
         /// </summary>
-        ///
-        /// <value>
-        /// The test property.
-        /// </value>
         [XmlElement()]
-        public String TestProperty
+        public String QuestionnaireDataXMLFileId
         {
             get;
             set;
         }
 
         /// <summary>
-        /// Gets the string[].
+        /// File Id under which the questionareData-HTML representation is stored.
         /// </summary>
-        ///
-        /// <value>
-        /// .
-        /// </value>
-        [XmlArray()]
-        [XmlArrayItem("ListItem")]
-        public String[] TestList
+        [XmlElement()]
+        public String HTMLQuestionnaireFileId
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the test read only.
-        /// </summary>
-        ///
-        /// <value>
-        /// true if test read only, false if not.
-        /// </value>
-        public Boolean TestReadOnly
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the test private.
-        /// </summary>
-        ///
-        /// <value>
-        /// true if test private only, false if not.
-        /// </value>
-        public Boolean TestPrivate
-        {
-            get;
-            private set;
-        }
 
         #endregion Properties
     }
