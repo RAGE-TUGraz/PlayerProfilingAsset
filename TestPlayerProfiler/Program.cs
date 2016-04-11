@@ -48,7 +48,7 @@ namespace TestPlayerProfiler
             am.Bridge = new Bridge();
 
             PlayerProfilingAsset ppa = new PlayerProfilingAsset();
-            ppa.test();
+            ppa.performAllTests();
 
             Console.WriteLine("Press enter to exit...");
             Console.ReadLine();
@@ -67,7 +67,7 @@ namespace TestPlayerProfiler
 
         public bool Exists(string fileId)
         {
-            string filePath = @"C:\Users\mmaurer\Desktop\" + fileId;
+            string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
             return (File.Exists(filePath));
         }
 
@@ -78,7 +78,7 @@ namespace TestPlayerProfiler
 
         public string Load(string fileId)
         {
-            string filePath = @"C:\Users\mmaurer\Desktop\" + fileId;
+            string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
             try
             {   // Open the text file using a stream reader.
                 using (StreamReader sr = new StreamReader(filePath))
@@ -98,7 +98,7 @@ namespace TestPlayerProfiler
 
         public void Save(string fileId, string fileData)
         {
-            string filePath = @"C:\Users\mmaurer\Desktop\" + fileId;
+            string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
             using (StreamWriter file = new StreamWriter(filePath))
             {
                 file.Write(fileData);

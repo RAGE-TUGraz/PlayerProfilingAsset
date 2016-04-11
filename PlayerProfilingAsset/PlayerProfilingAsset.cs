@@ -107,13 +107,13 @@ namespace PlayerProfilingAssetNameSpace
         /// <summary>
         /// Method for testing asset functionality
         /// </summary>
-        public void test()
+        public void performAllTests()
         {
             PlayerProfilerHandler.Instance.performAllTests();
         }
 
         /// <summary>
-        /// Method for requesting the questionares fileId.
+        /// Method for requesting the questionares fileId - the fileId under which the HTML-Questionnaire can be accessed.
         /// </summary>
         /// <returns></returns>
         public string getQuestionnaireFileId()

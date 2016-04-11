@@ -111,7 +111,7 @@ namespace PlayerProfilingAssetNameSpace
             if (ids != null)
             {
                 loggingPPA("Storing Questionnaire data to HTML File.");
-                ids.Save(fileId, qd.toHTMLString());
+                ids.Save(fileId, qd.toHTMLString("testid"));
             }
             else
                 loggingPPA("No IDataStorage - Bridge implemented!", Severity.Warning);
@@ -363,9 +363,9 @@ namespace PlayerProfilingAssetNameSpace
         /// Method for creating a html file from the data structure.
         /// </summary>
         /// <returns></returns>
-        internal string toHTMLString()
+        internal string toHTMLString(String questionnaireId)
         {
-            string html = "<html>";
+            string html = "<!DOCTYPE html>  <html>";
 
             html += createHTMLHead();
 
@@ -376,8 +376,9 @@ namespace PlayerProfilingAssetNameSpace
             foreach (QuestionItem qi in this.questionList.questionItemList)
                 html += createHTMLQuestionItem(qi,this.choiceList.choiceItemList);
             html += createSubmissionButton();
+            html += createSubmissionScript(this.questionList.questionItemList.Count, this.choiceList.choiceItemList.Count, questionnaireId);
 
-            return html+"</body></html>";
+            return html+"</body>\n</html>";
         }
 
         /// <summary>
@@ -386,13 +387,13 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> html head</returns>
         internal string createHTMLHead()
         {
-            string head = "<head><style>";
+            string head = "<head><meta charset='UTF-8'> <title>Questionnaire</title>\n<style type='text/css'>";
             head += "h1 {color:red;}";
             head += "div.question {float: left; width: 25%;}";
             head += "div.choice { float: left; width: "+ 75/this.choiceList.choiceItemList.Count +"%; }";
             head += "div.questionItem {}";
             head += "div.submit {text-align:center;}";
-            return head+"</style></head>";
+            return head+"</style>\n</head>\n";
         }
 
         /// <summary>
@@ -405,7 +406,7 @@ namespace PlayerProfilingAssetNameSpace
             heading += @"<h1>"+this.title+"</h1>";
             heading+="<p>"+this.instructions+"</p>";
 
-            return heading+"</div>";
+            return heading+"</div>\n";
         }
 
         /// <summary>
@@ -415,10 +416,10 @@ namespace PlayerProfilingAssetNameSpace
         internal string createLikertRating(List<ChoiceItem> cil)
         {
             string rating = "<div>";
-            rating += "<div class='question'> &nbsp </div>";
+            rating += "<div class='question'> &nbsp; </div>";
             foreach (ChoiceItem ci in cil)
                 rating += "<div class='choice'> " + ci.choice + "</div>";
-            return rating + "</br></div>";
+            return rating + "<br></div>\n";
         }
 
         /// <summary>
@@ -433,13 +434,55 @@ namespace PlayerProfilingAssetNameSpace
             foreach(ChoiceItem ci in cil)
                 questionItem += "<div class='choice'> <input type='radio' name='" + qi.questionId + "' value='"+ ci.position + "'></div>";
 
-            return questionItem+"</br></div>";
+            return questionItem+"<br></div>\n";
         }
 
         internal string createSubmissionButton()
         {
-            string button= @"<div class='submit'> <button type='button' onclick=""alert('Thank you for your time!')"">Submit!</button> </div>";
+            string button= @"<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>" +"\n";
             return button;
+        }
+
+        internal string createSubmissionScript(int numberOfQuestions, int numberOfChoices, String questionnaireId)
+        {
+            string script = "<script>";
+            script += "document.getElementById('submitbutton').onclick=function(){\n";
+            script += "var xml=getXMLContent();\n";
+            script += "alert('submitting:'+ xml);\n";
+            script += "};\n\n";
+
+            script += "function findSelection(field){\n";
+            script += "var elements = document.getElementsByName(field);\n";
+            script += "for(var i=0; i<elements.length;i++){\n";
+            script += "if(elements[i].checked==true){\n";
+            script += "return(elements[i].value);\n";
+            script += "}\n";
+            script += "}\n";
+            script += "return('-1');\n";
+            script += "};\n\n;";
+
+            script += "function getXMLContent(){\n";
+            script += @"var xml = """";"+"\n";
+            script += "xml += '<questionnaireanswers>';\n";
+            script += "xml += '<questionnaireid>"+ questionnaireId + "</questionnaireid>';\n";
+            script += "xml += '<answerlist>';\n";
+            for(int i=1; i<= numberOfQuestions; i++)
+            {
+                script += "xml += '<answer>';\n";
+                script += "xml += '<questionid>";
+                script += i;
+                script += "</questionid>';\n";
+                script += "xml += '<answerid>'";
+                script += @"+findSelection(""" + i + @""")";
+                script += "+'</answerid>';\n";
+                script += "xml += '</answer>';\n";
+            }
+            script += "xml += '</answerlist>';\n";
+            script += "xml +='</questionnaireanswers>';\n";
+            script += "return(xml);";
+            script += "}\n";
+            script += "</script>\n";
+            return (script);
         }
 
         #endregion Methods
