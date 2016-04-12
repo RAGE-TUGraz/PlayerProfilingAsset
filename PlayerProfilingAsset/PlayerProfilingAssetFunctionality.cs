@@ -167,11 +167,29 @@ namespace PlayerProfilingAssetNameSpace
         /// </returns>
         internal QuestionnaireData getQuestionnaireDataFromXmlString(String str)
         {
-            loggingPPA(str);
             XmlSerializer serializer = new XmlSerializer(typeof(QuestionnaireData));
             using (TextReader reader = new StringReader(str))
             {
                 QuestionnaireData result = (QuestionnaireData)serializer.Deserialize(reader);
+                return (result);
+            }
+        }
+
+        /// <summary>
+        /// Method for deserialization of a XML-String to the coressponding QuestionnaireAnswerData.
+        /// </summary>
+        /// 
+        /// <param name="str"> String containing the XML-QuestionnaireAnswerData for deserialization. </param>
+        ///
+        /// <returns>
+        /// QuestionnaireAnswerData-type coressponding to the parameter "str" after deserialization.
+        /// </returns>
+        internal QuestionnaireAnswerData getQuestionnaireAnswerDataFromXmlString(String str)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(QuestionnaireAnswerData));
+            using (TextReader reader = new StringReader(str))
+            {
+                QuestionnaireAnswerData result = (QuestionnaireAnswerData)serializer.Deserialize(reader);
                 return (result);
             }
         }
@@ -198,6 +216,7 @@ namespace PlayerProfilingAssetNameSpace
             loggingPPA("Calling all tests (PlayerProfilingAsset):");
             performTest1();
             performTest2();
+            performTest3();
             loggingPPA("Tests PlayerProfilingAsset - done!");
             loggingPPA("*****************************************************************");
         }
@@ -227,6 +246,34 @@ namespace PlayerProfilingAssetNameSpace
             loggingPPA("End test 2");
         }
 
+        /// <summary>
+        /// Method for testing answer-xml deserilization.
+        /// </summary>
+        internal void performTest3()
+        {
+            loggingPPA("Start Test 3");
+            String xmlAnswer = @"<?xml version=""1.0"" encoding=""utf-16""?><questionnaireanswers xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">";
+            xmlAnswer += "<questionnaireid>testid</questionnaireid><answerlist><answer><questionid>1</questionid><answerid>0</answerid>";
+            xmlAnswer += "</answer><answer><questionid>2</questionid><answerid>-1</answerid></answer><answer><questionid>3</questionid><answerid>1</answerid></answer>";
+            xmlAnswer += "<answer><questionid>4</questionid><answerid>-1</answerid></answer><answer><questionid>5</questionid><answerid>-1</answerid></answer><answer>";
+            xmlAnswer += "<questionid>6</questionid><answerid>-1</answerid></answer></answerlist></questionnaireanswers>";
+
+            QuestionnaireAnswerData qad = this.getQuestionnaireAnswerDataFromXmlString(xmlAnswer);
+
+            if (qad.toXmlString().Equals(xmlAnswer))
+            {
+                loggingPPA("Serilization and deserilization successful!");
+            }
+            else
+            {
+                loggingPPA("Serilization and deserilization failed!");
+                loggingPPA(qad.toXmlString());
+                loggingPPA(xmlAnswer);
+            }
+
+            loggingPPA("End test 3");
+        }
+        
         /// <summary>
         /// Method creating an example Questionnaire datastructure for test purpose4s.
         /// </summary>
@@ -279,7 +326,7 @@ namespace PlayerProfilingAssetNameSpace
     /// <summary>
     /// Classes for Serialization
     /// </summary>
-    #region Serialization
+    #region SerializationQuestionnaire
 
     /// <summary>
     /// Classe containing all relevant data for questionnaire and evaluation of questionnaire
@@ -592,5 +639,95 @@ namespace PlayerProfilingAssetNameSpace
         #endregion Constructors
     }
 
-    #endregion Serilization
+    #endregion SerializationQuestionnaire
+
+    #region SerilizationAnswer
+
+    /// <summary>
+    /// Classe containing all relevant data for questionnaire and evaluation of questionnaire
+    /// </summary>
+    [XmlRoot("questionnaireanswers")]
+    public class QuestionnaireAnswerData
+    {
+        #region Fields
+
+        /// <summary>
+        /// Questionnaire id
+        /// </summary>
+        [XmlElement("questionnaireid")]
+        public string id { set; get; }
+
+        /// <summary>
+        /// Class storing all answers.
+        /// </summary>
+        [XmlElement("answerlist")]
+        public AnswerList answerList { get; set; }
+
+
+        #endregion Fields
+        #region Constructors
+
+        public QuestionnaireAnswerData() { }
+
+        #endregion Constructors
+        #region Methods
+
+        /// <summary>
+        /// Method for converting  to a xml string.
+        /// </summary>
+        /// 
+        ///<returns>
+        /// A string representing of the structure.
+        /// </returns>
+        internal String toXmlString()
+        {
+            try
+            {
+                var xmlserializer = new XmlSerializer(typeof(QuestionnaireAnswerData));
+                var stringWriter = new StringWriter();
+                using (var writer = XmlWriter.Create(stringWriter))
+                {
+                    xmlserializer.Serialize(writer, this);
+                    String xml = stringWriter.ToString();
+
+                    return (xml);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred", ex);
+            }
+        }
+        
+        #endregion Methods
+    }
+
+    public class AnswerList
+    {
+        #region Fields
+        /// <summary>
+        /// Structure holding one answer
+        /// </summary>
+        [XmlElement("answer")]
+        public List<Answer> answerList { set; get; }
+
+        #endregion Fields
+    }
+
+    public class Answer
+    {
+        /// <summary>
+        /// Questionnaire id
+        /// </summary>
+        [XmlElement("questionid")]
+        public string questionId { set; get; }
+
+        /// <summary>
+        /// Answer id
+        /// </summary>
+        [XmlElement("answerid")]
+        public int answerId { set; get; }
+    }
+
+    #endregion SerilizationAnswer
 }

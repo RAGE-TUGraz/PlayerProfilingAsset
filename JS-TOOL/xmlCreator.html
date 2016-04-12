@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>  
+<html>
+<head>
+<meta charset='UTF-8'> 
+<title>Player Profiling Asset - XML creator</title>
+
+<style type='text/css'>
+/* general style information */
+h1 {color:gray;}
+div#body {display:block;}
+div.menu {background-color: lightblue; border-style: solid; margin-bottom: 5px; padding: 5px; display: inline-block;}
+div#dataInputField {background-color: lightgreen; display:block; border-style: solid; padding: 5px; margin-bottom: 5px;}
+/*  menu - specific style information */
+</style>
+
+<script>
+//Method for storing text via the download functionality
+function saveTextAsFile(textToWrite){
+
+
+
+    //var textToWrite = document.getElementById("inputTextToSave").value;
+    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+    var fileNameToSaveAs = "CognitiveInterventionXML.xml"
+      var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    if (window.webkitURL != null)
+    {
+        // Chrome allows the link to be clicked
+        // without actually adding it to the DOM.
+        downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+    }
+    else
+    {
+        // Firefox requires the link to be added to the DOM
+        // before it can be clicked.
+        downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        //downloadLink.onclick = destroyClickedElement;
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+    }
+
+    downloadLink.click();
+}
+
+//Method for creating the XML-string out of the information gathered from the user
+function createXML(){
+	return "dummy string";
+}
+
+//Method initiating the download
+function startDownload() {
+	xml = createXML();
+	saveTextAsFile(xml);
+}
+
+//Method creating the data input for menu 
+function fillMenu(){
+	//recolor all menu points
+	var menuPoints = document.getElementsByClassName("menu")
+	for (var i = 0; i < menuPoints.length; i++) {
+		menuPoints[i].style.backgroundColor="lightblue";
+	}
+	document.getElementById("m"+menu.activeMenu).style.backgroundColor="lightgreen";
+	
+	//store other stuff already inputed
+	
+	//create content for the div
+	document.getElementById("dataInputField").innerHTML = menu.getHTMLToFillMenu();
+}
+
+//perform actions when document is loaded.
+function performStartupAction(){
+	menu = new Menu();
+	var menuPoints = document.getElementsByClassName("menu")
+	for (var i = 0; i < menuPoints.length; i++) {
+		menuPoints[i].addEventListener("click",function(){
+			menu.activeMenu = this.id[1];
+			fillMenu();
+		}); 
+	}
+}
+
+//menu object - holding all information regarding all menues
+
+	function Menu() {
+		this.activeMenu;
+		this.menuArray = [];
+		this.menuArray[1] = new Menu1();
+		this.menuArray[2] = new Menu2();
+		this.menuArray[3] = new Menu3();
+		this.getHTMLToFillMenu = function(){
+			var html = "content for menu " + this.activeMenu;
+			return(html);
+		}
+
+	}
+		
+	//menu object1
+	function Menu1() {
+		this.name = "menu 1";
+	}
+
+	//menu object2
+	function Menu2() {
+		this.interventionTypes = [];
+		this.interventionInstances = [];
+		this.addInterventionType = function(interventionTypeId){
+			this.interventionTypes.push(interventionTypeId);
+			this.interventionInstances.push([]);
+		}
+		this.addInterventionInstance = function(interventionType, interventionInstance){
+			var position = this.interventionTypes.indexOf(interventionType);
+			this.interventionInstances[position].push(interventionInstance);
+		}
+	}
+
+	//menu object3
+	function Menu3() {
+		this.name = "menu 3";
+	}
+
+</script>
+
+</head>
+<body>
+<div id='body'>
+<h1>Player Profiling Asset - XML creator</h1>
+
+<p id="demo">Enter the requested information in all menus and press the download-button to get the XML file.</p>
+
+
+<div id='m1' class='menu'>menu1</div>
+<div id='m2' class='menu'>menu2</div>
+<div id='m3' class='menu'>menu3</div>
+<div id='dataInputField'>
+Chose a menu and start filling in the asset specifications.
+</div>
+
+<button type="button" onclick="startDownload()">Download XML file.</button>
+</div>
+<script>
+	performStartupAction();
+</script>
+</body>
+</html>
