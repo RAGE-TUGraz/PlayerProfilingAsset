@@ -97,6 +97,7 @@ function performStartupAction(){
 		this.menuArray[1] = new Menu1();
 		this.menuArray[2] = new Menu2();
 		this.menuArray[3] = new Menu3();
+		this.menuArray[4] = new Menu4();
 		this.getActiveMenu = function () {
             return(this.menuArray[this.activeMenu])
 		}
@@ -305,7 +306,7 @@ function performStartupAction(){
 	        html += "<div class='spacing' id='spacingAfter-start'></div>";
 	        for (var i = 0; i < this.choices.length; i++) {
 	            html += "<div draggable='true' class='scaleitem' id='scaleitem-" + i + "'>" + this.choices[i] + "</div>";
-	            html += "<div class='spacing' id='spacingAfter-"+i+"'></div>";
+	            html += "<div class='spacing' id='spacingAfter-" + i + "'></div>";
 	        }
 	        html += "</div>";
 	        html += "<input type='button' id='addChoiceButton' value='add option'>";
@@ -326,8 +327,8 @@ function performStartupAction(){
 	        }
 
 	        var elements = document.getElementsByClassName('scaleitem');
-	        for(var i=0; i<elements.length;i++){
-	            elements[i].onmousedown = function(){
+	        for (var i = 0; i < elements.length; i++) {
+	            elements[i].onmousedown = function () {
 	                menu.getActiveMenu().mousedown = this.id.substring(10, this.id.length);
 	                window.onmouseup = function () {
 	                    menu.getActiveMenu().mousedown = null;
@@ -344,7 +345,7 @@ function performStartupAction(){
 	                }
 
 	                document.getElementById('inputTextChoice-' + pos).onchange = function () {
-	                    var pos = this.id.substring(16,this.id.length);
+	                    var pos = this.id.substring(16, this.id.length);
 	                    menu.getActiveMenu().choices[parseInt(pos)] = this.value;
 	                    fillMenu();
 	                }
@@ -365,14 +366,14 @@ function performStartupAction(){
 
 
 	        elements = document.getElementsByClassName('spacing');
-	        for(var i=0; i<elements.length;i++){
+	        for (var i = 0; i < elements.length; i++) {
 	            elements[i].onmouseup = function () {
 	                var redraw = true;
 	                var up = this.id.substring(13, this.id.length);
 	                if (up == "start" && menu.getActiveMenu().mousedown != 0)
 	                    menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, 0);
 	                else if (up != "start" && (parseInt(up) + 1) != menu.getActiveMenu().mousedown)
-	                    menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, parseInt(up)+1);
+	                    menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, parseInt(up) + 1);
 	                else
 	                    redraw = false;
 	                if (redraw)
@@ -392,6 +393,48 @@ function performStartupAction(){
 	        }
 	        return (xml);
 	    }
+	};
+
+    //menu object 4
+	function Menu4() {
+	    this.fillHTML = function (div) {
+	        var html = "<h3>The resulting XML:</h3>";
+	        var xml = createXML();
+	        var xml2 = '<t><test>huh</test></t>';
+	        document.getElementById(div).innerHTML = html + this.formatXML(xml);
+	    };
+	    this.formatXML = function (xml) {
+	        xml = xml.replace(/ /g, "");
+	        xml = xml.replace(/\n/g, "");
+	        var ret = "";
+	        var newComp;
+	        var oldComp;
+	        var noSpacing = 0;
+	        while (xml.length > 0) {
+	            newComp = this.getNextXMLComponent(xml);
+	            //alert("!"+newComp+"!");
+	            xml = xml.substring(newComp.length, xml.length);
+	            if (newComp.length >= 1 && newComp[1] == "/")
+	                noSpacing -= 1;
+	            for (var i = 0; i < noSpacing; i++) {
+	                ret += "&nbsp &nbsp &nbsp &nbsp";
+	            }
+	            oldComp = newComp;
+	            //alert(newComp);
+	            ret += newComp.replace(/</g, " &lt ").replace(/>/g, " &gt ") + "<br>";
+	            if (oldComp.length >= 1 && oldComp[1] != "/" && oldComp[0] == "<")
+	                noSpacing += 1;
+	        }
+	        return (ret);
+	    };
+	    this.getNextXMLComponent = function (xml) {
+	        if (xml.length == 0)
+	            return ("");
+	        if(xml[0]!="<")
+	            return (xml.substring(0, xml.indexOf("<")));
+	        else 
+                return (xml.substring(0, xml.indexOf(">")+1));
+	    }
 	}
 </script>
 
@@ -406,6 +449,7 @@ function performStartupAction(){
 <div id='m1' class='menu'>overview</div>
 <div id='m2' class='menu'>enter questions</div>
 <div id='m3' class='menu'>enter metadata</div>
+<div id='m4' class='menu'>show xml</div>
 <div id='dataInputField'>
 Chose a menu and start filling in the asset specifications.
 </div>
