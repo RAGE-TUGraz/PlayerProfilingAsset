@@ -10,6 +10,11 @@ h1 {color:gray;}
 div#body {display:block;}
 div.menu {background-color: lightblue; border-style: solid; margin-bottom: 5px; padding: 5px; display: inline-block;}
 div#dataInputField {background-color: lightgreen; display:block; border-style: solid; padding: 5px; margin-bottom: 5px;}
+div.scaleitem{min-width:50px; border:solid; display: inline-block;  padding: 4px;}
+div.spacing{width:15px; display: inline-block; padding:10px 0px;}
+div.scaleitem:hover{cursor: pointer;}
+#addChoiceButton{margin:7px;}
+#deleteChoiceDiv{display: inline-block;}
 /*  menu - specific style information */
 </style>
 
@@ -21,7 +26,7 @@ function saveTextAsFile(textToWrite){
 
     //var textToWrite = document.getElementById("inputTextToSave").value;
     var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-    var fileNameToSaveAs = "CognitiveInterventionXML.xml"
+    var fileNameToSaveAs = "QuestionnaireData.xml"
       var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
     downloadLink.innerHTML = "Download File";
@@ -46,7 +51,7 @@ function saveTextAsFile(textToWrite){
 
 //Method for creating the XML-string out of the information gathered from the user
 function createXML(){
-	return "dummy string";
+	return menu.toXML();
 }
 
 //Method initiating the download
@@ -66,8 +71,8 @@ function fillMenu(){
 	
 	//store other stuff already inputed
 	
-	//create content for the div
-	document.getElementById("dataInputField").innerHTML = menu.getHTMLToFillMenu();
+    //create content for the div
+	menu.fillHTML("dataInputField");
 }
 
 //perform actions when document is loaded.
@@ -90,37 +95,196 @@ function performStartupAction(){
 		this.menuArray[1] = new Menu1();
 		this.menuArray[2] = new Menu2();
 		this.menuArray[3] = new Menu3();
-		this.getHTMLToFillMenu = function(){
-			var html = "content for menu " + this.activeMenu;
-			return(html);
+		this.getActiveMenu = function () {
+            return(this.menuArray[this.activeMenu])
 		}
+		this.fillHTML = function (div) {
+		    this.getActiveMenu().fillHTML(div);
+		}
+		this.toXML = function () {
+		    var xml = "<questionnairedata>\n";
+		    xml += "<questionitemlist>\n";
+		    xml += this.menuArray[2].toXML();
+		    xml += "</questionitemlist>\n";
+		    xml += "<choiceitemlist>\n";
+		    xml += this.menuArray[3].choicesToXML();
+		    xml += "</choiceitemlist>\n";
+		    xml += "<title>" + this.menuArray[3].heading + "</title>\n";
+		    xml += "<instructions>" + this.menuArray[3].instruction + "</instructions>\n";
+		    xml += "</questionnairedata>\n";
+            return(xml);
+		};
 
 	}
 		
 	//menu object1
 	function Menu1() {
-		this.name = "menu 1";
+	    this.name = "menu 1";
+	    this.fillHTML = function (div) {
+	        var html = "...";
+	        document.getElementById(div).innerHTML = html;
+	    };
 	}
 
 	//menu object2
 	function Menu2() {
-		this.interventionTypes = [];
-		this.interventionInstances = [];
-		this.addInterventionType = function(interventionTypeId){
-			this.interventionTypes.push(interventionTypeId);
-			this.interventionInstances.push([]);
-		}
-		this.addInterventionInstance = function(interventionType, interventionInstance){
-			var position = this.interventionTypes.indexOf(interventionType);
-			this.interventionInstances[position].push(interventionInstance);
+		this.questions = [];
+		this.fillHTML = function (div) {
+		    var html = '';
+		    html += '<div>';
+		    html += '<table>';
+		    html += "<tr><th colspan='2'>questions</th></tr>";
+		    for (var i = 0; i < this.questions.length; i++) {
+		        html += "<tr><td id='question-"+i+"'>"+this.questions[i]+"<td><td id='deleteQuestion-"+i+"'>-</td></tr>";
+		    }
+		    html += "<tr><td colspan='2'><input type='text' value='add new question' id='addNewQuestion'></td></tr>";
+		    html += '</table>';
+		    html += "</div>";
+
+		    document.getElementById(div).innerHTML = html;
+
+		    document.getElementById("addNewQuestion").onchange = function () {
+		        menu.getActiveMenu().questions.push(this.value);
+		        fillMenu();
+		    }
+
+		    for (var i = 0; i < this.questions.length; i++) {
+		        document.getElementById('deleteQuestion-' + i).onclick = function () {
+		            var pos = this.id.substring(15, this.id.length);
+		            menu.getActiveMenu().questions.splice(pos,1);
+		            fillMenu();
+		        }
+		    }
+		};
+		this.toXML = function () {
+		    var xml = "";
+		    for (var i = 0; i < this.questions.length; i++) {
+		        xml += "<questionitem>\n";
+		        xml += "<question>"+this.questions[i];
+		        xml += "</question>\n";
+		        xml += "<questionid>"+i;
+		        xml += "</questionid>\n";
+		        xml += "</questionitem>\n";
+		    }
+            return(xml);
 		}
 	}
 
 	//menu object3
 	function Menu3() {
-		this.name = "menu 3";
-	}
+	    this.name = "menu 3";
+	    this.mousedown;
+	    this.choices = ["Very Good", " ", "Moderate", " ", "Bad"];
+	    this.heading = "Enter heading here ...";
+	    this.instruction = "Please fill out the questionnaire.";
+	    this.changeInsertChoice = function (whichElement, whereTo) {
+	        //alert(":"+whichElement + whereTo);
+	        var cToChange = this.choices[whichElement];
+	        this.choices.splice(whichElement, 1);
+	        if (whereTo > whichElement) {
+	            whereTo -= 1;
+	        }
+	        this.choices.splice(whereTo, 0, cToChange);
+	    };
+	    this.fillHTML = function (div) {
+	        var html = "<div>";
+	        html += "<p>questionnaire heading:</p>";
+	        html += "<input type='text' value='" + this.heading + "' id='qheading'>";
+	        html += "<p>instruction text:</p>";
+	        html += "<textarea cols='80' rows='10' id='qinstruction'>" + this.instruction + "</textarea>";
+	        html += "<p>rating options:</p>";
+	        html += "<div id='scale'>";
+	        html += "<div class='spacing' id='spacingAfter-start'></div>";
+	        for (var i = 0; i < this.choices.length; i++) {
+	            html += "<div draggable='true' class='scaleitem' id='scaleitem-" + i + "'>" + this.choices[i] + "</div>";
+	            html += "<div class='spacing' id='spacingAfter-"+i+"'></div>";
+	        }
+	        html += "</div>";
+	        html += "<input type='button' id='addChoiceButton' value='add option'>";
+	        html += "<div id='deleteChoiceDiv'> Drag here to delete &#10008</div>";
+	        html += "<div>";
+	        document.getElementById(div).innerHTML = html;
 
+	        document.getElementById('addChoiceButton').onclick = function () {
+	            menu.getActiveMenu().choices.push("new");
+	            fillMenu();
+	        }
+
+	        document.getElementById('deleteChoiceDiv').onmouseup = function () {
+	            if (menu.getActiveMenu().mousedown != null) {
+	                menu.getActiveMenu().choices.splice(menu.getActiveMenu().mousedown, 1);
+	                fillMenu();
+	            }
+	        }
+
+	        var elements = document.getElementsByClassName('scaleitem');
+	        for(var i=0; i<elements.length;i++){
+	            elements[i].onmousedown = function(){
+	                menu.getActiveMenu().mousedown = this.id.substring(10, this.id.length);
+	                window.onmouseup = function () {
+	                    menu.getActiveMenu().mousedown = null;
+	                    window.onmouseup = function () { };
+	                };
+	            }
+	            elements[i].ondblclick = function () {
+	                var pos = this.id.substring(10, this.id.length);
+	                var el = document.getElementById(this.id);
+	                el.innerHTML = "<input id='inputTextChoice-" + pos + "' type='text', value='" + menu.getActiveMenu().choices[pos] + "'>";
+	                //alert("Z209");
+	                document.getElementById('inputTextChoice-' + pos).focusout = function () {
+	                    alert("out");
+	                }
+
+	                document.getElementById('inputTextChoice-' + pos).onchange = function () {
+	                    var pos = this.id.substring(16,this.id.length);
+	                    menu.getActiveMenu().choices[parseInt(pos)] = this.value;
+	                    fillMenu();
+	                }
+
+	                document.getElementById('inputTextChoice-' + pos).onblur = function () {
+	                    var pos = this.id.substring(16, this.id.length);
+	                    menu.getActiveMenu().choices[parseInt(pos)] = this.value;
+	                    fillMenu();
+	                }
+
+	                window.onmouseup = function () {
+	                    fillMenu();
+	                    window.onmouseup = function () { };
+	                };
+
+	            }
+	        }
+
+
+	        elements = document.getElementsByClassName('spacing');
+	        for(var i=0; i<elements.length;i++){
+	            elements[i].onmouseup = function () {
+	                var redraw = true;
+	                var up = this.id.substring(13, this.id.length);
+	                if (up == "start" && menu.getActiveMenu().mousedown != 0)
+	                    menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, 0);
+	                else if (up != "start" && (parseInt(up) + 1) != menu.getActiveMenu().mousedown)
+	                    menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, parseInt(up)+1);
+	                else
+	                    redraw = false;
+	                if (redraw)
+	                    fillMenu();
+	            }
+	        }
+	    };
+	    this.choicesToXML = function () {
+	        var xml = "";
+	        for (var i = 0; i < this.choices.length; i++) {
+	            xml += "<choiceitem>\n";
+	            xml += "<choice>" + this.choices[i];
+	            xml += "</choice>\n";
+	            xml += "<position>" + i;
+	            xml += "</position>\n";
+	            xml += "</choiceitem>\n";
+	        }
+	        return (xml);
+	    }
+	}
 </script>
 
 </head>
