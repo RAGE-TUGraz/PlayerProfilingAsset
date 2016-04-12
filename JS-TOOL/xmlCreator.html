@@ -15,6 +15,8 @@ div.spacing{width:15px; display: inline-block; padding:10px 0px;}
 div.scaleitem:hover{cursor: pointer;}
 #addChoiceButton{margin:7px;}
 #deleteChoiceDiv{display: inline-block;}
+.m1div{display:inline-block; width:48%; padding-left:2%;}
+.m1loadingdiv{display: inline-block; padding-right:10px;}
 /*  menu - specific style information */
 </style>
 
@@ -120,9 +122,115 @@ function performStartupAction(){
 	//menu object1
 	function Menu1() {
 	    this.name = "menu 1";
+	    this.structures = [];
+	    this.structureDescribtions = [];
 	    this.fillHTML = function (div) {
-	        var html = "...";
+	        this.settingStructuresToLoad();
+	        var html = "<div class='m1div' id='m1text'></div>";
+	        html += "<div class='m1div' id='m1load'></div>";
 	        document.getElementById(div).innerHTML = html;
+	        this.setTextHTML('m1text');
+	        this.setLoaderHTML('m1load');
+	    };
+	    this.setTextHTML = function (div) {
+	        var html = "<h3>How to use this tool.</h3>";
+	        document.getElementById(div).innerHTML = html;
+	    };
+	    this.setLoaderHTML = function (div) {
+	        var html = "<h3>Load predefined structures.</h3>";
+	        html += "<div class='m1loadingdiv' id='m1loadingelements'>";
+	        html += "<p>structure:</p>";
+	        html += "<select id='selectstructure' >";
+	        for (var i = 0; i < this.structures.length; i++) {
+	            html += "<option value='"+this.structures[i]+"'>"+this.structures[i]+"</option>";
+	        }
+	        html += "</select>";
+	        html += "<p><input type='button' value='load' id='m1loadstructurebutton'></p>";
+	        html += "</div>";
+	        html += "<div class='m1loadingdiv' id='m1loadingdescription'>";
+	        html += "<textarea id='m1structuredescription' rows='5' cols='50' readonly>";
+	        html +="</textarea>";
+	        html += "</div>";
+	        document.getElementById(div).innerHTML = html;
+	        this.printStructureInformation();
+
+	        document.getElementById('selectstructure').onchange = function () {
+	            menu.getActiveMenu().printStructureInformation();
+	        }
+
+	        document.getElementById('m1loadstructurebutton').onclick = function () {
+	            menu.getActiveMenu().loadStructure(document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text);
+	        }
+
+	    };
+	    this.printStructureInformation = function () {
+	        var selectedElement = document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text;
+	        var pos = this.structures.indexOf(selectedElement);
+	        document.getElementById('m1structuredescription').innerHTML = this.structureDescribtions[pos];
+	    };
+	    this.loadStructure = function (name) {
+	        if (name == "Sensation Seeking Tendency") {
+	            menu.menuArray[3].heading = "Interest and Preference Survey";
+	            menu.menuArray[3].instruction = "Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+
+	            menu.menuArray[3].choices = [];
+	            menu.menuArray[3].choices.push("Strongly disagree");
+	            menu.menuArray[3].choices.push("Disagree");
+	            menu.menuArray[3].choices.push("Neither disagree nor agree");
+	            menu.menuArray[3].choices.push("Agree");
+	            menu.menuArray[3].choices.push("Strongly agree");
+
+	            menu.menuArray[2].questions = [];
+	            menu.menuArray[2].questions.push("I would like to explore strange places.");
+	            menu.menuArray[2].questions.push("I get restless when I spend too much time at home.");
+	            menu.menuArray[2].questions.push("I like to do frightening things.");
+	            menu.menuArray[2].questions.push("I like wild parties.");
+	            menu.menuArray[2].questions.push("I would like to take off on a trip with no pre-planned routes or timetables.");
+	            menu.menuArray[2].questions.push("I prefer friends who are excitingly unpredictable.");
+	            menu.menuArray[2].questions.push("I would like to try bungee jumping.");
+	            menu.menuArray[2].questions.push("I would love to have new and exciting experiences, even if they are illegal.");
+
+	        } else if (name == "Big Five") {
+	            menu.menuArray[3].heading = "Ten-Item Personality Inventory ";
+	            menu.menuArray[3].instruction = "Here are a number of personality traits that may or may not apply to you.";
+	            menu.menuArray[3].instruction += " Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+	            menu.menuArray[3].instruction += " You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other.";
+
+	            menu.menuArray[3].choices = [];
+	            menu.menuArray[3].choices.push("Disagree strongly");
+	            menu.menuArray[3].choices.push("Disagree moderately");
+	            menu.menuArray[3].choices.push("Disagree a little");
+	            menu.menuArray[3].choices.push("Neither agree nor disagree");
+	            menu.menuArray[3].choices.push("Agree a little");
+	            menu.menuArray[3].choices.push("Agree moderately");
+	            menu.menuArray[3].choices.push("Agree strongly");
+
+	            menu.menuArray[2].questions = [];
+	            menu.menuArray[2].questions.push("I see myself as extraverted, enthusiastic.");
+	            menu.menuArray[2].questions.push("I see myself as critical, quarrelsome.");
+	            menu.menuArray[2].questions.push("I see myself as dependable, selfdisciplined.");
+	            menu.menuArray[2].questions.push("I see myself as Anxious, easily upset.");
+	            menu.menuArray[2].questions.push("I see myself as Open to new experiences, complex.");
+	            menu.menuArray[2].questions.push("I see myself as Reserved, quiet.");
+	            menu.menuArray[2].questions.push("I see myself as Sympathetic, warm.");
+	            menu.menuArray[2].questions.push("I see myself as Disorganized, careless.");
+	            menu.menuArray[2].questions.push("I see myself as Calm, emotionally stable.");
+	            menu.menuArray[2].questions.push("I see myself as Conventional, uncreative.");
+	        }
+	    };
+	    this.settingStructuresToLoad = function () {
+	        this.structures = [];
+	        this.structureDescribtions = [];
+
+	        //questionnaire A
+	        this.structures.push("Sensation Seeking Tendency");
+	        var desc = "Brief Sensation Seeking Scale (Hoyle, 2002)";
+	        this.structureDescribtions.push(desc);
+
+	        //questionnaire B
+	        this.structures.push("Big Five");
+	        var desc = "Ten-Item Personality Inventory (Gosling, Rentfrow & Swann, 2003) ";
+	        this.structureDescribtions.push(desc);
 	    };
 	}
 
@@ -189,7 +297,7 @@ function performStartupAction(){
 	    this.fillHTML = function (div) {
 	        var html = "<div>";
 	        html += "<p>questionnaire heading:</p>";
-	        html += "<input type='text' value='" + this.heading + "' id='qheading'>";
+	        html += "<input type='text' value='" + this.heading + "' id='qheading' size='100'>";
 	        html += "<p>instruction text:</p>";
 	        html += "<textarea cols='80' rows='10' id='qinstruction'>" + this.instruction + "</textarea>";
 	        html += "<p>rating options:</p>";
@@ -295,9 +403,9 @@ function performStartupAction(){
 <p id="demo">Enter the requested information in all menus and press the download-button to get the XML file.</p>
 
 
-<div id='m1' class='menu'>menu1</div>
-<div id='m2' class='menu'>menu2</div>
-<div id='m3' class='menu'>menu3</div>
+<div id='m1' class='menu'>overview</div>
+<div id='m2' class='menu'>enter questions</div>
+<div id='m3' class='menu'>enter metadata</div>
 <div id='dataInputField'>
 Chose a menu and start filling in the asset specifications.
 </div>
