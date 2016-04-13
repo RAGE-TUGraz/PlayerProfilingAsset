@@ -436,8 +436,8 @@ namespace PlayerProfilingAssetNameSpace
         {
             string head = "<head><meta charset='UTF-8'> <title>Questionnaire</title>\n<style type='text/css'>";
             head += "h1 {color:red;}";
-            head += "div.question {float: left; width: 25%;}";
-            head += "div.choice { float: left; width: "+ 75/this.choiceList.choiceItemList.Count +"%; }";
+            head += "div.question {display:inline-block; width: 25%;}";
+            head += "div.choice {display:inline-block; width: " + 75/this.choiceList.choiceItemList.Count +"%; }";
             head += "div.questionItem {}";
             head += "div.submit {text-align:center;}";
             return head+"</style>\n</head>\n";

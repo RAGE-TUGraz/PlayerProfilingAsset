@@ -17,6 +17,14 @@ div.scaleitem:hover{cursor: pointer;}
 #deleteChoiceDiv{display: inline-block;}
 .m1div{display:inline-block; width:48%; padding-left:2%;}
 .m1loadingdiv{display: inline-block; padding-right:10px;}
+
+div.question {display:inline-block; width: 25%;}
+div.choice {display:inline-block; width: 15%; }
+div.questionItem {}
+div.submit {text-align:center;}
+#m5heading {color:red;}
+#m5div{background-color:white; border:solid; padding: 10px;}
+
 /*  menu - specific style information */
 </style>
 
@@ -98,6 +106,7 @@ function performStartupAction(){
 		this.menuArray[2] = new Menu2();
 		this.menuArray[3] = new Menu3();
 		this.menuArray[4] = new Menu4();
+		this.menuArray[5] = new Menu5();
 		this.getActiveMenu = function () {
             return(this.menuArray[this.activeMenu])
 		}
@@ -246,7 +255,7 @@ function performStartupAction(){
 		    for (var i = 0; i < this.questions.length; i++) {
 		        html += "<tr><td id='question-"+i+"'>"+this.questions[i]+"<td><td id='deleteQuestion-"+i+"'>-</td></tr>";
 		    }
-		    html += "<tr><td colspan='2'><input type='text' value='add new question' id='addNewQuestion'></td></tr>";
+		    html += "<tr><td colspan='2'><input size='80' type='text' value='add new question' id='addNewQuestion'></td></tr>";
 		    html += '</table>';
 		    html += "</div>";
 
@@ -397,19 +406,21 @@ function performStartupAction(){
 
     //menu object 4
 	function Menu4() {
+	    this.noLines;
 	    this.fillHTML = function (div) {
 	        var html = "<h3>The resulting XML:</h3>";
 	        var xml = createXML();
-	        var xml2 = '<t><test>huh</test></t>';
-	        document.getElementById(div).innerHTML = html + this.formatXML(xml);
+	        var formattedXml = this.formatXML(xml).replace(/<br>/g, "\n");
+	        document.getElementById(div).innerHTML = html + "<textarea rows='" + (this.noLines + 10) + "' cols='120' readonly>" + formattedXml + "</texterea>";
 	    };
 	    this.formatXML = function (xml) {
-	        xml = xml.replace(/ /g, "");
+	        //xml = xml.replace(/ /g, "");
 	        xml = xml.replace(/\n/g, "");
 	        var ret = "";
 	        var newComp;
 	        var oldComp;
 	        var noSpacing = 0;
+	        this.noLines = 0;
 	        while (xml.length > 0) {
 	            newComp = this.getNextXMLComponent(xml);
 	            //alert("!"+newComp+"!");
@@ -420,8 +431,8 @@ function performStartupAction(){
 	                ret += "&nbsp &nbsp &nbsp &nbsp";
 	            }
 	            oldComp = newComp;
-	            //alert(newComp);
-	            ret += newComp.replace(/</g, " &lt ").replace(/>/g, " &gt ") + "<br>";
+	            this.noLines++;
+	            ret += newComp.replace(/</g, "&lt").replace(/>/g, "&gt") + "<br>";
 	            if (oldComp.length >= 1 && oldComp[1] != "/" && oldComp[0] == "<")
 	                noSpacing += 1;
 	        }
@@ -430,12 +441,45 @@ function performStartupAction(){
 	    this.getNextXMLComponent = function (xml) {
 	        if (xml.length == 0)
 	            return ("");
-	        if(xml[0]!="<")
+	        if (xml[0] != "<")
 	            return (xml.substring(0, xml.indexOf("<")));
-	        else 
-                return (xml.substring(0, xml.indexOf(">")+1));
-	    }
-	}
+	        else
+	            return (xml.substring(0, xml.indexOf(">") + 1));
+	    };
+	};
+
+    //menu object 5
+	function Menu5() {
+	    this.fillHTML = function (div) {
+	        var html = "<div id='m5div'>";
+	        html += "<div><h1 id='m5heading'>" + menu.menuArray[3].heading + "</h1>";
+	        html += "<p>" + menu.menuArray[3].instruction + "</p></div>";
+
+	        //choices
+	        html += "<div><div class='question'> &nbsp; </div>"
+	        for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
+	            html += "<div class='choice'>" + menu.menuArray[3].choices[i] + "</div>";
+	        }
+	        html += "<br></div>";
+
+	        //questions
+	        for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+	            html += "<div class='questionItem'>";
+	            html += "<div class='question'>" + menu.menuArray[2].questions[i] + "</div>";
+	            for (var j = 0; j < menu.menuArray[3].choices.length; j++) {
+	                html += "<div class='choice'> <input type='radio' name='"+i+"' value='"+j+"'></div>";
+	            }
+	            html += "<br></div>";
+	        }
+
+	        //button
+	        html += "<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>";
+
+	        html += "</div>";
+	        document.getElementById(div).innerHTML = html;
+	    };
+	};
+
 </script>
 
 </head>
@@ -450,6 +494,7 @@ function performStartupAction(){
 <div id='m2' class='menu'>enter questions</div>
 <div id='m3' class='menu'>enter metadata</div>
 <div id='m4' class='menu'>show xml</div>
+<div id='m5' class='menu'>questionnaire preview</div>
 <div id='dataInputField'>
 Chose a menu and start filling in the asset specifications.
 </div>
