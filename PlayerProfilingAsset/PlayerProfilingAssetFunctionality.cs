@@ -386,6 +386,9 @@ namespace PlayerProfilingAssetNameSpace
             ChoiceItemList cil = new ChoiceItemList();
             cil.choiceItemList = cl;
             this.choiceList = cil;
+
+            this.groupList = new QuestionnaireGroupList();
+            this.defaultFormula = "SUM";
         }
 
         #endregion Constructors
@@ -491,7 +494,9 @@ namespace PlayerProfilingAssetNameSpace
             string questionItem = "<div class='questionItem'>";
             questionItem += "<div class='question'>" + qi.question + "</div>";
             foreach (ChoiceItem ci in cil)
-                questionItem += "<div class='choice'> <input type='radio' name='" + qi.questionId + "' value='" + ci.position + "'></div>";
+            {   
+                questionItem += "<div class='choice'> <input type='radio' name='" + qi.questionId + "' value='" + qi.map(ci.position) + "'></div>";
+            }
 
             return questionItem + "<br></div>\n";
         }
@@ -518,7 +523,7 @@ namespace PlayerProfilingAssetNameSpace
             script += "}\n";
             script += "}\n";
             script += "return('-1');\n";
-            script += "};\n\n;";
+            script += "};\n\n";
 
             script += "function getXMLContent(){\n";
             script += @"var xml = """";" + "\n";
@@ -555,9 +560,18 @@ namespace PlayerProfilingAssetNameSpace
         /// Structure holding group information
         /// </summary>
         [XmlElement("group")]
-        public List<QuestionnaireGroup> group { set; get; }
+        public List<QuestionnaireGroup> groups { set; get; }
 
         #endregion Fields
+        #region Constructors
+
+        public QuestionnaireGroupList()
+        {
+            this.groups = new List<QuestionnaireGroup>();
+        }
+        
+
+        #endregion Constructors
     }
 
     public class QuestionnaireGroup
@@ -678,15 +692,31 @@ namespace PlayerProfilingAssetNameSpace
         #endregion Fields
         #region Constructors
 
-        public QuestionItem() { }
+        public QuestionItem() {
+            this.answerMappingList = new AnswerMappingList(0);
+        }
 
         public QuestionItem(int id, string question)
         {
             this.questionId = id;
             this.question = question;
+            this.answerMappingList = new AnswerMappingList(3);
         }
 
         #endregion Constructors
+        #region Methods
+
+        public int map(int choice)
+        {
+            for(int i =0; i< this.answerMappingList.answerMap.Count; i++)
+            {
+                if (this.answerMappingList.answerMap[i].answerPosition == choice)
+                    return (this.answerMappingList.answerMap[i].mappedValue);
+            }
+            return (0);
+        }
+
+        #endregion Methods
     }
 
     public class AnswerMappingList
@@ -700,6 +730,20 @@ namespace PlayerProfilingAssetNameSpace
         public List<AnswerMap> answerMap { get; set; }
 
         #endregion Filds
+        #region Constructors
+
+        public AnswerMappingList() { }
+
+        public AnswerMappingList(int length)
+        {
+            this.answerMap = new List<AnswerMap>();
+            for(int i=0;i< length; i++)
+            {
+                this.answerMap.Add(new AnswerMap(i));
+            }
+        }
+
+        #endregion Constructors
     }
 
     public class AnswerMap
@@ -719,6 +763,17 @@ namespace PlayerProfilingAssetNameSpace
         public int mappedValue { get; set; }
 
         #endregion Fields
+        #region Constructors
+
+        public AnswerMap() { }
+
+        public AnswerMap(int pos)
+        {
+            this.answerPosition = pos;
+            this.mappedValue = pos;
+        }
+
+        #endregion Constructors
     }
 
     #endregion SerializationQuestionnaire
