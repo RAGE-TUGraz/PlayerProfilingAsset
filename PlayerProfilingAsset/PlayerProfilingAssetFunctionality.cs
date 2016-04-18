@@ -142,7 +142,7 @@ namespace PlayerProfilingAssetNameSpace
                 loggingPPA("IDataStorage bridge absent for requested local loading method of the QuestionnaireData.", Severity.Error);
                 throw new Exception("EXCEPTION: IDataStorage bridge absent for requested local loading method of the QuestionnaireData.");
             }
-            
+
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace PlayerProfilingAssetNameSpace
             loggingPPA("Start Test 1");
             QuestionnaireData qd = createExampleQuestionnaireData();
             loggingPPA(qd.toXmlString());
-            writeQuestionnaireDataToHTMLFile(qd,"QuestionnaireDataTest1.html");
+            writeQuestionnaireDataToHTMLFile(qd, "QuestionnaireDataTest1.html");
             loggingPPA("End test 1");
         }
 
@@ -273,28 +273,28 @@ namespace PlayerProfilingAssetNameSpace
 
             loggingPPA("End test 3");
         }
-        
+
         /// <summary>
         /// Method creating an example Questionnaire datastructure for test purpose4s.
         /// </summary>
         /// <returns> example Questionnaire datastructure </returns>
         internal QuestionnaireData createExampleQuestionnaireData()
         {
-            QuestionItem q1 = new QuestionItem(1,"How do you feel?");
-            QuestionItem q2 = new QuestionItem(2,"Do you like games?");
+            QuestionItem q1 = new QuestionItem(1, "How do you feel?");
+            QuestionItem q2 = new QuestionItem(2, "Do you like games?");
             QuestionItem q3 = new QuestionItem(3, "Do you like fast cars?");
             QuestionItem q4 = new QuestionItem(4, "Do you enjoy silence?");
             QuestionItem q5 = new QuestionItem(5, "Do you like swimming?");
-            QuestionItem[] qia = { q1,q2,q3,q4,q5};
+            QuestionItem[] qia = { q1, q2, q3, q4, q5 };
             List<QuestionItem> qil = new List<QuestionItem>(qia);
 
-            ChoiceItem c1 = new ChoiceItem(0,"Very good/much.");
+            ChoiceItem c1 = new ChoiceItem(0, "Very good/much.");
             ChoiceItem c2 = new ChoiceItem(1, "I do not know.");
             ChoiceItem c3 = new ChoiceItem(2, "Very bad/Not very much.");
             ChoiceItem[] cia = { c1, c2, c3 };
             List<ChoiceItem> cil = new List<ChoiceItem>(cia);
 
-            QuestionnaireData qd = new QuestionnaireData(qil,cil);
+            QuestionnaireData qd = new QuestionnaireData(qil, cil);
             qd.title = "Fancy questionnaire:";
             qd.instructions = "Please fill in the following form.";
 
@@ -359,6 +359,18 @@ namespace PlayerProfilingAssetNameSpace
         [XmlElement("instructions")]
         public string instructions { set; get; }
 
+        /// <summary>
+        /// Question groups
+        /// </summary>
+        [XmlElement("groups")]
+        public QuestionnaireGroupList groupList { set; get; }
+
+
+        /// <summary>
+        /// default evaluation formula
+        /// </summary>
+        [XmlElement("defaultgroupformula")]
+        public string defaultFormula { set; get; }
 
         #endregion Fields
         #region Constructors
@@ -421,11 +433,11 @@ namespace PlayerProfilingAssetNameSpace
             html += createHTMLHeading();
             html += createLikertRating(this.choiceList.choiceItemList);
             foreach (QuestionItem qi in this.questionList.questionItemList)
-                html += createHTMLQuestionItem(qi,this.choiceList.choiceItemList);
+                html += createHTMLQuestionItem(qi, this.choiceList.choiceItemList);
             html += createSubmissionButton();
             html += createSubmissionScript(this.questionList.questionItemList.Count, this.choiceList.choiceItemList.Count, questionnaireId);
 
-            return html+"</body>\n</html>";
+            return html + "</body>\n</html>";
         }
 
         /// <summary>
@@ -437,10 +449,10 @@ namespace PlayerProfilingAssetNameSpace
             string head = "<head><meta charset='UTF-8'> <title>Questionnaire</title>\n<style type='text/css'>";
             head += "h1 {color:red;}";
             head += "div.question {display:inline-block; width: 25%;}";
-            head += "div.choice {display:inline-block; width: " + 75/this.choiceList.choiceItemList.Count +"%; }";
+            head += "div.choice {display:inline-block; width: " + 75 / this.choiceList.choiceItemList.Count + "%; }";
             head += "div.questionItem {}";
             head += "div.submit {text-align:center;}";
-            return head+"</style>\n</head>\n";
+            return head + "</style>\n</head>\n";
         }
 
         /// <summary>
@@ -450,10 +462,10 @@ namespace PlayerProfilingAssetNameSpace
         internal string createHTMLHeading()
         {
             string heading = "<div>";
-            heading += @"<h1>"+this.title+"</h1>";
-            heading+="<p>"+this.instructions+"</p>";
+            heading += @"<h1>" + this.title + "</h1>";
+            heading += "<p>" + this.instructions + "</p>";
 
-            return heading+"</div>\n";
+            return heading + "</div>\n";
         }
 
         /// <summary>
@@ -477,16 +489,16 @@ namespace PlayerProfilingAssetNameSpace
         internal string createHTMLQuestionItem(QuestionItem qi, List<ChoiceItem> cil)
         {
             string questionItem = "<div class='questionItem'>";
-            questionItem += "<div class='question'>" + qi.question + "</div>" ;
-            foreach(ChoiceItem ci in cil)
-                questionItem += "<div class='choice'> <input type='radio' name='" + qi.questionId + "' value='"+ ci.position + "'></div>";
+            questionItem += "<div class='question'>" + qi.question + "</div>";
+            foreach (ChoiceItem ci in cil)
+                questionItem += "<div class='choice'> <input type='radio' name='" + qi.questionId + "' value='" + ci.position + "'></div>";
 
-            return questionItem+"<br></div>\n";
+            return questionItem + "<br></div>\n";
         }
 
         internal string createSubmissionButton()
         {
-            string button= @"<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>" +"\n";
+            string button = @"<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>" + "\n";
             return button;
         }
 
@@ -509,11 +521,11 @@ namespace PlayerProfilingAssetNameSpace
             script += "};\n\n;";
 
             script += "function getXMLContent(){\n";
-            script += @"var xml = """";"+"\n";
+            script += @"var xml = """";" + "\n";
             script += "xml += '<questionnaireanswers>';\n";
-            script += "xml += '<questionnaireid>"+ questionnaireId + "</questionnaireid>';\n";
+            script += "xml += '<questionnaireid>" + questionnaireId + "</questionnaireid>';\n";
             script += "xml += '<answerlist>';\n";
-            for(int i=1; i<= numberOfQuestions; i++)
+            for (int i = 1; i <= numberOfQuestions; i++)
             {
                 script += "xml += '<answer>';\n";
                 script += "xml += '<questionid>";
@@ -533,6 +545,38 @@ namespace PlayerProfilingAssetNameSpace
         }
 
         #endregion Methods
+    }
+
+    public class QuestionnaireGroupList
+    {
+        #region Fields
+
+        /// <summary>
+        /// Structure holding group information
+        /// </summary>
+        [XmlElement("group")]
+        public List<QuestionnaireGroup> group { set; get; }
+
+        #endregion Fields
+    }
+
+    public class QuestionnaireGroup
+    {
+        #region Fields
+
+        /// <summary>
+        /// Group name
+        /// </summary>
+        [XmlElement("name")]
+        public string name { set; get; }
+
+        /// <summary>
+        /// Group evaluatin formula
+        /// </summary>
+        [XmlElement("formula")]
+        public string formula { set; get; }
+
+        #endregion Fields
     }
 
     /// <summary>
@@ -625,6 +669,12 @@ namespace PlayerProfilingAssetNameSpace
         [XmlElement("questionid")]
         public int questionId { get; set; }
 
+        /// <summary>
+        /// contains the evaluation mapping of this question to answers
+        /// </summary>
+        [XmlElement("answermapping")]
+        public AnswerMappingList answerMappingList { get; set; }
+
         #endregion Fields
         #region Constructors
 
@@ -637,6 +687,38 @@ namespace PlayerProfilingAssetNameSpace
         }
 
         #endregion Constructors
+    }
+
+    public class AnswerMappingList
+    {
+        #region Fields
+
+        /// <summary>
+        /// List of all 1:1 mappings
+        /// </summary>
+        [XmlElement("entry")]
+        public List<AnswerMap> answerMap { get; set; }
+
+        #endregion Filds
+    }
+
+    public class AnswerMap
+    {
+        #region Fields
+
+        /// <summary>
+        /// unique answer position
+        /// </summary>
+        [XmlElement("from")]
+        public int answerPosition { get; set; }
+
+        /// <summary>
+        /// translation of the answer to integer value
+        /// </summary>
+        [XmlElement("to")]
+        public int mappedValue { get; set; }
+
+        #endregion Fields
     }
 
     #endregion SerializationQuestionnaire

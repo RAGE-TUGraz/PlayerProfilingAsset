@@ -1,508 +1,948 @@
-﻿<!DOCTYPE html>  
+﻿<!--
+  Copyright 2016 TUGraz, http://www.tugraz.at/
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  This project has received funding from the European Union’s Horizon
+  2020 research and innovation programme under grant agreement No 644187.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  This software has been created in the context of the EU-funded RAGE project.
+  Realising and Applied Gaming Eco-System (RAGE), Grant agreement No 644187,
+  http://rageproject.eu/
+  Development was done by Cognitive Science Section (CSS)
+  at Knowledge Technologies Institute (KTI)at Graz University of Technology (TUGraz).
+  http://kti.tugraz.at/css/
+  Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
+  Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
+-->
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset='UTF-8'> 
-<title>Player Profiling Asset - XML creator</title>
+    <meta charset='UTF-8'>
+    <title>Player Profiling Asset - XML creator</title>
 
-<style type='text/css'>
-/* general style information */
-h1 {color:gray;}
-div#body {display:block;}
-div.menu {background-color: lightblue; border-style: solid; margin-bottom: 5px; padding: 5px; display: inline-block;}
-div#dataInputField {background-color: lightgreen; display:block; border-style: solid; padding: 5px; margin-bottom: 5px;}
-div.scaleitem{min-width:50px; border:solid; display: inline-block;  padding: 4px;}
-div.spacing{width:15px; display: inline-block; padding:10px 0px;}
-div.scaleitem:hover{cursor: pointer;}
-#addChoiceButton{margin:7px;}
-#deleteChoiceDiv{display: inline-block;}
-.m1div{display:inline-block; width:48%; padding-left:2%;}
-.m1loadingdiv{display: inline-block; padding-right:10px;}
+    <style type='text/css'>
+        /* general style information */
+        h1 {
+            color: gray;
+        }
 
-div.question {display:inline-block; width: 25%;}
-div.choice {display:inline-block; width: 15%; }
-div.questionItem {}
-div.submit {text-align:center;}
-#m5heading {color:red;}
-#m5div{background-color:white; border:solid; padding: 10px;}
+        div#body {
+            display: block;
+        }
 
-/*  menu - specific style information */
-</style>
+        div.menu {
+            background-color: lightblue;
+            border-style: solid;
+            margin-bottom: 5px;
+            padding: 5px;
+            display: inline-block;
+        }
 
-<script>
-//Method for storing text via the download functionality
-function saveTextAsFile(textToWrite){
+        div#dataInputField {
+            background-color: lightgreen;
+            display: block;
+            border-style: solid;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
 
+        div.scaleitem {
+            min-width: 50px;
+            border: solid;
+            display: inline-block;
+            padding: 4px;
+        }
 
+        div.spacing {
+            width: 15px;
+            display: inline-block;
+            padding: 10px 0px;
+        }
 
-    //var textToWrite = document.getElementById("inputTextToSave").value;
-    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-    var fileNameToSaveAs = "QuestionnaireData.xml"
-      var downloadLink = document.createElement("a");
-    downloadLink.download = fileNameToSaveAs;
-    downloadLink.innerHTML = "Download File";
-    if (window.webkitURL != null)
-    {
-        // Chrome allows the link to be clicked
-        // without actually adding it to the DOM.
-        downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-    }
-    else
-    {
-        // Firefox requires the link to be added to the DOM
-        // before it can be clicked.
-        downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-        //downloadLink.onclick = destroyClickedElement;
-        downloadLink.style.display = "none";
-        document.body.appendChild(downloadLink);
-    }
+        div.scaleitem:hover {
+            cursor: pointer;
+        }
 
-    downloadLink.click();
-}
+        #addChoiceButton {
+            margin: 7px;
+        }
 
-//Method for creating the XML-string out of the information gathered from the user
-function createXML(){
-	return menu.toXML();
-}
+        #deleteChoiceDiv {
+            display: inline-block;
+        }
 
-//Method initiating the download
-function startDownload() {
-	xml = createXML();
-	saveTextAsFile(xml);
-}
+        .m1div {
+            vertical-align: top;
+            display: inline-block;
+            width: 48%;
+            padding-left: 2%;
+        }
 
-//Method creating the data input for menu 
-function fillMenu(){
-	//recolor all menu points
-	var menuPoints = document.getElementsByClassName("menu")
-	for (var i = 0; i < menuPoints.length; i++) {
-		menuPoints[i].style.backgroundColor="lightblue";
-	}
-	document.getElementById("m"+menu.activeMenu).style.backgroundColor="lightgreen";
-	
-	//store other stuff already inputed
-	
-    //create content for the div
-	menu.fillHTML("dataInputField");
-}
+        .m1loadingdiv {
+            display: inline-block;
+            padding-right: 10px;
+        }
 
-//perform actions when document is loaded.
-function performStartupAction(){
-	menu = new Menu();
-	var menuPoints = document.getElementsByClassName("menu")
-	for (var i = 0; i < menuPoints.length; i++) {
-		menuPoints[i].addEventListener("click",function(){
-			menu.activeMenu = this.id[1];
-			fillMenu();
-		}); 
-	}
-}
+        div.question {
+            display: inline-block;
+            width: 25%;
+        }
 
-//menu object - holding all information regarding all menues
+        div.choice {
+            display: inline-block;
+            width: 15%;
+        }
 
-	function Menu() {
-		this.activeMenu;
-		this.menuArray = [];
-		this.menuArray[1] = new Menu1();
-		this.menuArray[2] = new Menu2();
-		this.menuArray[3] = new Menu3();
-		this.menuArray[4] = new Menu4();
-		this.menuArray[5] = new Menu5();
-		this.getActiveMenu = function () {
-            return(this.menuArray[this.activeMenu])
-		}
-		this.fillHTML = function (div) {
-		    this.getActiveMenu().fillHTML(div);
-		}
-		this.toXML = function () {
-		    var xml = "<questionnairedata>\n";
-		    xml += "<questionitemlist>\n";
-		    xml += this.menuArray[2].toXML();
-		    xml += "</questionitemlist>\n";
-		    xml += "<choiceitemlist>\n";
-		    xml += this.menuArray[3].choicesToXML();
-		    xml += "</choiceitemlist>\n";
-		    xml += "<title>" + this.menuArray[3].heading + "</title>\n";
-		    xml += "<instructions>" + this.menuArray[3].instruction + "</instructions>\n";
-		    xml += "</questionnairedata>\n";
-            return(xml);
-		};
+        div.questionItem {
+        }
 
-	}
-		
-	//menu object1
-	function Menu1() {
-	    this.name = "menu 1";
-	    this.structures = [];
-	    this.structureDescribtions = [];
-	    this.fillHTML = function (div) {
-	        this.settingStructuresToLoad();
-	        var html = "<div class='m1div' id='m1text'></div>";
-	        html += "<div class='m1div' id='m1load'></div>";
-	        document.getElementById(div).innerHTML = html;
-	        this.setTextHTML('m1text');
-	        this.setLoaderHTML('m1load');
-	    };
-	    this.setTextHTML = function (div) {
-	        var html = "<h3>How to use this tool.</h3>";
-	        document.getElementById(div).innerHTML = html;
-	    };
-	    this.setLoaderHTML = function (div) {
-	        var html = "<h3>Load predefined structures.</h3>";
-	        html += "<div class='m1loadingdiv' id='m1loadingelements'>";
-	        html += "<p>structure:</p>";
-	        html += "<select id='selectstructure' >";
-	        for (var i = 0; i < this.structures.length; i++) {
-	            html += "<option value='"+this.structures[i]+"'>"+this.structures[i]+"</option>";
-	        }
-	        html += "</select>";
-	        html += "<p><input type='button' value='load' id='m1loadstructurebutton'></p>";
-	        html += "</div>";
-	        html += "<div class='m1loadingdiv' id='m1loadingdescription'>";
-	        html += "<textarea id='m1structuredescription' rows='5' cols='50' readonly>";
-	        html +="</textarea>";
-	        html += "</div>";
-	        document.getElementById(div).innerHTML = html;
-	        this.printStructureInformation();
+        div.submit {
+            text-align: center;
+        }
 
-	        document.getElementById('selectstructure').onchange = function () {
-	            menu.getActiveMenu().printStructureInformation();
-	        }
+        #m5heading {
+            color: red;
+        }
 
-	        document.getElementById('m1loadstructurebutton').onclick = function () {
-	            menu.getActiveMenu().loadStructure(document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text);
-	        }
+        #m5div {
+            background-color: white;
+            border: solid;
+            padding: 10px;
+        }
 
-	    };
-	    this.printStructureInformation = function () {
-	        var selectedElement = document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text;
-	        var pos = this.structures.indexOf(selectedElement);
-	        document.getElementById('m1structuredescription').innerHTML = this.structureDescribtions[pos];
-	    };
-	    this.loadStructure = function (name) {
-	        if (name == "Sensation Seeking Tendency") {
-	            menu.menuArray[3].heading = "Interest and Preference Survey";
-	            menu.menuArray[3].instruction = "Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+        .questiontableelement{
+            border: solid;
+            background-color:white;
+            padding: 5px;
+        }
 
-	            menu.menuArray[3].choices = [];
-	            menu.menuArray[3].choices.push("Strongly disagree");
-	            menu.menuArray[3].choices.push("Disagree");
-	            menu.menuArray[3].choices.push("Neither disagree nor agree");
-	            menu.menuArray[3].choices.push("Agree");
-	            menu.menuArray[3].choices.push("Strongly agree");
+        #questiontable{
+            table-layout:fixed;
+        }
 
-	            menu.menuArray[2].questions = [];
-	            menu.menuArray[2].questions.push("I would like to explore strange places.");
-	            menu.menuArray[2].questions.push("I get restless when I spend too much time at home.");
-	            menu.menuArray[2].questions.push("I like to do frightening things.");
-	            menu.menuArray[2].questions.push("I like wild parties.");
-	            menu.menuArray[2].questions.push("I would like to take off on a trip with no pre-planned routes or timetables.");
-	            menu.menuArray[2].questions.push("I prefer friends who are excitingly unpredictable.");
-	            menu.menuArray[2].questions.push("I would like to try bungee jumping.");
-	            menu.menuArray[2].questions.push("I would love to have new and exciting experiences, even if they are illegal.");
+         .evaluationquestiontableclass{
+            border: solid;
+            background-color:white;
+            padding: 5px;
+         }
 
-	        } else if (name == "Big Five") {
-	            menu.menuArray[3].heading = "Ten-Item Personality Inventory ";
-	            menu.menuArray[3].instruction = "Here are a number of personality traits that may or may not apply to you.";
-	            menu.menuArray[3].instruction += " Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
-	            menu.menuArray[3].instruction += " You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other.";
+         .evaluationdivs{
+             vertical-align: top;
+             display:inline-block;
+             padding: 10px;
+         }
 
-	            menu.menuArray[3].choices = [];
-	            menu.menuArray[3].choices.push("Disagree strongly");
-	            menu.menuArray[3].choices.push("Disagree moderately");
-	            menu.menuArray[3].choices.push("Disagree a little");
-	            menu.menuArray[3].choices.push("Neither agree nor disagree");
-	            menu.menuArray[3].choices.push("Agree a little");
-	            menu.menuArray[3].choices.push("Agree moderately");
-	            menu.menuArray[3].choices.push("Agree strongly");
+         .evaluationmappingtableelement{
+            border: solid;
+            background-color:white;
+            padding: 5px;
+         }
 
-	            menu.menuArray[2].questions = [];
-	            menu.menuArray[2].questions.push("I see myself as extraverted, enthusiastic.");
-	            menu.menuArray[2].questions.push("I see myself as critical, quarrelsome.");
-	            menu.menuArray[2].questions.push("I see myself as dependable, selfdisciplined.");
-	            menu.menuArray[2].questions.push("I see myself as Anxious, easily upset.");
-	            menu.menuArray[2].questions.push("I see myself as Open to new experiences, complex.");
-	            menu.menuArray[2].questions.push("I see myself as Reserved, quiet.");
-	            menu.menuArray[2].questions.push("I see myself as Sympathetic, warm.");
-	            menu.menuArray[2].questions.push("I see myself as Disorganized, careless.");
-	            menu.menuArray[2].questions.push("I see myself as Calm, emotionally stable.");
-	            menu.menuArray[2].questions.push("I see myself as Conventional, uncreative.");
-	        }
-	    };
-	    this.settingStructuresToLoad = function () {
-	        this.structures = [];
-	        this.structureDescribtions = [];
+        /*  menu - specific style information */
+    </style>
 
-	        //questionnaire A
-	        this.structures.push("Sensation Seeking Tendency");
-	        var desc = "Brief Sensation Seeking Scale (Hoyle, 2002)";
-	        this.structureDescribtions.push(desc);
-
-	        //questionnaire B
-	        this.structures.push("Big Five");
-	        var desc = "Ten-Item Personality Inventory (Gosling, Rentfrow & Swann, 2003) ";
-	        this.structureDescribtions.push(desc);
-	    };
-	}
-
-	//menu object2
-	function Menu2() {
-		this.questions = [];
-		this.fillHTML = function (div) {
-		    var html = '';
-		    html += '<div>';
-		    html += '<table>';
-		    html += "<tr><th colspan='2'>questions</th></tr>";
-		    for (var i = 0; i < this.questions.length; i++) {
-		        html += "<tr><td id='question-"+i+"'>"+this.questions[i]+"<td><td id='deleteQuestion-"+i+"'>-</td></tr>";
-		    }
-		    html += "<tr><td colspan='2'><input size='80' type='text' value='add new question' id='addNewQuestion'></td></tr>";
-		    html += '</table>';
-		    html += "</div>";
-
-		    document.getElementById(div).innerHTML = html;
-
-		    document.getElementById("addNewQuestion").onchange = function () {
-		        menu.getActiveMenu().questions.push(this.value);
-		        fillMenu();
-		    }
-
-		    for (var i = 0; i < this.questions.length; i++) {
-		        document.getElementById('deleteQuestion-' + i).onclick = function () {
-		            var pos = this.id.substring(15, this.id.length);
-		            menu.getActiveMenu().questions.splice(pos,1);
-		            fillMenu();
-		        }
-		    }
-		};
-		this.toXML = function () {
-		    var xml = "";
-		    for (var i = 0; i < this.questions.length; i++) {
-		        xml += "<questionitem>\n";
-		        xml += "<question>"+this.questions[i];
-		        xml += "</question>\n";
-		        xml += "<questionid>"+i;
-		        xml += "</questionid>\n";
-		        xml += "</questionitem>\n";
-		    }
-            return(xml);
-		}
-	}
-
-	//menu object3
-	function Menu3() {
-	    this.name = "menu 3";
-	    this.mousedown;
-	    this.choices = ["Very Good", " ", "Moderate", " ", "Bad"];
-	    this.heading = "Enter heading here ...";
-	    this.instruction = "Please fill out the questionnaire.";
-	    this.changeInsertChoice = function (whichElement, whereTo) {
-	        //alert(":"+whichElement + whereTo);
-	        var cToChange = this.choices[whichElement];
-	        this.choices.splice(whichElement, 1);
-	        if (whereTo > whichElement) {
-	            whereTo -= 1;
-	        }
-	        this.choices.splice(whereTo, 0, cToChange);
-	    };
-	    this.fillHTML = function (div) {
-	        var html = "<div>";
-	        html += "<p>questionnaire heading:</p>";
-	        html += "<input type='text' value='" + this.heading + "' id='qheading' size='100'>";
-	        html += "<p>instruction text:</p>";
-	        html += "<textarea cols='80' rows='10' id='qinstruction'>" + this.instruction + "</textarea>";
-	        html += "<p>rating options:</p>";
-	        html += "<div id='scale'>";
-	        html += "<div class='spacing' id='spacingAfter-start'></div>";
-	        for (var i = 0; i < this.choices.length; i++) {
-	            html += "<div draggable='true' class='scaleitem' id='scaleitem-" + i + "'>" + this.choices[i] + "</div>";
-	            html += "<div class='spacing' id='spacingAfter-" + i + "'></div>";
-	        }
-	        html += "</div>";
-	        html += "<input type='button' id='addChoiceButton' value='add option'>";
-	        html += "<div id='deleteChoiceDiv'> Drag here to delete &#10008</div>";
-	        html += "<div>";
-	        document.getElementById(div).innerHTML = html;
-
-	        document.getElementById('addChoiceButton').onclick = function () {
-	            menu.getActiveMenu().choices.push("new");
-	            fillMenu();
-	        }
-
-	        document.getElementById('deleteChoiceDiv').onmouseup = function () {
-	            if (menu.getActiveMenu().mousedown != null) {
-	                menu.getActiveMenu().choices.splice(menu.getActiveMenu().mousedown, 1);
-	                fillMenu();
-	            }
-	        }
-
-	        var elements = document.getElementsByClassName('scaleitem');
-	        for (var i = 0; i < elements.length; i++) {
-	            elements[i].onmousedown = function () {
-	                menu.getActiveMenu().mousedown = this.id.substring(10, this.id.length);
-	                window.onmouseup = function () {
-	                    menu.getActiveMenu().mousedown = null;
-	                    window.onmouseup = function () { };
-	                };
-	            }
-	            elements[i].ondblclick = function () {
-	                var pos = this.id.substring(10, this.id.length);
-	                var el = document.getElementById(this.id);
-	                el.innerHTML = "<input id='inputTextChoice-" + pos + "' type='text', value='" + menu.getActiveMenu().choices[pos] + "'>";
-	                //alert("Z209");
-	                document.getElementById('inputTextChoice-' + pos).focusout = function () {
-	                    alert("out");
-	                }
-
-	                document.getElementById('inputTextChoice-' + pos).onchange = function () {
-	                    var pos = this.id.substring(16, this.id.length);
-	                    menu.getActiveMenu().choices[parseInt(pos)] = this.value;
-	                    fillMenu();
-	                }
-
-	                document.getElementById('inputTextChoice-' + pos).onblur = function () {
-	                    var pos = this.id.substring(16, this.id.length);
-	                    menu.getActiveMenu().choices[parseInt(pos)] = this.value;
-	                    fillMenu();
-	                }
-
-	                window.onmouseup = function () {
-	                    fillMenu();
-	                    window.onmouseup = function () { };
-	                };
-
-	            }
-	        }
+    <script>
+        //Method for storing text via the download functionality
+        function saveTextAsFile(textToWrite) {
 
 
-	        elements = document.getElementsByClassName('spacing');
-	        for (var i = 0; i < elements.length; i++) {
-	            elements[i].onmouseup = function () {
-	                var redraw = true;
-	                var up = this.id.substring(13, this.id.length);
-	                if (up == "start" && menu.getActiveMenu().mousedown != 0)
-	                    menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, 0);
-	                else if (up != "start" && (parseInt(up) + 1) != menu.getActiveMenu().mousedown)
-	                    menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, parseInt(up) + 1);
-	                else
-	                    redraw = false;
-	                if (redraw)
-	                    fillMenu();
-	            }
-	        }
-	    };
-	    this.choicesToXML = function () {
-	        var xml = "";
-	        for (var i = 0; i < this.choices.length; i++) {
-	            xml += "<choiceitem>\n";
-	            xml += "<choice>" + this.choices[i];
-	            xml += "</choice>\n";
-	            xml += "<position>" + i;
-	            xml += "</position>\n";
-	            xml += "</choiceitem>\n";
-	        }
-	        return (xml);
-	    }
-	};
 
-    //menu object 4
-	function Menu4() {
-	    this.noLines;
-	    this.fillHTML = function (div) {
-	        var html = "<h3>The resulting XML:</h3>";
-	        var xml = createXML();
-	        var formattedXml = this.formatXML(xml).replace(/<br>/g, "\n");
-	        document.getElementById(div).innerHTML = html + "<textarea rows='" + (this.noLines + 10) + "' cols='120' readonly>" + formattedXml + "</texterea>";
-	    };
-	    this.formatXML = function (xml) {
-	        //xml = xml.replace(/ /g, "");
-	        xml = xml.replace(/\n/g, "");
-	        var ret = "";
-	        var newComp;
-	        var oldComp;
-	        var noSpacing = 0;
-	        this.noLines = 0;
-	        while (xml.length > 0) {
-	            newComp = this.getNextXMLComponent(xml);
-	            //alert("!"+newComp+"!");
-	            xml = xml.substring(newComp.length, xml.length);
-	            if (newComp.length >= 1 && newComp[1] == "/")
-	                noSpacing -= 1;
-	            for (var i = 0; i < noSpacing; i++) {
-	                ret += "&nbsp &nbsp &nbsp &nbsp";
-	            }
-	            oldComp = newComp;
-	            this.noLines++;
-	            ret += newComp.replace(/</g, "&lt").replace(/>/g, "&gt") + "<br>";
-	            if (oldComp.length >= 1 && oldComp[1] != "/" && oldComp[0] == "<")
-	                noSpacing += 1;
-	        }
-	        return (ret);
-	    };
-	    this.getNextXMLComponent = function (xml) {
-	        if (xml.length == 0)
-	            return ("");
-	        if (xml[0] != "<")
-	            return (xml.substring(0, xml.indexOf("<")));
-	        else
-	            return (xml.substring(0, xml.indexOf(">") + 1));
-	    };
-	};
+            //var textToWrite = document.getElementById("inputTextToSave").value;
+            var textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
+            var fileNameToSaveAs = "QuestionnaireData.xml"
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = "Download File";
+            if (window.webkitURL != null) {
+                // Chrome allows the link to be clicked
+                // without actually adding it to the DOM.
+                downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+            }
+            else {
+                // Firefox requires the link to be added to the DOM
+                // before it can be clicked.
+                downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                //downloadLink.onclick = destroyClickedElement;
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+            }
 
-    //menu object 5
-	function Menu5() {
-	    this.fillHTML = function (div) {
-	        var html = "<div id='m5div'>";
-	        html += "<div><h1 id='m5heading'>" + menu.menuArray[3].heading + "</h1>";
-	        html += "<p>" + menu.menuArray[3].instruction + "</p></div>";
+            downloadLink.click();
+        }
 
-	        //choices
-	        html += "<div><div class='question'> &nbsp; </div>"
-	        for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
-	            html += "<div class='choice'>" + menu.menuArray[3].choices[i] + "</div>";
-	        }
-	        html += "<br></div>";
+        //Method for creating the XML-string out of the information gathered from the user
+        function createXML() {
+            return menu.toXML();
+        }
 
-	        //questions
-	        for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-	            html += "<div class='questionItem'>";
-	            html += "<div class='question'>" + menu.menuArray[2].questions[i] + "</div>";
-	            for (var j = 0; j < menu.menuArray[3].choices.length; j++) {
-	                html += "<div class='choice'> <input type='radio' name='"+i+"' value='"+j+"'></div>";
-	            }
-	            html += "<br></div>";
-	        }
+        //Method initiating the download
+        function startDownload() {
+            xml = createXML();
+            saveTextAsFile(xml);
+        }
 
-	        //button
-	        html += "<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>";
+        //Method creating the data input for menu
+        function fillMenu() {
+            //recolor all menu points
+            var menuPoints = document.getElementsByClassName("menu")
+            for (var i = 0; i < menuPoints.length; i++) {
+                menuPoints[i].style.backgroundColor = "lightblue";
+            }
+            document.getElementById("m" + menu.activeMenu).style.backgroundColor = "lightgreen";
 
-	        html += "</div>";
-	        document.getElementById(div).innerHTML = html;
-	    };
-	};
+            //store other stuff already inputed
 
-</script>
+            //create content for the div
+            menu.fillHTML("dataInputField");
+        }
+
+        //perform actions when document is loaded.
+        function performStartupAction() {
+            menu = new Menu();
+            fillMenu();
+            var menuPoints = document.getElementsByClassName("menu")
+            for (var i = 0; i < menuPoints.length; i++) {
+                menuPoints[i].addEventListener("click", function () {
+                    menu.activeMenu = this.id[1];
+                    fillMenu();
+                });
+            }
+        }
+
+        //menu object - holding all information regarding all menues
+
+        function Menu() {
+            this.activeMenu=1;
+            this.menuArray = [];
+            this.menuArray[1] = new Menu1();
+            this.menuArray[2] = new Menu2();
+            this.menuArray[3] = new Menu3();
+            this.menuArray[4] = new Menu4();
+            this.menuArray[5] = new Menu5();
+            this.menuArray[6] = new Menu6();
+            this.getActiveMenu = function () {
+                return (this.menuArray[this.activeMenu])
+            }
+            this.fillHTML = function (div) {
+                this.getActiveMenu().fillHTML(div);
+            }
+            this.toXML = function () {
+                var xml = "<questionnairedata>\n";
+                xml += "<questionitemlist>\n";
+                xml += this.menuArray[2].toXML();
+                xml += "</questionitemlist>\n";
+                xml += "<choiceitemlist>\n";
+                xml += this.menuArray[3].choicesToXML();
+                xml += "</choiceitemlist>\n";
+                xml += "<title>" + this.menuArray[3].heading + "</title>\n";
+                xml += "<instructions>" + this.menuArray[3].instruction + "</instructions>\n";
+                xml += "<groups>\n";
+                for (var i = 0; i < this.menuArray[2].groups.length; i++) {
+                    xml += "<group>\n";
+                    xml += "<name>" + this.menuArray[2].groups[i] + "</name>\n";
+                    xml += "<formula>" + this.menuArray[6].groupformulas[i] + "</formula>\n";
+                    xml += "</group>\n";
+                }
+                xml += "</groups>\n";
+                xml += "<defaultgroupformula>"+this.menuArray[6].formula+"</defaultgroupformula>\n"
+                xml += "</questionnairedata>\n";
+                return (xml);
+            };
+
+        }
+
+        //menu object1
+        function Menu1() {
+            this.name = "menu 1";
+            this.structures = [];
+            this.structureDescribtions = [];
+            this.fillHTML = function (div) {
+                this.settingStructuresToLoad();
+                var html = "<div class='m1div' id='m1text'></div>";
+                html += "<div class='m1div' id='m1load'></div>";
+                document.getElementById(div).innerHTML = html;
+                this.setTextHTML('m1text');
+                this.setLoaderHTML('m1load');
+            };
+            this.setTextHTML = function (div) {
+                var html = "<h3>How to use this tool.</h3>";
+                html += "<p>";
+                html += "This tool is intended to create a xml-file to use with the Player Profiler Asset within the RAGE-Project. The produced xml-file is used by the client-side Asset to generate a questionnaire for the player at the beginning of the game.";
+                html += "</p>";
+                html += "<p>";
+                html += "You can load already existing questionnaires to your right. Under the 'enter questions'-tab new questions can be added and old ones can be deleted. Metadata, like the questionnaires description, the titel or the rating scale can be modified using the 'enter metadata'-tab. A preiew is available, when choosing the 'questionnaire preview'-tab. To download the xml you can either press the 'Download XML file'-button at the bottom of the page or use the 'show xml'-tab to copy the data into a file.";
+                html += "</p>";
+                document.getElementById(div).innerHTML = html;
+            };
+            this.setLoaderHTML = function (div) {
+                var html = "<h3>Load predefined structures.</h3>";
+                html += "<div class='m1loadingdiv' id='m1loadingelements'>";
+                html += "<p>structure:</p>";
+                html += "<select id='selectstructure' >";
+                for (var i = 0; i < this.structures.length; i++) {
+                    html += "<option value='" + this.structures[i] + "'>" + this.structures[i] + "</option>";
+                }
+                html += "</select>";
+                html += "<p><input type='button' value='load' id='m1loadstructurebutton'></p>";
+                html += "</div>";
+                html += "<div class='m1loadingdiv' id='m1loadingdescription'>";
+                html += "<textarea id='m1structuredescription' rows='5' cols='50' readonly>";
+                html += "</textarea>";
+                html += "</div>";
+                document.getElementById(div).innerHTML = html;
+                this.printStructureInformation();
+
+                document.getElementById('selectstructure').onchange = function () {
+                    menu.getActiveMenu().printStructureInformation();
+                }
+
+                document.getElementById('m1loadstructurebutton').onclick = function () {
+                    menu.getActiveMenu().loadStructure(document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text);
+                }
+
+            };
+            this.printStructureInformation = function () {
+                var selectedElement = document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text;
+                var pos = this.structures.indexOf(selectedElement);
+                document.getElementById('m1structuredescription').innerHTML = this.structureDescribtions[pos];
+            };
+            this.loadStructure = function (name) {
+                if (name == "Sensation Seeking Tendency") {
+                    menu.menuArray[3].heading = "Interest and Preference Survey";
+                    menu.menuArray[3].instruction = "Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+
+                    menu.menuArray[3].choices = [];
+                    menu.menuArray[3].choices.push("Strongly disagree");
+                    menu.menuArray[3].choices.push("Disagree");
+                    menu.menuArray[3].choices.push("Neither disagree nor agree");
+                    menu.menuArray[3].choices.push("Agree");
+                    menu.menuArray[3].choices.push("Strongly agree");
+
+                    menu.menuArray[2].questions = [];
+                    menu.menuArray[2].questions.push("I would like to explore strange places.");
+                    menu.menuArray[2].questions.push("I get restless when I spend too much time at home.");
+                    menu.menuArray[2].questions.push("I like to do frightening things.");
+                    menu.menuArray[2].questions.push("I like wild parties.");
+                    menu.menuArray[2].questions.push("I would like to take off on a trip with no pre-planned routes or timetables.");
+                    menu.menuArray[2].questions.push("I prefer friends who are excitingly unpredictable.");
+                    menu.menuArray[2].questions.push("I would like to try bungee jumping.");
+                    menu.menuArray[2].questions.push("I would love to have new and exciting experiences, even if they are illegal.");
+
+                    menu.menuArray[2].questionGrouping = [];
+                    for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                        menu.menuArray[2].questionGrouping.push("");
+                    }
+
+                    menu.menuArray[2].groups = [];
+                    menu.menuArray[6].changeChoices();
+
+                } else if (name == "Big Five") {
+                    menu.menuArray[3].heading = "Ten-Item Personality Inventory ";
+                    menu.menuArray[3].instruction = "Here are a number of personality traits that may or may not apply to you.";
+                    menu.menuArray[3].instruction += " Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+                    menu.menuArray[3].instruction += " You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other.";
+
+                    menu.menuArray[3].choices = [];
+                    menu.menuArray[3].choices.push("Disagree strongly");
+                    menu.menuArray[3].choices.push("Disagree moderately");
+                    menu.menuArray[3].choices.push("Disagree a little");
+                    menu.menuArray[3].choices.push("Neither agree nor disagree");
+                    menu.menuArray[3].choices.push("Agree a little");
+                    menu.menuArray[3].choices.push("Agree moderately");
+                    menu.menuArray[3].choices.push("Agree strongly");
+
+                    menu.menuArray[2].questions = [];
+                    menu.menuArray[2].questions.push("I see myself as extraverted, enthusiastic.");
+                    menu.menuArray[2].questions.push("I see myself as critical, quarrelsome.");
+                    menu.menuArray[2].questions.push("I see myself as dependable, selfdisciplined.");
+                    menu.menuArray[2].questions.push("I see myself as Anxious, easily upset.");
+                    menu.menuArray[2].questions.push("I see myself as Open to new experiences, complex.");
+                    menu.menuArray[2].questions.push("I see myself as Reserved, quiet.");
+                    menu.menuArray[2].questions.push("I see myself as Sympathetic, warm.");
+                    menu.menuArray[2].questions.push("I see myself as Disorganized, careless.");
+                    menu.menuArray[2].questions.push("I see myself as Calm, emotionally stable.");
+                    menu.menuArray[2].questions.push("I see myself as Conventional, uncreative.");
+
+                    menu.menuArray[2].questionGrouping = [];
+                    for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                        menu.menuArray[2].questionGrouping.push("");
+                    }
+
+                    menu.menuArray[2].groups = [];
+                    menu.menuArray[6].changeChoices();
+                }
+
+            };
+            this.settingStructuresToLoad = function () {
+                this.structures = [];
+                this.structureDescribtions = [];
+
+                //questionnaire A
+                this.structures.push("Sensation Seeking Tendency");
+                var desc = "Brief Sensation Seeking Scale (Hoyle, 2002)";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire B
+                this.structures.push("Big Five");
+                var desc = "Ten-Item Personality Inventory (Gosling, Rentfrow & Swann, 2003) ";
+                this.structureDescribtions.push(desc);
+            };
+        }
+
+        //menu object2
+        function Menu2() {
+            this.questions = [];
+            this.questionGrouping = [];
+            this.groups = [];
+            this.fillHTML = function (div) {
+                var html = '';
+                html += '<div>';
+                //question-table
+                html += "<table id='questiontable'";
+                html += "<tr><th class='questiontableelement'>grouping</th><th class='questiontableelement' colspan='2'>questions</th></tr>";
+                for (var i = 0; i < this.questions.length; i++) {
+                    html += "<tr><td class='questiontableelement' >";
+                    html += "<select class='groupselect' id='groupSelect-" + i + "'>";
+                    html += "<option value='none'>-</option>";
+                    for (var j = 0; j < this.groups.length; j++) {
+                        html += "<option value='" + this.groups[j] + "' ";
+                        if (this.questionGrouping[i] == this.groups[j]) {
+                            html += "selected";
+                        }
+                        html += ">" + this.groups[j] + "</option>";
+                    }
+                    html += "</select>";
+                    html+="</td><td class='questiontableelement'  id='question-" + i + "'>" + this.questions[i] + "<td><td class='questiontableelement'  id='deleteQuestion-" + i + "'>-</td></tr>";
+                }
+                html += "<tr><td class='questiontableelement'  colspan='3'><input size='80' type='text' value='add new question' id='addNewQuestion'></td></tr>";
+                html += '</table>';
+                //grouping table
+                html += "<table id='grouptable'>";
+                html += "<tr><th class='grouptableelement' colspan='2'>question-groups</th></tr>";
+                for (var i = 0; i < this.groups.length; i++) {
+                    html += "<tr><td class='grouptableelement'>" + this.groups[i] + "</td><td class='grouptableelement' id='deleteGroup-"+i+"'>-</td></tr>";
+                }
+                html += "<tr><td class='grouptableelement'  colspan='2'><input size='40' type='text' value='add new group' id='addNewGroup'></td></tr>";
+                html += "</table>";
+                html += "</div>";
+
+                document.getElementById(div).innerHTML = html;
+
+                //choose group for question
+                for (var i = 0; i < this.questions.length; i++) {
+                    document.getElementById("groupSelect-" + i).onchange = function () {
+                        
+                        var pos = parseInt(this.id.substring(12, this.id.length));
+                        if (this.value == "none")
+                            menu.getActiveMenu().questionGrouping[pos] = "";
+                        else
+                            menu.getActiveMenu().questionGrouping[pos] = this.value;
+                        //fillMenu();
+                    }
+                }
+
+                document.getElementById("addNewGroup").onchange = function () {
+                    if (menu.getActiveMenu().groups.indexOf(this.value) == -1) {
+                        menu.getActiveMenu().groups.push(this.value);
+                        menu.menuArray[6].groupformulas.push("SUM");
+                        fillMenu();
+                    }
+                }
+
+                for (var i = 0; i < this.groups.length; i++) {
+                    document.getElementById('deleteGroup-' + i).onclick = function () {
+                        var pos = this.id.substring(12, this.id.length);
+                        var elementToDelete = menu.getActiveMenu().groups[pos];
+                        var pos = menu.getActiveMenu().questionGrouping.indexOf(elementToDelete);
+                        while (pos != -1) {
+                            menu.getActiveMenu().questionGrouping[pos] = "";
+                            pos = menu.getActiveMenu().questionGrouping.indexOf(elementToDelete);
+                        }
+                        menu.getActiveMenu().groups.splice(pos, 1);
+                        menu.menuArray[6].groupformulas.splice(pos,1);
+                        fillMenu();
+                    }
+                }
+
+                //new question
+                document.getElementById("addNewQuestion").onchange = function () {
+                    menu.getActiveMenu().questions.push(this.value);
+                    menu.getActiveMenu().questionGrouping.push("");
+                    menu.menuArray[6].addEvaluationMapping();
+                    fillMenu();
+                }
+
+                //delete question
+                for (var i = 0; i < this.questions.length; i++) {
+                    document.getElementById('deleteQuestion-' + i).onclick = function () {
+                        var pos = this.id.substring(15, this.id.length);
+                        menu.getActiveMenu().questions.splice(pos, 1);
+                        menu.menuArray[6].evaluationMapping.splice(pos, 1);
+                        menu.menuArray[6].chosenTemplates.splice(pos,1);
+                        fillMenu();
+                    }
+                }
+            };
+            this.toXML = function () {
+                var xml = "";
+                for (var i = 0; i < this.questions.length; i++) {
+                    xml += "<questionitem>\n";
+                    xml += "<question>" + this.questions[i];
+                    xml += "</question>\n";
+                    xml += "<questionid>" + i;
+                    xml += "</questionid>\n";
+                    xml += "<answermapping>\n";
+                    for (var j = 0; j < menu.menuArray[6].evaluationMapping[i].length; j++) {
+                        xml += "<entry>\n";
+                        xml += "<from>" + j + "</from>\n";
+                        xml += "<to>" + menu.menuArray[6].evaluationMapping[i][j] + "</to>\n";
+                        xml += "</entry>\n";
+                    }
+                    xml += "</answermapping>\n";
+                    xml += "<group>" + menu.menuArray[2].questionGrouping[i] + "</group>\n";
+                    xml += "</questionitem>\n";
+                }
+                return (xml);
+            }
+        }
+
+        //menu object3
+        function Menu3() {
+            this.name = "menu 3";
+            this.mousedown;
+            this.choices = ["Very Good", " ", "Moderate", " ", "Bad"];
+            this.heading = "Enter heading here ...";
+            this.instruction = "Please fill out the questionnaire.";
+            this.changeInsertChoice = function (whichElement, whereTo) {
+                var cToChange = this.choices[whichElement];
+                this.choices.splice(whichElement, 1);
+                if (whereTo > whichElement) {
+                    whereTo -= 1;
+                }
+                this.choices.splice(whereTo, 0, cToChange);
+                menu.menuArray[6].changeChoices();
+            };
+            this.fillHTML = function (div) {
+                var html = "<div>";
+                html += "<p>questionnaire heading:</p>";
+                html += "<input type='text' value='" + this.heading + "' id='qheading' size='100'>";
+                html += "<p>instruction text:</p>";
+                html += "<textarea cols='80' rows='10' id='qinstruction'>" + this.instruction + "</textarea>";
+                html += "<p>rating options:</p>";
+                html += "<div id='scale'>";
+                html += "<div class='spacing' id='spacingAfter-start'></div>";
+                for (var i = 0; i < this.choices.length; i++) {
+                    html += "<div draggable='true' class='scaleitem' id='scaleitem-" + i + "'>" + this.choices[i] + "</div>";
+                    html += "<div class='spacing' id='spacingAfter-" + i + "'></div>";
+                }
+                html += "</div>";
+                html += "<input type='button' id='addChoiceButton' value='add option'>";
+                html += "<div id='deleteChoiceDiv'> Drag here to delete &#10008</div>";
+                html += "<div>";
+                document.getElementById(div).innerHTML = html;
+
+                document.getElementById('addChoiceButton').onclick = function () {
+                    menu.getActiveMenu().choices.push("new");
+                    menu.menuArray[6].changeChoices();
+                    fillMenu();
+                }
+
+                document.getElementById('deleteChoiceDiv').onmouseup = function () {
+                    if (menu.getActiveMenu().mousedown != null) {
+                        menu.getActiveMenu().choices.splice(menu.getActiveMenu().mousedown, 1);
+                        menu.menuArray[6].changeChoices();
+                        fillMenu();
+                    }
+                }
+
+                var elements = document.getElementsByClassName('scaleitem');
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].onmousedown = function () {
+                        menu.getActiveMenu().mousedown = this.id.substring(10, this.id.length);
+                        window.onmouseup = function () {
+                            menu.getActiveMenu().mousedown = null;
+                            window.onmouseup = function () { };
+                        };
+                    }
+                    elements[i].ondblclick = function () {
+                        var pos = this.id.substring(10, this.id.length);
+                        var el = document.getElementById(this.id);
+                        el.innerHTML = "<input id='inputTextChoice-" + pos + "' type='text', value='" + menu.getActiveMenu().choices[pos] + "'>";
+
+                        document.getElementById('inputTextChoice-' + pos).onchange = function () {
+                            var pos = this.id.substring(16, this.id.length);
+                            menu.getActiveMenu().choices[parseInt(pos)] = this.value;
+                            //menu.menuArray[6].changeChoices();
+                            fillMenu();
+                        }
+
+                        document.getElementById('inputTextChoice-' + pos).onblur = function () {
+                            var pos = this.id.substring(16, this.id.length);
+                            menu.getActiveMenu().choices[parseInt(pos)] = this.value;
+                            //menu.menuArray[6].changeChoices();
+                            fillMenu();
+                        }
+
+                        window.onmouseup = function () {
+                            fillMenu();
+                            //menu.menuArray[6].changeChoices();
+                            window.onmouseup = function () { };
+                        };
+
+                    }
+                }
+
+
+                elements = document.getElementsByClassName('spacing');
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].onmouseup = function () {
+                        var redraw = true;
+                        var up = this.id.substring(13, this.id.length);
+                        if (up == "start" && menu.getActiveMenu().mousedown != 0)
+                            menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, 0);
+                        else if (up != "start" && (parseInt(up) + 1) != menu.getActiveMenu().mousedown)
+                            menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, parseInt(up) + 1);
+                        else
+                            redraw = false;
+                        if (redraw)
+                            fillMenu();
+
+                        menu.menuArray[6].changeChoices();
+                    }
+                }
+            };
+            this.choicesToXML = function () {
+                var xml = "";
+                for (var i = 0; i < this.choices.length; i++) {
+                    xml += "<choiceitem>\n";
+                    xml += "<choice>" + this.choices[i];
+                    xml += "</choice>\n";
+                    xml += "<position>" + i;
+                    xml += "</position>\n";
+                    xml += "</choiceitem>\n";
+                }
+                return (xml);
+            }
+        };
+
+        //menu object 4
+        function Menu4() {
+            this.noLines;
+            this.fillHTML = function (div) {
+                var html = "<h3>The resulting XML:</h3>";
+                var xml = createXML();
+                var formattedXml = this.formatXML(xml).replace(/<br>/g, "\n");
+                document.getElementById(div).innerHTML = html + "<textarea rows='" + (this.noLines + 10) + "' cols='120' readonly>" + formattedXml + "</texterea>";
+            };
+            this.formatXML = function (xml) {
+                //xml = xml.replace(/ /g, "");
+                xml = xml.replace(/\n/g, "");
+                var ret = "";
+                var newComp;
+                var oldComp;
+                var noSpacing = 0;
+                this.noLines = 0;
+                while (xml.length > 0) {
+                    newComp = this.getNextXMLComponent(xml);
+                    //alert("!"+newComp+"!");
+                    xml = xml.substring(newComp.length, xml.length);
+                    if (newComp.length >= 1 && newComp[1] == "/")
+                        noSpacing -= 1;
+                    for (var i = 0; i < noSpacing; i++) {
+                        ret += "&nbsp &nbsp &nbsp &nbsp";
+                    }
+                    oldComp = newComp;
+                    this.noLines++;
+                    ret += newComp.replace(/</g, "&lt").replace(/>/g, "&gt") + "<br>";
+                    if (oldComp.length >= 1 && oldComp[1] != "/" && oldComp[0] == "<")
+                        noSpacing += 1;
+                }
+                return (ret);
+            };
+            this.getNextXMLComponent = function (xml) {
+                if (xml.length == 0)
+                    return ("");
+                if (xml[0] != "<")
+                    return (xml.substring(0, xml.indexOf("<")));
+                else
+                    return (xml.substring(0, xml.indexOf(">") + 1));
+            };
+        };
+
+        //menu object 5
+        function Menu5() {
+            this.fillHTML = function (div) {
+                var html = "<div id='m5div'>";
+                html += "<div><h1 id='m5heading'>" + menu.menuArray[3].heading + "</h1>";
+                html += "<p>" + menu.menuArray[3].instruction + "</p></div>";
+
+                //choices
+                html += "<div><div class='question'> &nbsp; </div>"
+                for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
+                    html += "<div class='choice'>" + menu.menuArray[3].choices[i] + "</div>";
+                }
+                html += "<br></div>";
+
+                //questions
+                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                    html += "<div class='questionItem'>";
+                    html += "<div class='question'>" + menu.menuArray[2].questions[i] + "</div>";
+                    for (var j = 0; j < menu.menuArray[3].choices.length; j++) {
+                        html += "<div class='choice'> <input type='radio' name='" + i + "' value='" + j + "'></div>";
+                    }
+                    html += "<br></div>";
+                }
+
+                //button
+                html += "<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>";
+
+                html += "</div>";
+                document.getElementById(div).innerHTML = html;
+                
+                var elements = document.getElementsByClassName('choice');
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].style.width = 75 / menu.menuArray[3].choices.length + "%";
+                }
+
+            };
+        };
+
+        //menu object 6
+        function Menu6() {
+            this.templates = [];
+            this.formula = "SUM";
+            this.groupformulas = [];
+            this.templateNames = [];
+            this.chosenTemplates = [];
+            this.currentQuestion;
+            this.evaluationMapping=[];
+            this.getNumberOfChoices = function () {
+                return(menu.menuArray[3].choices.length);
+            };
+            this.addEvaluationMapping = function () {
+                mapping = [];
+                for (var i = 0; i < this.getNumberOfChoices(); i++) {
+                    mapping.push(i);
+                }
+                this.evaluationMapping.push(mapping);
+                this.chosenTemplates.push("none");
+            };
+            this.addTemplateFromEvaluationMappings = function (name, evaluationMappingPos) {
+                if (this.templateNames.indexOf(name) == -1) {
+                    this.templates.push(this.evaluationMapping[evaluationMappingPos]);
+                    this.templateNames.push(name);
+                }
+            };
+            this.changeChoices = function () {
+                this.evaluationMapping = [];
+                this.chosenTemplates = [];
+                this.groupformulas = [];
+                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                    this.addEvaluationMapping();
+                    this.chosenTemplates.push('none');
+                    this.groupformulas.push("SUM");
+                }
+            };
+            this.fillHTML = function (div) {
+                var html = "<p>Work on evaluation for  ";
+                html += "<select id='selectevaluation'>";
+                html += "<option value='all'>all questions (default)</option>";
+                for (var i = 0; i < menu.menuArray[2].groups.length; i++) {
+                    html += "<option value='" + menu.menuArray[2].groups[i] + "'> group \"" + menu.menuArray[2].groups[i] + "\"</option>";
+                }
+                html += "</select></p>";
+                html += "<div id='evaluationformuladiv'>";
+                html+="</div>"
+                html += "<div id='evaluationdiv'></div>";
+                document.getElementById(div).innerHTML = html;
+
+
+                this.loadHTMLtables('evaluationdiv');
+
+                document.getElementById('selectevaluation').onchange = function () {
+                    menu.getActiveMenu().loadHTMLtables('evaluationdiv');
+                }
+
+
+            };
+            this.loadHTMLtables = function (div) {
+                var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
+                var html = "";
+                html += "<div class='evaluationdivs' id='evaluationdivl2.1'>";
+                html += "<table>";
+                html += "<tr><th class='evaluationquestiontableclass' colspan='2'>questions and chosen evaluation template</th></tr>";
+                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                    if (choiceOfQuestions == 'all' || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
+                        html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass'>" + menu.menuArray[2].questions[i] + "</td><td>";
+                        html += "<select id='evaluationtemplate-" + i + "'>";
+                        html += "<option value='none'>-</option>";
+                        for (var j = 0; j < this.templateNames.length;j++){
+                            html += "<option value='" + this.templateNames[j] + "' ";
+                            if (this.chosenTemplates[i] == this.templateNames[j])
+                                html += "selected";
+                            html+=">" + this.templateNames[j] + "</option>";
+                        }
+                        html += "</select>";
+                        html+="</td></tr>";
+                    }
+                }
+                html += "</table>";
+                html+="</div>";
+                html += "<div class='evaluationdivs' id='evaluationdivl2.2'>";
+                html+="</div>";
+                document.getElementById(div).innerHTML = html;
+
+                for (var j = 0; j < menu.menuArray[2].questions.length; j++) {
+                    if (choiceOfQuestions == 'all' || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
+                        document.getElementById("evaluationtemplate-" + j).onchange = function () {
+
+                            var pos = parseInt(this.id.substring(19, this.id.length));
+                            menu.getActiveMenu().chosenTemplates[pos] = this.value;
+                            menu.getActiveMenu().loadQuestionEvaluationMapping('evaluationdivl2.2');
+                        }
+                    }
+                }
+
+
+                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                    if (choiceOfQuestions == 'all' || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
+                        document.getElementById("evaluationquestion-" + i).onclick = function () {
+                            var questionPos = this.id.substring(19, this.id.length);
+                            menu.getActiveMenu().currentQuestion = questionPos;
+                            menu.getActiveMenu().loadQuestionEvaluationMapping('evaluationdivl2.2');
+                        }
+                    }
+                }
+
+                if (choiceOfQuestions=="all")
+                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + this.formula + "' id='evaluationformulatext'>";
+                else
+                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + this.groupformulas[menu.menuArray[2].groups.indexOf(choiceOfQuestions)] + "' id='evaluationformulatext'>";
+
+                document.getElementById('evaluationformulatext').onchange = function () {
+                    if(menu.getActiveMenu().isFormula(this.value)){
+                        var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
+                        if (choiceOfQuestions == "all") {
+                            menu.getActiveMenu().formula = this.value;
+                        }
+                        else {
+                            var pos = menu.menuArray[2].groups.indexOf(choiceOfQuestions);
+                            menu.getActiveMenu().groupformulas[pos]=this.value;
+                        }
+                    } else {
+                        var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
+                        if (choiceOfQuestions == "all") {
+                            this.value=menu.getActiveMenu().formula;
+                        }
+                        else {
+                            var pos = menu.menuArray[2].groups.indexOf(choiceOfQuestions);
+                            this.value = menu.getActiveMenu().groupformulas[pos]
+                            ;
+                        }
+                    }
+                };
+
+            };
+            this.loadQuestionEvaluationMapping = function (div) {
+                var mapping = this.evaluationMapping[this.currentQuestion];
+                var html = "<h3>" + menu.menuArray[2].questions[this.currentQuestion] + "</h3>";
+                html += "<table>";
+                html += "<tr><th class='evaluationmappingtableelement' >answer</th><th class='evaluationmappingtableelement'>mapped to</th></tr>"
+                for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
+                    if (this.chosenTemplates[this.currentQuestion] == "none") {
+                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.menuArray[3].choices[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='"+mapping[i]+"'></td></tr>";
+                    } else {
+                        var templateName = this.chosenTemplates[this.currentQuestion];
+                        var pos = this.templateNames.indexOf(templateName);
+                        var template = this.templates[pos];
+                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.menuArray[3].choices[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='" + template[i] + "'></td></tr>";
+                    }
+                }
+                html += "</table>";
+                html += "<div>";
+                html += "save mapping as template: <input type='text' id='saveastemplatename' size='2' maxlength='2'><input type='button' value='save' id='saveastemplatebutton'>";
+                html += "</div>";
+                document.getElementById(div).innerHTML = html;
+
+                document.getElementById('saveastemplatebutton').onclick = function () {
+                    menu.getActiveMenu().addTemplateFromEvaluationMappings(document.getElementById('saveastemplatename').value, menu.getActiveMenu().currentQuestion);
+                    menu.getActiveMenu().chosenTemplates[menu.getActiveMenu().currentQuestion] = document.getElementById('saveastemplatename').value;
+                    menu.getActiveMenu().loadHTMLtables('evaluationdiv');
+                }
+
+                for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
+                    document.getElementById("textinputevaluationmapping-" + i).onchange = function () {
+                        if(menu.getActiveMenu().isInteger(this.value)){
+                            var choice = this.id.substring(27, this.id.length);
+                            if (menu.getActiveMenu().chosenTemplates[menu.getActiveMenu().currentQuestion] == "none")
+                                menu.getActiveMenu().evaluationMapping[menu.getActiveMenu().currentQuestion][choice] = this.value;
+                            else {
+                                var templateName = menu.getActiveMenu().chosenTemplates[menu.getActiveMenu().currentQuestion];
+                                var pos = menu.getActiveMenu().templateNames.indexOf(templateName);
+                                var template = menu.getActiveMenu().templates[pos];
+                                template[choice] = this.value;
+                            }
+                        } else {
+                            menu.getActiveMenu().loadQuestionEvaluationMapping('evaluationdivl2.2');
+                        }
+                    };
+                }
+            };
+            this.isInteger = function (int) {
+                var allowed = "0123456789 ";
+                if (int[0] == "-")
+                    int = int.substring(1, int.length);
+                for (var i = 0; i < int.length; i++) {
+                    if(allowed.indexOf(int[i])==-1)
+                        return(false);
+                }
+                return(true);
+            };
+            this.isFormula = function (formula) {
+                formula = formula.replace(/SUM/g, "")
+                var allowed = "-+*/:()0123456789 ";
+                for (var i = 0; i < formula.length; i++) {
+                    if (allowed.indexOf(formula[i]) == -1)
+                        return (false);
+                }
+                return (true);
+            };
+        };
+
+    </script>
 
 </head>
 <body>
-<div id='body'>
-<h1>Player Profiling Asset - XML creator</h1>
+    <div id='body'>
+        <h1>Player Profiling Asset - XML creator</h1>
 
-<p id="demo">Enter the requested information in all menus and press the download-button to get the XML file.</p>
+        <p id="demo">Enter the requested information in all menus and press the download-button to get the XML file.</p>
 
 
-<div id='m1' class='menu'>overview</div>
-<div id='m2' class='menu'>enter questions</div>
-<div id='m3' class='menu'>enter metadata</div>
-<div id='m4' class='menu'>show xml</div>
-<div id='m5' class='menu'>questionnaire preview</div>
-<div id='dataInputField'>
-Chose a menu and start filling in the asset specifications.
-</div>
+        <div id='m1' class='menu'>overview</div>
+        <div id='m2' class='menu'>enter questions</div>
+        <div id='m3' class='menu'>enter metadata</div>
+        <div id='m4' class='menu'>show xml</div>
+        <div id='m5' class='menu'>questionnaire preview</div>
+        <div id='m6' class='menu'>evaluation</div>
+        <div id='dataInputField'>
+            Chose a menu and start filling in the asset specifications.
+        </div>
 
-<button type="button" onclick="startDownload()">Download XML file.</button>
-</div>
-<script>
-	performStartupAction();
-</script>
+        <button type="button" onclick="startDownload()">Download XML file.</button>
+    </div>
+    <script>
+        performStartupAction();
+    </script>
 </body>
 </html>
