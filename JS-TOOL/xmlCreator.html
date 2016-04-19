@@ -1,4 +1,5 @@
-﻿<!--
+﻿<!DOCTYPE html>
+<!--
   Copyright 2016 TUGraz, http://www.tugraz.at/
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +25,6 @@
   Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
   Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
 -->
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset='UTF-8'>
@@ -111,7 +111,8 @@
         }
 
         #m5heading {
-            color: red;
+            color: black;
+            text-align: center;
         }
 
         #m5div {
@@ -280,7 +281,7 @@
                 html += "This tool is intended to create a xml-file to use with the Player Profiler Asset within the RAGE-Project. The produced xml-file is used by the client-side Asset to generate a questionnaire for the player at the beginning of the game.";
                 html += "</p>";
                 html += "<p>";
-                html += "You can load already existing questionnaires to your right. Under the 'enter questions'-tab new questions can be added and old ones can be deleted. Metadata, like the questionnaires description, the titel or the rating scale can be modified using the 'enter metadata'-tab. A preiew is available, when choosing the 'questionnaire preview'-tab. To download the xml you can either press the 'Download XML file'-button at the bottom of the page or use the 'show xml'-tab to copy the data into a file.";
+                html += "You can load already existing questionnaires to your right. Under the 'enter questions'-tab new questions can be added and old ones can be deleted. Metadata, like the questionnaires description, the titel or the rating scale can be modified using the 'enter metadata'-tab. A preiew is available, when choosing the 'questionnaire preview'-tab. To download the xml you can either press the 'Download XML file'-button, when choosing the 'get xml'-tab or copy the data into a file directly.";
                 html += "</p>";
                 document.getElementById(div).innerHTML = html;
             };
@@ -640,6 +641,7 @@
             this.noLines;
             this.fillHTML = function (div) {
                 var html = "<h3>The resulting XML:</h3>";
+                html += "<button type='button' onclick='startDownload()'>Download XML file.</button></br>";
                 var xml = createXML();
                 var formattedXml = this.formatXML(xml).replace(/<br>/g, "\n");
                 document.getElementById(div).innerHTML = html + "<textarea rows='" + (this.noLines + 10) + "' cols='120' readonly>" + formattedXml + "</texterea>";
@@ -747,6 +749,8 @@
                 this.evaluationMapping = [];
                 this.chosenTemplates = [];
                 this.groupformulas = [];
+                this.templateNames = [];
+                this.templates = [];
                 for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
                     this.addEvaluationMapping();
                     this.chosenTemplates.push('none');
@@ -932,14 +936,13 @@
         <div id='m1' class='menu'>overview</div>
         <div id='m2' class='menu'>enter questions</div>
         <div id='m3' class='menu'>enter metadata</div>
-        <div id='m4' class='menu'>show xml</div>
-        <div id='m5' class='menu'>questionnaire preview</div>
         <div id='m6' class='menu'>evaluation</div>
+        <div id='m5' class='menu'>questionnaire preview</div>
+        <div id='m4' class='menu'>get xml</div>
         <div id='dataInputField'>
             Chose a menu and start filling in the asset specifications.
         </div>
 
-        <button type="button" onclick="startDownload()">Download XML file.</button>
     </div>
     <script>
         performStartupAction();
