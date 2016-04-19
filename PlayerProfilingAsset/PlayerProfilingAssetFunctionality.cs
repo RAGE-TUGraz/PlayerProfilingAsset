@@ -111,6 +111,7 @@ namespace PlayerProfilingAssetNameSpace
             if (ids != null)
             {
                 loggingPPA("Storing Questionnaire data to HTML File.");
+                //testid given from program!
                 ids.Save(fileId, qd.toHTMLString("testid"));
             }
             else
@@ -253,10 +254,8 @@ namespace PlayerProfilingAssetNameSpace
         {
             loggingPPA("Start Test 3");
             String xmlAnswer = @"<?xml version=""1.0"" encoding=""utf-16""?><questionnaireanswers xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">";
-            xmlAnswer += "<questionnaireid>testid</questionnaireid><answerlist><answer><questionid>1</questionid><answerid>0</answerid>";
-            xmlAnswer += "</answer><answer><questionid>2</questionid><answerid>-1</answerid></answer><answer><questionid>3</questionid><answerid>1</answerid></answer>";
-            xmlAnswer += "<answer><questionid>4</questionid><answerid>-1</answerid></answer><answer><questionid>5</questionid><answerid>-1</answerid></answer><answer>";
-            xmlAnswer += "<questionid>6</questionid><answerid>-1</answerid></answer></answerlist></questionnaireanswers>";
+            xmlAnswer += "<groups><group><name>A</name><rating>7</rating></group><group><name>B</name><rating>8</rating></group></groups>";
+            xmlAnswer += "<questionnaireid>testid</questionnaireid></questionnaireanswers>";
 
             QuestionnaireAnswerData qad = this.getQuestionnaireAnswerDataFromXmlString(xmlAnswer);
 
@@ -660,6 +659,7 @@ namespace PlayerProfilingAssetNameSpace
             script += "    xml += '</group>';\n";
             script += "  };\n";
             script += "  xml += '</groups>';\n";
+            script += "  xml+= '<questionnaireid>"+ questionnaireId + "</questionnaireid>';\n";
             script += "  xml +='</questionnaireanswers>';\n";
             script += "  return(xml);\n";
             script += "};\n";
@@ -927,18 +927,19 @@ namespace PlayerProfilingAssetNameSpace
     {
         #region Fields
 
+
+        /// <summary>
+        /// Class storing all answers.
+        /// </summary>
+        [XmlElement("groups")]
+        public AnswerGroupList answerGroupList { get; set; }
+
+
         /// <summary>
         /// Questionnaire id
         /// </summary>
         [XmlElement("questionnaireid")]
         public string id { set; get; }
-
-        /// <summary>
-        /// Class storing all answers.
-        /// </summary>
-        [XmlElement("answerlist")]
-        public AnswerList answerList { get; set; }
-
 
         #endregion Fields
         #region Constructors
@@ -978,31 +979,31 @@ namespace PlayerProfilingAssetNameSpace
         #endregion Methods
     }
 
-    public class AnswerList
+    public class AnswerGroupList
     {
         #region Fields
         /// <summary>
         /// Structure holding one answer
         /// </summary>
-        [XmlElement("answer")]
-        public List<Answer> answerList { set; get; }
+        [XmlElement("group")]
+        public List<AnswerGroup> groupList { set; get; }
 
         #endregion Fields
     }
 
-    public class Answer
+    public class AnswerGroup
     {
         /// <summary>
         /// Questionnaire id
         /// </summary>
-        [XmlElement("questionid")]
-        public string questionId { set; get; }
+        [XmlElement("name")]
+        public string groupName { set; get; }
 
         /// <summary>
         /// Answer id
         /// </summary>
-        [XmlElement("answerid")]
-        public int answerId { set; get; }
+        [XmlElement("rating")]
+        public float groupRating { set; get; }
     }
 
     #endregion SerilizationAnswer
