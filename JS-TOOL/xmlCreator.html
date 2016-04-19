@@ -340,14 +340,16 @@
                     menu.menuArray[2].questions.push("I would love to have new and exciting experiences, even if they are illegal.");
 
                     menu.menuArray[2].questionGrouping = [];
+                    menu.menuArray[2].groups = ["sensation seeking tendency"];
                     for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                        menu.menuArray[2].questionGrouping.push("");
+                        menu.menuArray[2].questionGrouping.push(menu.menuArray[2].groups[0]);
                     }
 
-                    menu.menuArray[2].groups = [];
                     menu.menuArray[6].changeChoices();
+                    menu.menuArray[6].groupformulas = ["SUM"];
 
-                } else if (name == "Big Five") {
+                } else if (name == "Big Five")
+                {
                     menu.menuArray[3].heading = "Ten-Item Personality Inventory ";
                     menu.menuArray[3].instruction = "Here are a number of personality traits that may or may not apply to you.";
                     menu.menuArray[3].instruction += " Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
@@ -375,12 +377,76 @@
                     menu.menuArray[2].questions.push("I see myself as Conventional, uncreative.");
 
                     menu.menuArray[2].questionGrouping = [];
+                    menu.menuArray[2].groups = ["Extraversion", "Agreeableness", "Conscientiousness", "Emotional Stability", "Openness to Experience"];
                     for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                        menu.menuArray[2].questionGrouping.push("");
+                        menu.menuArray[2].questionGrouping.push(menu.menuArray[2].groups[i%5]);
                     }
-
-                    menu.menuArray[2].groups = [];
                     menu.menuArray[6].changeChoices();
+                    menu.menuArray[6].templateNames = ["N", "R"];
+                    menu.menuArray[6].templates = [[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]];
+                    menu.menuArray[6].chosenTemplates = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
+                    menu.menuArray[6].groupformulas = ["SUM/2", "SUM/2", "SUM/2", "SUM/2", "SUM/2"];
+                } else if (name == "RIASEC 32")
+                {
+                    menu.menuArray[3].heading = "Activity-based RIASEC interest scale ";
+                    menu.menuArray[3].instruction = "to be added later...";
+                    menu.menuArray[3].instruction += "";
+                    menu.menuArray[3].instruction += "";
+
+                    menu.menuArray[3].choices = [];
+                    menu.menuArray[3].choices.push("Strongly dislike");
+                    menu.menuArray[3].choices.push("");
+                    menu.menuArray[3].choices.push("");
+                    menu.menuArray[3].choices.push("Neutral");
+                    menu.menuArray[3].choices.push("");
+                    menu.menuArray[3].choices.push("");
+                    menu.menuArray[3].choices.push("Strongly like");
+
+                    menu.menuArray[2].questions = [];
+                    menu.menuArray[2].questions.push("Seat patrons at a restaurant");
+                    menu.menuArray[2].questions.push("Oversee a hotel");
+                    menu.menuArray[2].questions.push("Prepare financial reports");
+                    menu.menuArray[2].questions.push("Oversee a data analysis group");
+                    menu.menuArray[2].questions.push("Install electrical wiring");
+                    menu.menuArray[2].questions.push("Categorize different types of wildlife");
+                    menu.menuArray[2].questions.push("Sculpt a statue");
+                    menu.menuArray[2].questions.push("Help children with learning problems");
+                    menu.menuArray[2].questions.push("Interview people for a survey");
+                    menu.menuArray[2].questions.push("Manage an office");
+                    menu.menuArray[2].questions.push("Maintain office financial records");
+                    menu.menuArray[2].questions.push("Manage an electrical power station");
+                    menu.menuArray[2].questions.push("Oversee building construction");
+                    menu.menuArray[2].questions.push("Write a scientific article");
+                    menu.menuArray[2].questions.push("Paint a portrait");
+                    menu.menuArray[2].questions.push("Teach people to dance");
+                    menu.menuArray[2].questions.push("Sell clothes to others");
+                    menu.menuArray[2].questions.push("Oversee sales");
+                    menu.menuArray[2].questions.push("Keep records of stock sales");
+                    menu.menuArray[2].questions.push("Write computer programs for business");
+                    menu.menuArray[2].questions.push("Inspect construction sites for safety");
+                    menu.menuArray[2].questions.push("Teach science");
+                    menu.menuArray[2].questions.push("Write a play");
+                    menu.menuArray[2].questions.push("Teach others cooking");
+                    menu.menuArray[2].questions.push("Escort people through a television studio ");
+                    menu.menuArray[2].questions.push("Organize office records");
+                    menu.menuArray[2].questions.push("Establish a business accounting procedure");
+                    menu.menuArray[2].questions.push("Analyze survey maps");
+                    menu.menuArray[2].questions.push("Assemble precision optical instruments");
+                    menu.menuArray[2].questions.push("Study wildlife");
+                    menu.menuArray[2].questions.push("Draw cartoons");
+                    menu.menuArray[2].questions.push("Supervise children in a nursery");
+
+                    menu.menuArray[2].questionGrouping = [];
+                    menu.menuArray[2].groups = ["Realistic", "Investigative", "Artistic", "Social", "Enterprising", "Conventional"];
+                    for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                        menu.menuArray[2].questionGrouping.push(menu.menuArray[2].groups[i % 6]);
+                    }
+                    menu.menuArray[6].changeChoices();
+                    //menu.menuArray[6].templateNames = ["N", "R"];
+                    //menu.menuArray[6].templates = [[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]];
+                    //menu.menuArray[6].chosenTemplates = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
+                    menu.menuArray[6].groupformulas = ["SUM", "SUM", "SUM", "SUM", "SUM","SUM"];
+
                 }
 
             };
@@ -396,6 +462,11 @@
                 //questionnaire B
                 this.structures.push("Big Five");
                 var desc = "Ten-Item Personality Inventory (Gosling, Rentfrow & Swann, 2003) ";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire C
+                this.structures.push("RIASEC 32");
+                var desc = "Questionnaire for Gathering RIASEC Profiles - Personal Globe Inventory Short (Tracey, 2010) – 32 items ";
                 this.structureDescribtions.push(desc);
             };
         }
@@ -734,7 +805,7 @@
             this.addEvaluationMapping = function () {
                 mapping = [];
                 for (var i = 0; i < this.getNumberOfChoices(); i++) {
-                    mapping.push(i);
+                    mapping.push(i+1);
                 }
                 this.evaluationMapping.push(mapping);
                 this.chosenTemplates.push("none");
