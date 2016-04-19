@@ -438,7 +438,7 @@ namespace PlayerProfilingAssetNameSpace
             foreach (QuestionItem qi in this.questionList.questionItemList)
                 html += createHTMLQuestionItem(qi, this.choiceList.choiceItemList);
             html += createSubmissionButton();
-            html += createSubmissionScript(this.questionList.questionItemList.Count, this.choiceList.choiceItemList.Count, questionnaireId);
+            html += createSubmissionScript(this.defaultFormula, this.groupList.groups ,this.questionList.questionItemList, this.choiceList.choiceItemList.Count, questionnaireId);
 
             return html + "</body>\n</html>";
         }
@@ -450,7 +450,7 @@ namespace PlayerProfilingAssetNameSpace
         internal string createHTMLHead()
         {
             string head = "<head><meta charset='UTF-8'> <title>Questionnaire</title>\n<style type='text/css'>";
-            head += "h1 {color:red;}";
+            head += "h1 {color:black; text-align: center; }";
             head += "div.question {display:inline-block; width: 25%;}";
             head += "div.choice {display:inline-block; width: " + 75 / this.choiceList.choiceItemList.Count + "%; }";
             head += "div.questionItem {}";
@@ -491,7 +491,10 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> html representation of the question item.</returns>
         internal string createHTMLQuestionItem(QuestionItem qi, List<ChoiceItem> cil)
         {
-            string questionItem = "<div class='questionItem'>";
+            string questionItem = "<div id='qi-"+ qi.questionId+"' class='questionItem";
+            if (qi.group != null && qi.group != "")
+                questionItem += " "+qi.group;
+            questionItem += "'>";
             questionItem += "<div class='question'>" + qi.question + "</div>";
             foreach (ChoiceItem ci in cil)
             {   
@@ -507,46 +510,172 @@ namespace PlayerProfilingAssetNameSpace
             return button;
         }
 
-        internal string createSubmissionScript(int numberOfQuestions, int numberOfChoices, String questionnaireId)
+        internal string createSubmissionScript(String defaultGroupFormula, List<QuestionnaireGroup> groupList, List<QuestionItem> questionItemList, int numberOfChoices, String questionnaireId)
         {
-            string script = "<script>";
+            string script = "<script>\n";
+            script += "groupnames=[];\n";
+            script += "groupformulas=[];\n";
+            script += "groupvalues=[];\n\n";
+
             script += "document.getElementById('submitbutton').onclick=function(){\n";
-            script += "var xml=getXMLContent();\n";
-            script += "alert('submitting:'+ xml);\n";
+            script += "  if(done()){\n";
+            script += "    calculatGroupValue();\n";
+            script += "    var xml=getXMLContent();\n";
+            script += "    alert('submitting:'+ xml);\n";
+            script += "  }else{\n";
+            script += "    alert('Please answer all questions!');";
+            script += "  };\n";
             script += "};\n\n";
 
-            script += "function findSelection(field){\n";
-            script += "var elements = document.getElementsByName(field);\n";
-            script += "for(var i=0; i<elements.length;i++){\n";
-            script += "if(elements[i].checked==true){\n";
-            script += "return(elements[i].value);\n";
-            script += "}\n";
-            script += "}\n";
-            script += "return('-1');\n";
+
+            //method for checking if all questions are answered
+            script += "function done(){\n";
+            script += "  var elements = document.getElementsByClassName('questionItem');\n";
+            script += "  for(var i=0;i<elements.length;i++){\n";
+            script += "    var id = elements[i].id.substring(3,elements[i].id.length);\n";
+            script += "    if(findSelection(id)=='')\n";
+            script += "      return(false);\n";
+            script += "  };\n";
+            script += "  return(true);\n";
             script += "};\n\n";
 
-            script += "function getXMLContent(){\n";
-            script += @"var xml = """";" + "\n";
-            script += "xml += '<questionnaireanswers>';\n";
-            script += "xml += '<questionnaireid>" + questionnaireId + "</questionnaireid>';\n";
-            script += "xml += '<answerlist>';\n";
-            for (int i = 1; i <= numberOfQuestions; i++)
+            //method returning the answer value to given question item id
+            script += "function findSelection(id){\n";
+            script += "  var elements = document.getElementsByName(id);\n";
+            script += "  for(var i=0; i<elements.length;i++){\n";
+            script += "    if(elements[i].checked==true){\n";
+            script += "      return(elements[i].value);\n";
+            script += "    }\n";
+            script += "  }\n";
+            script += "  return('');\n";
+            script += "};\n\n";
+
+            //Method storing all groups into the array groupnames
+            script += "function getGroups(){\n";
+            script += "  groupnames=[];\n";
+            script += "  groupformulas=[];\n";
+            script += "  groupvalues = [];\n";
+            List<String> alreadySeen = new List<string>();
+            for(int i=0; i < questionItemList.Count; i++)
             {
-                script += "xml += '<answer>';\n";
-                script += "xml += '<questionid>";
-                script += i;
-                script += "</questionid>';\n";
-                script += "xml += '<answerid>'";
-                script += @"+findSelection(""" + i + @""")";
-                script += "+'</answerid>';\n";
-                script += "xml += '</answer>';\n";
+                if (alreadySeen.Contains(questionItemList[i].group))
+                    continue;
+                alreadySeen.Add(questionItemList[i].group);
+                script += "  groupnames.push('" + questionItemList[i].group + "');\n";
+                script += "  groupvalues.push(0);\n";
+                script += "  groupformulas.push('"+this.getFormulaByGroupName(questionItemList[i].group) +"');\n";
             }
-            script += "xml += '</answerlist>';\n";
-            script += "xml +='</questionnaireanswers>';\n";
-            script += "return(xml);";
-            script += "}\n";
+            script += "};\n\n";
+
+            //method for calculating the sum over all values of one group
+            script += "function calculateGroupSum(){\n";
+            script += "  getGroups();\n";
+            script += "  var elements = document.getElementsByClassName('questionItem');\n";
+            script += "  for(var i=0;i<elements.length;i++){\n";
+            script += "    var id = elements[i].id.substring(3,elements[i].id.length);\n";
+            script += "    var group='';\n";
+            script += "    if(elements[i].className.length > 13)\n";
+            script += "        group = elements[i].className.substring(13,elements[i].className.length);\n";
+            script += "    groupvalues[groupnames.indexOf(group)] += parseInt(findSelection(id));\n";
+            script += "  };\n";
+            script += "};\n\n";
+
+            //method for calculating the ratings for each group
+            script += "function calculatGroupValue(){\n";
+            script += "  calculateGroupSum();\n";
+            script += "  for(var i=0;i<groupvalues.length;i++){\n";
+            script += "    result = eval(groupformulas[i].replace(/SUM/g,groupvalues[i]));\n";
+            script += "    groupvalues[i]=result;\n";
+            script += "  };\n";
+            script += "};\n\n";
+
+
+            //math interpretet for *,/,+,-
+            script += "function eval(term){\n";
+            script += "  term = term.replace(/:/g,'/');\n";
+            script += "  var numbers='0123456789';\n";
+            script += "  var operators='-+*/';\n";
+            //give back number (negative/positive)
+            script += "  var onlyNumbersSoFar = true;\n";
+            script += "  for(var i=0;i<term.length;i++){\n";
+            script += "    if(numbers.indexOf(term[i])>-1 || (i==0  && term[i]=='-'))\n";
+            script += "      continue;\n";
+            script += "    onlyNumbersSoFar = false;\n";
+            script += "  };\n";
+            script += "  if(onlyNumbersSoFar)\n";
+            script += "    return(parseInt(term));";
+            //solve inner brackets
+            script += "  var control=term.indexOf('(');\n";
+            script += "  var control1;\n";
+            script += "  var control2;\n";
+            script += "  var term1;\n";
+            script += "  var term2;\n";
+            script += "  if(control>-1){\n";
+            script += "    term1=term.substring(0,control+1);\n";
+            script += "    term2=term.substring(control+1,term.length);\n";
+            script += "    while(true){\n";
+            script += "      control1 = term2.indexOf(')');\n";
+            script += "      control2 = term2.indexOf('(');\n";
+            script += "      if(control2==-1 || control1<control2){\n";
+            script += "        //alert(term1.substring(0,term1.length-1) +'&'+term2.substring(0,control1)+'&'+term2.substring(control1+1,term2.length));\n";
+            script += "        return(eval(term1.substring(0,term1.length-1)+eval(term2.substring(0,control1))+term2.substring(control1+1,term2.length)));\n";
+            script += "      }else{\n";
+            script += "        term1 += term2.substring(0,control2+1);\n";
+            script += "        term2 = term2.substring(control2+1,term2.length);\n"; 
+            script += "      };\n";
+            script += "    };\n";
+            script += "  };\n";
+            //do multiplication
+            script += "  control=term.indexOf('*');\n";
+            script += "  if(control>-1){\n";
+            script += "    return(eval(term.substring(0,control))*eval(term.substring(control+1,term.length)));\n";
+            script += "  };\n";
+            //do division
+            script += "  control=term.indexOf('/');\n";
+            script += "  if(control>-1){\n";
+            script += "    return(eval(term.substring(0,control))/eval(term.substring(control+1,term.length)));\n";
+            script += "  };\n";
+            //do addition
+            script += "  control=term.indexOf('+');\n";
+            script += "  if(control>-1){\n";
+            script += "    return(eval(term.substring(0,control))+eval(term.substring(control+1,term.length)));\n";
+            script += "  };\n";
+            //do substraction
+            script += "  control=term.indexOf('-');\n";
+            script += "  if(control>-1){\n";
+            script += "    return(eval(term.substring(0,control))-eval(term.substring(control+1,term.length)));\n";
+            script += "  };\n";
+            script += "};\n\n";
+
+
+            //method for creating xml
+            script += "function getXMLContent(){\n";
+            script += @"  var xml = """";" + "\n";
+            script += "  xml += '<questionnaireanswers>';\n";
+            script += "  xml += '<groups>';\n";
+            script += "  for(var i=0;i<groupnames.length;i++){\n";
+            script += "    xml += '<group>';\n";
+            script += "    xml += '<name>'+groupnames[i]+'</name>';\n";
+            script += "    xml += '<rating>'+groupvalues[i]+'</rating>';\n";
+            script += "    xml += '</group>';\n";
+            script += "  };\n";
+            script += "  xml += '</groups>';\n";
+            script += "  xml +='</questionnaireanswers>';\n";
+            script += "  return(xml);\n";
+            script += "};\n";
             script += "</script>\n";
             return (script);
+        }
+
+
+        public String getFormulaByGroupName(String groupName)
+        {
+            foreach (QuestionnaireGroup qg in this.groupList.groups)
+            {
+                if (qg.name == groupName)
+                    return (qg.formula);
+            }
+            return this.defaultFormula;
         }
 
         #endregion Methods
@@ -569,9 +698,13 @@ namespace PlayerProfilingAssetNameSpace
         {
             this.groups = new List<QuestionnaireGroup>();
         }
-        
+
 
         #endregion Constructors
+        #region Methods
+
+
+        #endregion Methods
     }
 
     public class QuestionnaireGroup
@@ -688,6 +821,12 @@ namespace PlayerProfilingAssetNameSpace
         /// </summary>
         [XmlElement("answermapping")]
         public AnswerMappingList answerMappingList { get; set; }
+
+        /// <summary>
+        /// contains the group of the question
+        /// </summary>
+        [XmlElement("group")]
+        public String group { get; set; }
 
         #endregion Fields
         #region Constructors
