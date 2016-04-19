@@ -831,7 +831,7 @@
             this.fillHTML = function (div) {
                 var html = "<p>Work on evaluation for  ";
                 html += "<select id='selectevaluation'>";
-                html += "<option value='all'>all questions (default)</option>";
+                html += "<option value='all'>default/no group</option>";
                 for (var i = 0; i < menu.menuArray[2].groups.length; i++) {
                     html += "<option value='" + menu.menuArray[2].groups[i] + "'> group \"" + menu.menuArray[2].groups[i] + "\"</option>";
                 }
@@ -857,7 +857,7 @@
                 html += "<table>";
                 html += "<tr><th class='evaluationquestiontableclass' colspan='2'>questions and chosen evaluation template</th></tr>";
                 for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                    if (choiceOfQuestions == 'all' || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
+                    if ((choiceOfQuestions == 'all' && menu.menuArray[2].questionGrouping[i] =="" ) || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
                         html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass'>" + menu.menuArray[2].questions[i] + "</td><td>";
                         html += "<select id='evaluationtemplate-" + i + "'>";
                         html += "<option value='none'>-</option>";
@@ -878,7 +878,7 @@
                 document.getElementById(div).innerHTML = html;
 
                 for (var j = 0; j < menu.menuArray[2].questions.length; j++) {
-                    if (choiceOfQuestions == 'all' || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
+                    if ((choiceOfQuestions == 'all' && menu.menuArray[2].questionGrouping[j] == "") || menu.menuArray[2].questionGrouping[j] == choiceOfQuestions) {
                         document.getElementById("evaluationtemplate-" + j).onchange = function () {
 
                             var pos = parseInt(this.id.substring(19, this.id.length));
@@ -890,7 +890,7 @@
 
 
                 for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                    if (choiceOfQuestions == 'all' || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
+                    if ((choiceOfQuestions == 'all' && menu.menuArray[2].questionGrouping[i] == "") || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
                         document.getElementById("evaluationquestion-" + i).onclick = function () {
                             var questionPos = this.id.substring(19, this.id.length);
                             menu.getActiveMenu().currentQuestion = questionPos;
