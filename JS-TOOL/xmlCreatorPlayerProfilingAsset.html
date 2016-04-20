@@ -223,7 +223,8 @@
         //menu object - holding all information regarding all menues
 
         function Menu() {
-            this.activeMenu=1;
+            this.activeMenu = 1;
+            this.data = new Data();
             this.menuArray = [];
             this.menuArray[1] = new Menu1();
             this.menuArray[2] = new Menu2();
@@ -286,9 +287,9 @@
                 document.getElementById(div).innerHTML = html;
             };
             this.setLoaderHTML = function (div) {
-                var html = "<h3>Load predefined structures.</h3>";
+                var html = "<h3>Load predefined questionnaires.</h3>";
                 html += "<div class='m1loadingdiv' id='m1loadingelements'>";
-                html += "<p>structure:</p>";
+                html += "<p>questionnaires:</p>";
                 html += "<select id='selectstructure' >";
                 for (var i = 0; i < this.structures.length; i++) {
                     html += "<option value='" + this.structures[i] + "'>" + this.structures[i] + "</option>";
@@ -994,6 +995,94 @@
             };
         };
 
+
+        //data object
+        function Data() {
+            /////////////////////////DATA
+            //questions (text, group) -> zwei arrays
+            this.questions = [];
+            this.questionsGroup = [];
+            //question groups -> array
+            this.groups = [];
+            //mapping answer->score (per question) ->array (einträge=fragen) mit arrays (einträge=answers)
+            this.questionsMapping = [];
+            //score formulas (formula) -> array
+            this.groupsFormula = [];
+            this.defaultFormula = "SUM";
+            //choice scale (name) -> array
+            this.scaleitems = [];
+            //title -> string
+            this.title = "Enter title here...";
+            //description -> string
+            this.describtion = "Enter describtion here...";
+            /////////////////////////DATA-helpers
+            this.mappingTemplatesName = [];
+            this.mappingTemplates = [];
+            this.mappingTemplatesChoosen = [];
+            /////////////////////////SETTER
+            this.addQuestion = function (questionTxt) {
+                this.questions.push(questionTxt);
+                this.questionsGroup("");
+                this.addQuestionMapping();
+                this.mappingTemplatesChoosen.push("");
+            };
+            this.deleteQuestion = function (indexToDelete) {
+                this.questions.splice(indexToDelete, 1);
+                this.questionsMapping.splice(indexToDelete, 1);
+                this.questionsGroup.splice(indexToDelete, 1);
+                this.mappingTemplatesChoosen.splice(indexToDelete,1);
+            };
+            this.addQuestionMapping = function(){
+                questionMap = [];
+                for (var i = 0; i < this.scaleitems.length; i++) {
+                    questionMap.push(i+1);
+                }
+                this.questionsMapping.push(questionMap);
+            };
+            this.resetQuestionMappings = function () {
+                this.questionsMapping = [];
+                this.mappingTemplates = [];
+                this.mappingTemplatesName = [];
+                this.mappingTemplatesChoosen = [];
+                for (var i = 0; i < this.questions.length; i++) {
+                    this.addQuestionMapping();
+                }
+            };
+            this.addGroup = function (groupName) {
+                this.groups.push(groupName);
+                this.groupsFormula.push(this.defaultFormula);
+            };
+            this.deleteGroup = function (indexToDelete) {
+                var groupToDelete = this.groups[indexToDelete];
+                this.groups.splice(indexToDelete, 1);
+                this.groupsFormula.splice(indexToDelete, 1);
+                for (var i = 0; i < this.questionsGroup.length; i++) {
+                    if (this.questionsGroup[i] == groupToDelete)
+                        this.questionsGroup[i] = "";
+                }
+            };
+            this.addScaleitem = function (scaleitemTxt) {
+                this.scaleitems.push(scaleitemTxt);
+                this.resetQuestionMappings();
+            };
+            this.shiftScaleitem = function (scaleitemToShiftPosition,positionToShiftTo) {
+                var itemToShift = this.scaleitems[scaleitemToShiftPosition];
+                this.deleteScaleitem(scaleitemToShiftPosition);
+                if (positionToShiftTo < scaleitemToShiftPosition)
+                    this.scaleitems.splice(positionToShiftTo, 0, itemToShift);
+                else if (positionToShiftTo > scaleitemToShiftPosition)
+                    this.scaleitems.splice(positionToShiftTo - 1, 0, itemToShift);
+                this.resetQuestionMappings();
+            };
+            this.deleteScaleitem = function (position) {
+                this.scaleitems.splice(position, 1);
+                this.resetQuestionMappings();
+            };
+            this.saveMappingAsTemplate = function (questionIndex,templateName) {
+                //...
+            };
+        }
+
     </script>
 
 </head>
@@ -1001,8 +1090,7 @@
     <div id='body'>
         <h1>Player Profiling Asset - XML creator</h1>
 
-        <p id="demo">Enter the requested information in all menus and press the download-button to get the XML file.</p>
-
+        
 
         <div id='m1' class='menu'>overview</div>
         <div id='m2' class='menu'>enter questions</div>
