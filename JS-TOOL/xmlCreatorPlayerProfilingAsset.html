@@ -246,17 +246,17 @@
                 xml += "<choiceitemlist>\n";
                 xml += this.menuArray[3].choicesToXML();
                 xml += "</choiceitemlist>\n";
-                xml += "<title>" + this.menuArray[3].heading + "</title>\n";
-                xml += "<instructions>" + this.menuArray[3].instruction + "</instructions>\n";
+                xml += "<title>" + this.data.title + "</title>\n";
+                xml += "<instructions>" + this.data.instructions + "</instructions>\n";
                 xml += "<groups>\n";
-                for (var i = 0; i < this.menuArray[2].groups.length; i++) {
+                for (var i = 0; i < this.data.groups.length; i++) {
                     xml += "<group>\n";
-                    xml += "<name>" + this.menuArray[2].groups[i] + "</name>\n";
-                    xml += "<formula>" + this.menuArray[6].groupformulas[i] + "</formula>\n";
+                    xml += "<name>" + this.data.groups[i] + "</name>\n";
+                    xml += "<formula>" + this.data.groupsFormula[i] + "</formula>\n";
                     xml += "</group>\n";
                 }
                 xml += "</groups>\n";
-                xml += "<defaultgroupformula>"+this.menuArray[6].formula+"</defaultgroupformula>\n"
+                xml += "<defaultgroupformula>"+this.data.defaultFormula+"</defaultgroupformula>\n"
                 xml += "</questionnairedata>\n";
                 return (xml);
             };
@@ -265,7 +265,6 @@
 
         //menu object1
         function Menu1() {
-            this.name = "menu 1";
             this.structures = [];
             this.structureDescribtions = [];
             this.fillHTML = function (div) {
@@ -320,133 +319,131 @@
             };
             this.loadStructure = function (name) {
                 if (name == "Sensation Seeking Tendency") {
-                    menu.menuArray[3].heading = "Interest and Preference Survey";
-                    menu.menuArray[3].instruction = "Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+                    menu.data.title = "Interest and Preference Survey";
+                    menu.data.instructions = "Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
 
-                    menu.menuArray[3].choices = [];
-                    menu.menuArray[3].choices.push("Strongly disagree");
-                    menu.menuArray[3].choices.push("Disagree");
-                    menu.menuArray[3].choices.push("Neither disagree nor agree");
-                    menu.menuArray[3].choices.push("Agree");
-                    menu.menuArray[3].choices.push("Strongly agree");
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Strongly disagree");
+                    menu.data.scaleitems.push("Disagree");
+                    menu.data.scaleitems.push("Neither disagree nor agree");
+                    menu.data.scaleitems.push("Agree");
+                    menu.data.scaleitems.push("Strongly agree");
 
-                    menu.menuArray[2].questions = [];
-                    menu.menuArray[2].questions.push("I would like to explore strange places.");
-                    menu.menuArray[2].questions.push("I get restless when I spend too much time at home.");
-                    menu.menuArray[2].questions.push("I like to do frightening things.");
-                    menu.menuArray[2].questions.push("I like wild parties.");
-                    menu.menuArray[2].questions.push("I would like to take off on a trip with no pre-planned routes or timetables.");
-                    menu.menuArray[2].questions.push("I prefer friends who are excitingly unpredictable.");
-                    menu.menuArray[2].questions.push("I would like to try bungee jumping.");
-                    menu.menuArray[2].questions.push("I would love to have new and exciting experiences, even if they are illegal.");
+                    menu.data.questions = [];
+                    menu.data.questions.push("I would like to explore strange places.");
+                    menu.data.questions.push("I get restless when I spend too much time at home.");
+                    menu.data.questions.push("I like to do frightening things.");
+                    menu.data.questions.push("I like wild parties.");
+                    menu.data.questions.push("I would like to take off on a trip with no pre-planned routes or timetables.");
+                    menu.data.questions.push("I prefer friends who are excitingly unpredictable.");
+                    menu.data.questions.push("I would like to try bungee jumping.");
+                    menu.data.questions.push("I would love to have new and exciting experiences, even if they are illegal.");
 
-                    menu.menuArray[2].questionGrouping = [];
-                    menu.menuArray[2].groups = ["sensation seeking tendency"];
-                    for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                        menu.menuArray[2].questionGrouping.push(menu.menuArray[2].groups[0]);
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["sensation seeking tendency"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[0]);
                     }
 
-                    menu.menuArray[6].changeChoices();
-                    menu.menuArray[6].groupformulas = ["SUM"];
+                    menu.data.resetQuestionMappings();
+                    menu.data.groupsFormula = ["SUM"];
 
-                } else if (name == "Big Five")
-                {
-                    menu.menuArray[3].heading = "Ten-Item Personality Inventory ";
-                    menu.menuArray[3].instruction = "Here are a number of personality traits that may or may not apply to you.";
-                    menu.menuArray[3].instruction += " Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
-                    menu.menuArray[3].instruction += " You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other.";
+                }
+                else if (name == "Big Five") {
+                    menu.data.title = "Ten-Item Personality Inventory ";
+                    menu.data.instructions = "Here are a number of personality traits that may or may not apply to you.";
+                    menu.data.instructions += " Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+                    menu.data.instructions += " You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other.";
 
-                    menu.menuArray[3].choices = [];
-                    menu.menuArray[3].choices.push("Disagree strongly");
-                    menu.menuArray[3].choices.push("Disagree moderately");
-                    menu.menuArray[3].choices.push("Disagree a little");
-                    menu.menuArray[3].choices.push("Neither agree nor disagree");
-                    menu.menuArray[3].choices.push("Agree a little");
-                    menu.menuArray[3].choices.push("Agree moderately");
-                    menu.menuArray[3].choices.push("Agree strongly");
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Disagree strongly");
+                    menu.data.scaleitems.push("Disagree moderately");
+                    menu.data.scaleitems.push("Disagree a little");
+                    menu.data.scaleitems.push("Neither agree nor disagree");
+                    menu.data.scaleitems.push("Agree a little");
+                    menu.data.scaleitems.push("Agree moderately");
+                    menu.data.scaleitems.push("Agree strongly");
 
-                    menu.menuArray[2].questions = [];
-                    menu.menuArray[2].questions.push("I see myself as extraverted, enthusiastic.");
-                    menu.menuArray[2].questions.push("I see myself as critical, quarrelsome.");
-                    menu.menuArray[2].questions.push("I see myself as dependable, selfdisciplined.");
-                    menu.menuArray[2].questions.push("I see myself as Anxious, easily upset.");
-                    menu.menuArray[2].questions.push("I see myself as Open to new experiences, complex.");
-                    menu.menuArray[2].questions.push("I see myself as Reserved, quiet.");
-                    menu.menuArray[2].questions.push("I see myself as Sympathetic, warm.");
-                    menu.menuArray[2].questions.push("I see myself as Disorganized, careless.");
-                    menu.menuArray[2].questions.push("I see myself as Calm, emotionally stable.");
-                    menu.menuArray[2].questions.push("I see myself as Conventional, uncreative.");
+                    menu.data.questions = [];
+                    menu.data.questions.push("I see myself as extraverted, enthusiastic.");
+                    menu.data.questions.push("I see myself as critical, quarrelsome.");
+                    menu.data.questions.push("I see myself as dependable, selfdisciplined.");
+                    menu.data.questions.push("I see myself as Anxious, easily upset.");
+                    menu.data.questions.push("I see myself as Open to new experiences, complex.");
+                    menu.data.questions.push("I see myself as Reserved, quiet.");
+                    menu.data.questions.push("I see myself as Sympathetic, warm.");
+                    menu.data.questions.push("I see myself as Disorganized, careless.");
+                    menu.data.questions.push("I see myself as Calm, emotionally stable.");
+                    menu.data.questions.push("I see myself as Conventional, uncreative.");
 
-                    menu.menuArray[2].questionGrouping = [];
-                    menu.menuArray[2].groups = ["Extraversion", "Agreeableness", "Conscientiousness", "Emotional Stability", "Openness to Experience"];
-                    for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                        menu.menuArray[2].questionGrouping.push(menu.menuArray[2].groups[i%5]);
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Extraversion", "Agreeableness", "Conscientiousness", "Emotional Stability", "Openness to Experience"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[i % 5]);
                     }
-                    menu.menuArray[6].changeChoices();
-                    menu.menuArray[6].templateNames = ["N", "R"];
-                    menu.menuArray[6].templates = [[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]];
-                    menu.menuArray[6].chosenTemplates = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
-                    menu.menuArray[6].groupformulas = ["SUM/2", "SUM/2", "SUM/2", "SUM/2", "SUM/2"];
-                } else if (name == "RIASEC 32")
-                {
-                    menu.menuArray[3].heading = "Activity-based RIASEC interest scale ";
-                    menu.menuArray[3].instruction = "to be added later...";
-                    menu.menuArray[3].instruction += "";
-                    menu.menuArray[3].instruction += "";
+                    menu.data.resetQuestionMappings();
+                    menu.data.mappingTemplatesName = ["N", "R"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]];
+                    menu.data.mappingTemplatesChoosen = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
+                    menu.data.groupsFormula = ["SUM/2", "SUM/2", "SUM/2", "SUM/2", "SUM/2"];
+                }
+                else if (name == "RIASEC 32") {
+                    menu.data.title = "Activity-based RIASEC interest scale ";
+                    menu.data.instructions = "to be added later...";
 
-                    menu.menuArray[3].choices = [];
-                    menu.menuArray[3].choices.push("Strongly dislike");
-                    menu.menuArray[3].choices.push("");
-                    menu.menuArray[3].choices.push("");
-                    menu.menuArray[3].choices.push("Neutral");
-                    menu.menuArray[3].choices.push("");
-                    menu.menuArray[3].choices.push("");
-                    menu.menuArray[3].choices.push("Strongly like");
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Strongly dislike");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("Neutral");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("Strongly like");
 
-                    menu.menuArray[2].questions = [];
-                    menu.menuArray[2].questions.push("Seat patrons at a restaurant");
-                    menu.menuArray[2].questions.push("Oversee a hotel");
-                    menu.menuArray[2].questions.push("Prepare financial reports");
-                    menu.menuArray[2].questions.push("Oversee a data analysis group");
-                    menu.menuArray[2].questions.push("Install electrical wiring");
-                    menu.menuArray[2].questions.push("Categorize different types of wildlife");
-                    menu.menuArray[2].questions.push("Sculpt a statue");
-                    menu.menuArray[2].questions.push("Help children with learning problems");
-                    menu.menuArray[2].questions.push("Interview people for a survey");
-                    menu.menuArray[2].questions.push("Manage an office");
-                    menu.menuArray[2].questions.push("Maintain office financial records");
-                    menu.menuArray[2].questions.push("Manage an electrical power station");
-                    menu.menuArray[2].questions.push("Oversee building construction");
-                    menu.menuArray[2].questions.push("Write a scientific article");
-                    menu.menuArray[2].questions.push("Paint a portrait");
-                    menu.menuArray[2].questions.push("Teach people to dance");
-                    menu.menuArray[2].questions.push("Sell clothes to others");
-                    menu.menuArray[2].questions.push("Oversee sales");
-                    menu.menuArray[2].questions.push("Keep records of stock sales");
-                    menu.menuArray[2].questions.push("Write computer programs for business");
-                    menu.menuArray[2].questions.push("Inspect construction sites for safety");
-                    menu.menuArray[2].questions.push("Teach science");
-                    menu.menuArray[2].questions.push("Write a play");
-                    menu.menuArray[2].questions.push("Teach others cooking");
-                    menu.menuArray[2].questions.push("Escort people through a television studio ");
-                    menu.menuArray[2].questions.push("Organize office records");
-                    menu.menuArray[2].questions.push("Establish a business accounting procedure");
-                    menu.menuArray[2].questions.push("Analyze survey maps");
-                    menu.menuArray[2].questions.push("Assemble precision optical instruments");
-                    menu.menuArray[2].questions.push("Study wildlife");
-                    menu.menuArray[2].questions.push("Draw cartoons");
-                    menu.menuArray[2].questions.push("Supervise children in a nursery");
+                    menu.data.questions = [];
+                    menu.data.questions.push("Seat patrons at a restaurant");
+                    menu.data.questions.push("Oversee a hotel");
+                    menu.data.questions.push("Prepare financial reports");
+                    menu.data.questions.push("Oversee a data analysis group");
+                    menu.data.questions.push("Install electrical wiring");
+                    menu.data.questions.push("Categorize different types of wildlife");
+                    menu.data.questions.push("Sculpt a statue");
+                    menu.data.questions.push("Help children with learning problems");
+                    menu.data.questions.push("Interview people for a survey");
+                    menu.data.questions.push("Manage an office");
+                    menu.data.questions.push("Maintain office financial records");
+                    menu.data.questions.push("Manage an electrical power station");
+                    menu.data.questions.push("Oversee building construction");
+                    menu.data.questions.push("Write a scientific article");
+                    menu.data.questions.push("Paint a portrait");
+                    menu.data.questions.push("Teach people to dance");
+                    menu.data.questions.push("Sell clothes to others");
+                    menu.data.questions.push("Oversee sales");
+                    menu.data.questions.push("Keep records of stock sales");
+                    menu.data.questions.push("Write computer programs for business");
+                    menu.data.questions.push("Inspect construction sites for safety");
+                    menu.data.questions.push("Teach science");
+                    menu.data.questions.push("Write a play");
+                    menu.data.questions.push("Teach others cooking");
+                    menu.data.questions.push("Escort people through a television studio ");
+                    menu.data.questions.push("Organize office records");
+                    menu.data.questions.push("Establish a business accounting procedure");
+                    menu.data.questions.push("Analyze survey maps");
+                    menu.data.questions.push("Assemble precision optical instruments");
+                    menu.data.questions.push("Study wildlife");
+                    menu.data.questions.push("Draw cartoons");
+                    menu.data.questions.push("Supervise children in a nursery");
 
-                    menu.menuArray[2].questionGrouping = [];
-                    menu.menuArray[2].groups = ["Realistic", "Investigative", "Artistic", "Social", "Enterprising", "Conventional"];
-                    for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                        menu.menuArray[2].questionGrouping.push(menu.menuArray[2].groups[i % 6]);
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Realistic", "Investigative", "Artistic", "Social", "Enterprising", "Conventional"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[i % 6]);
                     }
-                    menu.menuArray[6].changeChoices();
+                    menu.data.resetQuestionMappings();
                     //menu.menuArray[6].templateNames = ["N", "R"];
                     //menu.menuArray[6].templates = [[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]];
                     //menu.menuArray[6].chosenTemplates = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
-                    menu.menuArray[6].groupformulas = ["SUM", "SUM", "SUM", "SUM", "SUM","SUM"];
+                    menu.data.groupsFormula = ["SUM", "SUM", "SUM", "SUM", "SUM","SUM"];
 
                 }
 
@@ -474,36 +471,33 @@
 
         //menu object2
         function Menu2() {
-            this.questions = [];
-            this.questionGrouping = [];
-            this.groups = [];
             this.fillHTML = function (div) {
                 var html = '';
                 html += '<div>';
                 //question-table
                 html += "<table id='questiontable'";
                 html += "<tr><th class='questiontableelement'>grouping</th><th class='questiontableelement' colspan='2'>questions</th></tr>";
-                for (var i = 0; i < this.questions.length; i++) {
+                for (var i = 0; i < menu.data.questions.length; i++) {
                     html += "<tr><td class='questiontableelement' >";
                     html += "<select class='groupselect' id='groupSelect-" + i + "'>";
                     html += "<option value='none'>-</option>";
-                    for (var j = 0; j < this.groups.length; j++) {
-                        html += "<option value='" + this.groups[j] + "' ";
-                        if (this.questionGrouping[i] == this.groups[j]) {
+                    for (var j = 0; j < menu.data.groups.length; j++) {
+                        html += "<option value='" + menu.data.groups[j] + "' ";
+                        if (menu.data.questionsGroup[i] == menu.data.groups[j]) {
                             html += "selected";
                         }
-                        html += ">" + this.groups[j] + "</option>";
+                        html += ">" + menu.data.groups[j] + "</option>";
                     }
                     html += "</select>";
-                    html+="</td><td class='questiontableelement'  id='question-" + i + "'>" + this.questions[i] + "<td><td class='questiontableelement'  id='deleteQuestion-" + i + "'>-</td></tr>";
+                    html += "</td><td class='questiontableelement'  id='question-" + i + "'>" + menu.data.questions[i] + "<td><td class='questiontableelement'  id='deleteQuestion-" + i + "'>-</td></tr>";
                 }
                 html += "<tr><td class='questiontableelement'  colspan='3'><input size='80' type='text' value='add new question' id='addNewQuestion'></td></tr>";
                 html += '</table>';
                 //grouping table
                 html += "<table id='grouptable'>";
                 html += "<tr><th class='grouptableelement' colspan='2'>question-groups</th></tr>";
-                for (var i = 0; i < this.groups.length; i++) {
-                    html += "<tr><td class='grouptableelement'>" + this.groups[i] + "</td><td class='grouptableelement' id='deleteGroup-"+i+"'>-</td></tr>";
+                for (var i = 0; i < menu.data.groups.length; i++) {
+                    html += "<tr><td class='grouptableelement'>" + menu.data.groups[i] + "</td><td class='grouptableelement' id='deleteGroup-" + i + "'>-</td></tr>";
                 }
                 html += "<tr><td class='grouptableelement'  colspan='2'><input size='40' type='text' value='add new group' id='addNewGroup'></td></tr>";
                 html += "</table>";
@@ -512,77 +506,68 @@
                 document.getElementById(div).innerHTML = html;
 
                 //choose group for question
-                for (var i = 0; i < this.questions.length; i++) {
+                for (var i = 0; i < menu.data.questions.length; i++) {
                     document.getElementById("groupSelect-" + i).onchange = function () {
                         
                         var pos = parseInt(this.id.substring(12, this.id.length));
                         if (this.value == "none")
-                            menu.getActiveMenu().questionGrouping[pos] = "";
+                            menu.data.questionsGroup[pos] = "";
                         else
-                            menu.getActiveMenu().questionGrouping[pos] = this.value;
+                            menu.data.questionsGroup[pos] = this.value;
                         //fillMenu();
                     }
                 }
 
                 document.getElementById("addNewGroup").onchange = function () {
-                    if (menu.getActiveMenu().groups.indexOf(this.value) == -1) {
-                        menu.getActiveMenu().groups.push(this.value);
-                        menu.menuArray[6].groupformulas.push("SUM");
+                    if (menu.data.groups.indexOf(this.value) == -1) {
+                        menu.data.groups.push(this.value);
+                        menu.data.groupsFormula.push("SUM");
                         fillMenu();
                     }
                 }
 
-                for (var i = 0; i < this.groups.length; i++) {
+                for (var i = 0; i < menu.data.groups.length; i++) {
                     document.getElementById('deleteGroup-' + i).onclick = function () {
                         var pos = this.id.substring(12, this.id.length);
-                        var elementToDelete = menu.getActiveMenu().groups[pos];
-                        var pos = menu.getActiveMenu().questionGrouping.indexOf(elementToDelete);
-                        while (pos != -1) {
-                            menu.getActiveMenu().questionGrouping[pos] = "";
-                            pos = menu.getActiveMenu().questionGrouping.indexOf(elementToDelete);
-                        }
-                        menu.getActiveMenu().groups.splice(pos, 1);
-                        menu.menuArray[6].groupformulas.splice(pos,1);
+                        var elementToDelete = menu.data.groups[pos];
+                        var pos = menu.data.questionsGroup.indexOf(elementToDelete);
+                        menu.data.deleteGroup(pos);
                         fillMenu();
                     }
                 }
 
                 //new question
                 document.getElementById("addNewQuestion").onchange = function () {
-                    menu.getActiveMenu().questions.push(this.value);
-                    menu.getActiveMenu().questionGrouping.push("");
-                    menu.menuArray[6].addEvaluationMapping();
+                    menu.data.addQuestion(this.value);
                     fillMenu();
                 }
 
                 //delete question
-                for (var i = 0; i < this.questions.length; i++) {
+                for (var i = 0; i < menu.data.questions.length; i++) {
                     document.getElementById('deleteQuestion-' + i).onclick = function () {
                         var pos = this.id.substring(15, this.id.length);
-                        menu.getActiveMenu().questions.splice(pos, 1);
-                        menu.menuArray[6].evaluationMapping.splice(pos, 1);
-                        menu.menuArray[6].chosenTemplates.splice(pos,1);
+                        menu.data.deleteQuestion(pos);
                         fillMenu();
                     }
                 }
             };
             this.toXML = function () {
                 var xml = "";
-                for (var i = 0; i < this.questions.length; i++) {
+                for (var i = 0; i < menu.data.questions.length; i++) {
                     xml += "<questionitem>\n";
-                    xml += "<question>" + this.questions[i];
+                    xml += "<question>" + menu.data.questions[i];
                     xml += "</question>\n";
                     xml += "<questionid>" + i;
                     xml += "</questionid>\n";
                     xml += "<answermapping>\n";
-                    for (var j = 0; j < menu.menuArray[6].evaluationMapping[i].length; j++) {
+                    for (var j = 0; j < menu.data.questionsMapping[i].length; j++) {
                         xml += "<entry>\n";
                         xml += "<from>" + j + "</from>\n";
-                        xml += "<to>" + menu.menuArray[6].evaluationMapping[i][j] + "</to>\n";
+                        xml += "<to>" + menu.data.questionsMapping[i][j] + "</to>\n";
                         xml += "</entry>\n";
                     }
                     xml += "</answermapping>\n";
-                    xml += "<group>" + menu.menuArray[2].questionGrouping[i] + "</group>\n";
+                    xml += "<group>" + menu.data.questionsGroup[i] + "</group>\n";
                     xml += "</questionitem>\n";
                 }
                 return (xml);
@@ -591,31 +576,18 @@
 
         //menu object3
         function Menu3() {
-            this.name = "menu 3";
             this.mousedown;
-            this.choices = ["Very Good", " ", "Moderate", " ", "Bad"];
-            this.heading = "Enter heading here ...";
-            this.instruction = "Please fill out the questionnaire.";
-            this.changeInsertChoice = function (whichElement, whereTo) {
-                var cToChange = this.choices[whichElement];
-                this.choices.splice(whichElement, 1);
-                if (whereTo > whichElement) {
-                    whereTo -= 1;
-                }
-                this.choices.splice(whereTo, 0, cToChange);
-                menu.menuArray[6].changeChoices();
-            };
             this.fillHTML = function (div) {
                 var html = "<div>";
                 html += "<p>questionnaire heading:</p>";
-                html += "<input type='text' value='" + this.heading + "' id='qheading' size='100'>";
+                html += "<input type='text' value='" + menu.data.title + "' id='qheading' size='100'>";
                 html += "<p>instruction text:</p>";
-                html += "<textarea cols='80' rows='10' id='qinstruction'>" + this.instruction + "</textarea>";
+                html += "<textarea cols='80' rows='10' id='qinstruction'>" + menu.data.instructions + "</textarea>";
                 html += "<p>rating options:</p>";
                 html += "<div id='scale'>";
                 html += "<div class='spacing' id='spacingAfter-start'></div>";
-                for (var i = 0; i < this.choices.length; i++) {
-                    html += "<div draggable='true' class='scaleitem' id='scaleitem-" + i + "'>" + this.choices[i] + "</div>";
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    html += "<div draggable='true' class='scaleitem' id='scaleitem-" + i + "'>" + menu.data.scaleitems[i] + "</div>";
                     html += "<div class='spacing' id='spacingAfter-" + i + "'></div>";
                 }
                 html += "</div>";
@@ -624,16 +596,22 @@
                 html += "<div>";
                 document.getElementById(div).innerHTML = html;
 
+                document.getElementById('qheading').onchange = function () {
+                    menu.data.title = this.value;
+                };
+
+                document.getElementById('qinstruction').onchange = function () {
+                    menu.data.instructions = this.value;
+                };
+
                 document.getElementById('addChoiceButton').onclick = function () {
-                    menu.getActiveMenu().choices.push("new");
-                    menu.menuArray[6].changeChoices();
+                    menu.data.addScaleitem("new");
                     fillMenu();
                 }
 
                 document.getElementById('deleteChoiceDiv').onmouseup = function () {
                     if (menu.getActiveMenu().mousedown != null) {
-                        menu.getActiveMenu().choices.splice(menu.getActiveMenu().mousedown, 1);
-                        menu.menuArray[6].changeChoices();
+                        menu.data.deleteGroup(menu.getActiveMenu().mousedown);
                         fillMenu();
                     }
                 }
@@ -650,25 +628,22 @@
                     elements[i].ondblclick = function () {
                         var pos = this.id.substring(10, this.id.length);
                         var el = document.getElementById(this.id);
-                        el.innerHTML = "<input id='inputTextChoice-" + pos + "' type='text', value='" + menu.getActiveMenu().choices[pos] + "'>";
+                        el.innerHTML = "<input id='inputTextChoice-" + pos + "' type='text', value='" + menu.data.scaleitems[pos] + "'>";
 
                         document.getElementById('inputTextChoice-' + pos).onchange = function () {
                             var pos = this.id.substring(16, this.id.length);
-                            menu.getActiveMenu().choices[parseInt(pos)] = this.value;
-                            //menu.menuArray[6].changeChoices();
+                            menu.data.scaleitems[parseInt(pos)] = this.value;
                             fillMenu();
                         }
 
                         document.getElementById('inputTextChoice-' + pos).onblur = function () {
                             var pos = this.id.substring(16, this.id.length);
-                            menu.getActiveMenu().choices[parseInt(pos)] = this.value;
-                            //menu.menuArray[6].changeChoices();
+                            menu.data.scaleitems[parseInt(pos)] = this.value;
                             fillMenu();
                         }
 
                         window.onmouseup = function () {
                             fillMenu();
-                            //menu.menuArray[6].changeChoices();
                             window.onmouseup = function () { };
                         };
 
@@ -682,23 +657,21 @@
                         var redraw = true;
                         var up = this.id.substring(13, this.id.length);
                         if (up == "start" && menu.getActiveMenu().mousedown != 0)
-                            menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, 0);
+                            menu.data.shiftScaleitem(menu.getActiveMenu().mousedown, 0);
                         else if (up != "start" && (parseInt(up) + 1) != menu.getActiveMenu().mousedown)
-                            menu.getActiveMenu().changeInsertChoice(menu.getActiveMenu().mousedown, parseInt(up) + 1);
+                            menu.data.shiftScaleitem(menu.getActiveMenu().mousedown, parseInt(up) + 1);
                         else
                             redraw = false;
                         if (redraw)
                             fillMenu();
-
-                        menu.menuArray[6].changeChoices();
                     }
                 }
             };
             this.choicesToXML = function () {
                 var xml = "";
-                for (var i = 0; i < this.choices.length; i++) {
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
                     xml += "<choiceitem>\n";
-                    xml += "<choice>" + this.choices[i];
+                    xml += "<choice>" + menu.data.scaleitems[i];
                     xml += "</choice>\n";
                     xml += "<position>" + i;
                     xml += "</position>\n";
@@ -757,21 +730,21 @@
         function Menu5() {
             this.fillHTML = function (div) {
                 var html = "<div id='m5div'>";
-                html += "<div><h1 id='m5heading'>" + menu.menuArray[3].heading + "</h1>";
-                html += "<p>" + menu.menuArray[3].instruction + "</p></div>";
+                html += "<div><h1 id='m5heading'>" + menu.data.title + "</h1>";
+                html += "<p>" + menu.data.instructions + "</p></div>";
 
                 //choices
                 html += "<div><div class='question'> &nbsp; </div>"
-                for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
-                    html += "<div class='choice'>" + menu.menuArray[3].choices[i] + "</div>";
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    html += "<div class='choice'>" + menu.data.scaleitems[i] + "</div>";
                 }
                 html += "<br></div>";
 
                 //questions
-                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
+                for (var i = 0; i < menu.data.questions.length; i++) {
                     html += "<div class='questionItem'>";
-                    html += "<div class='question'>" + menu.menuArray[2].questions[i] + "</div>";
-                    for (var j = 0; j < menu.menuArray[3].choices.length; j++) {
+                    html += "<div class='question'>" + menu.data.questions[i] + "</div>";
+                    for (var j = 0; j < menu.data.scaleitems.length; j++) {
                         html += "<div class='choice'> <input type='radio' name='" + i + "' value='" + j + "'></div>";
                     }
                     html += "<br></div>";
@@ -785,7 +758,7 @@
                 
                 var elements = document.getElementsByClassName('choice');
                 for (var i = 0; i < elements.length; i++) {
-                    elements[i].style.width = 75 / menu.menuArray[3].choices.length + "%";
+                    elements[i].style.width = 75 / menu.data.scaleitems.length + "%";
                 }
 
             };
@@ -793,48 +766,22 @@
 
         //menu object 6
         function Menu6() {
-            this.templates = [];
-            this.formula = "SUM";
-            this.groupformulas = [];
-            this.templateNames = [];
-            this.chosenTemplates = [];
             this.currentQuestion;
-            this.evaluationMapping=[];
             this.getNumberOfChoices = function () {
-                return(menu.menuArray[3].choices.length);
+                return(menu.data.scaleitems.length);
             };
             this.addEvaluationMapping = function () {
-                mapping = [];
-                for (var i = 0; i < this.getNumberOfChoices(); i++) {
-                    mapping.push(i+1);
-                }
-                this.evaluationMapping.push(mapping);
-                this.chosenTemplates.push("none");
+                menu.data.addQuestionMapping();
             };
             this.addTemplateFromEvaluationMappings = function (name, evaluationMappingPos) {
-                if (this.templateNames.indexOf(name) == -1) {
-                    this.templates.push(this.evaluationMapping[evaluationMappingPos]);
-                    this.templateNames.push(name);
-                }
-            };
-            this.changeChoices = function () {
-                this.evaluationMapping = [];
-                this.chosenTemplates = [];
-                this.groupformulas = [];
-                this.templateNames = [];
-                this.templates = [];
-                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                    this.addEvaluationMapping();
-                    this.chosenTemplates.push('none');
-                    this.groupformulas.push("SUM");
-                }
+                menu.data.saveMappingAsTemplate(name, evaluationMappingPos);
             };
             this.fillHTML = function (div) {
                 var html = "<p>Work on evaluation for  ";
                 html += "<select id='selectevaluation'>";
                 html += "<option value='all'>default/no group</option>";
-                for (var i = 0; i < menu.menuArray[2].groups.length; i++) {
-                    html += "<option value='" + menu.menuArray[2].groups[i] + "'> group \"" + menu.menuArray[2].groups[i] + "\"</option>";
+                for (var i = 0; i < menu.data.groups.length; i++) {
+                    html += "<option value='" + menu.data.groups[i] + "'> group \"" + menu.data.groups[i] + "\"</option>";
                 }
                 html += "</select></p>";
                 html += "<div id='evaluationformuladiv'>";
@@ -857,16 +804,16 @@
                 html += "<div class='evaluationdivs' id='evaluationdivl2.1'>";
                 html += "<table>";
                 html += "<tr><th class='evaluationquestiontableclass' colspan='2'>questions and chosen evaluation template</th></tr>";
-                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                    if ((choiceOfQuestions == 'all' && menu.menuArray[2].questionGrouping[i] =="" ) || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
-                        html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass'>" + menu.menuArray[2].questions[i] + "</td><td>";
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[i] == "") || menu.data.questionsGroup[i] == choiceOfQuestions) {
+                        html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass'>" + menu.data.questions[i] + "</td><td>";
                         html += "<select id='evaluationtemplate-" + i + "'>";
-                        html += "<option value='none'>-</option>";
-                        for (var j = 0; j < this.templateNames.length;j++){
-                            html += "<option value='" + this.templateNames[j] + "' ";
-                            if (this.chosenTemplates[i] == this.templateNames[j])
+                        html += "<option value=''>-</option>";
+                        for (var j = 0; j < menu.data.mappingTemplatesName.length; j++) {
+                            html += "<option value='" + menu.data.mappingTemplatesName[j] + "' ";
+                            if (menu.data.mappingTemplatesChoosen[i] == menu.data.mappingTemplatesName[j])
                                 html += "selected";
-                            html+=">" + this.templateNames[j] + "</option>";
+                            html += ">" + menu.data.mappingTemplatesName[j] + "</option>";
                         }
                         html += "</select>";
                         html+="</td></tr>";
@@ -878,20 +825,20 @@
                 html+="</div>";
                 document.getElementById(div).innerHTML = html;
 
-                for (var j = 0; j < menu.menuArray[2].questions.length; j++) {
-                    if ((choiceOfQuestions == 'all' && menu.menuArray[2].questionGrouping[j] == "") || menu.menuArray[2].questionGrouping[j] == choiceOfQuestions) {
+                for (var j = 0; j < menu.data.questions.length; j++) {
+                    if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[j] == "") || menu.data.questionsGroup[j] == choiceOfQuestions) {
                         document.getElementById("evaluationtemplate-" + j).onchange = function () {
 
                             var pos = parseInt(this.id.substring(19, this.id.length));
-                            menu.getActiveMenu().chosenTemplates[pos] = this.value;
+                            menu.data.mappingTemplatesChoosen[pos] = this.value;
                             menu.getActiveMenu().loadQuestionEvaluationMapping('evaluationdivl2.2');
                         }
                     }
                 }
 
 
-                for (var i = 0; i < menu.menuArray[2].questions.length; i++) {
-                    if ((choiceOfQuestions == 'all' && menu.menuArray[2].questionGrouping[i] == "") || menu.menuArray[2].questionGrouping[i] == choiceOfQuestions) {
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[i] == "") || menu.data.questionsGroup[i] == choiceOfQuestions) {
                         document.getElementById("evaluationquestion-" + i).onclick = function () {
                             var questionPos = this.id.substring(19, this.id.length);
                             menu.getActiveMenu().currentQuestion = questionPos;
@@ -901,47 +848,50 @@
                 }
 
                 if (choiceOfQuestions=="all")
-                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + this.formula + "' id='evaluationformulatext'>";
+                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + menu.data.defaultFormula + "' id='evaluationformulatext'>";
                 else
-                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + this.groupformulas[menu.menuArray[2].groups.indexOf(choiceOfQuestions)] + "' id='evaluationformulatext'>";
+                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + menu.data.groupsFormula[menu.data.groups.indexOf(choiceOfQuestions)] + "' id='evaluationformulatext'>";
 
                 document.getElementById('evaluationformulatext').onchange = function () {
                     if(menu.getActiveMenu().isFormula(this.value)){
                         var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
                         if (choiceOfQuestions == "all") {
-                            menu.getActiveMenu().formula = this.value;
+                            menu.data.defaultFormula = this.value;
                         }
                         else {
-                            var pos = menu.menuArray[2].groups.indexOf(choiceOfQuestions);
-                            menu.getActiveMenu().groupformulas[pos]=this.value;
+                            var pos = menu.data.groups.indexOf(choiceOfQuestions);
+                            menu.data.groupsFormula[pos]=this.value;
                         }
                     } else {
                         var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
                         if (choiceOfQuestions == "all") {
-                            this.value=menu.getActiveMenu().formula;
+                            this.value = menu.data.defaultFormula;
                         }
                         else {
                             var pos = menu.menuArray[2].groups.indexOf(choiceOfQuestions);
-                            this.value = menu.getActiveMenu().groupformulas[pos]
-                            ;
+                            this.value = menu.data.groupsFormula[pos];
                         }
                     }
                 };
 
             };
             this.loadQuestionEvaluationMapping = function (div) {
-                var mapping = this.evaluationMapping[this.currentQuestion];
-                var html = "<h3>" + menu.menuArray[2].questions[this.currentQuestion] + "</h3>";
+                var mapping = menu.data.mappingTemplates[this.currentQuestion];
+                var html = "<h3>" + menu.data.questions[this.currentQuestion] + "</h3>";
                 html += "<table>";
                 html += "<tr><th class='evaluationmappingtableelement' >answer</th><th class='evaluationmappingtableelement'>mapped to</th></tr>"
-                for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
-                    if (this.chosenTemplates[this.currentQuestion] == "none") {
-                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.menuArray[3].choices[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='"+mapping[i]+"'></td></tr>";
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    alert("Z 884 -> none - undefiende ''");
+                    if (menu.data.mappingTemplatesChoosen[this.currentQuestion] == "") {
+                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.data.scaleitems[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='"+mapping[i]+"'></td></tr>";
                     } else {
-                        var templateName = this.chosenTemplates[this.currentQuestion];
-                        var pos = this.templateNames.indexOf(templateName);
-                        var template = this.templates[pos];
-                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.menuArray[3].choices[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='" + template[i] + "'></td></tr>";
+                        var templateName = menu.data.mappingTemplatesChoosen[this.currentQuestion];
+                        var pos = menu.data.mappingTemplatesName.indexOf(templateName);
+                        var template = menu.data.mappingTemplates[pos];
+                        alert(this.currentQuestion);
+                        alert(templateName);
+                        alert(pos);
+                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.data.scaleitems[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='" + template[i] + "'></td></tr>";
                     }
                 }
                 html += "</table>";
@@ -951,21 +901,21 @@
                 document.getElementById(div).innerHTML = html;
 
                 document.getElementById('saveastemplatebutton').onclick = function () {
-                    menu.getActiveMenu().addTemplateFromEvaluationMappings(document.getElementById('saveastemplatename').value, menu.getActiveMenu().currentQuestion);
-                    menu.getActiveMenu().chosenTemplates[menu.getActiveMenu().currentQuestion] = document.getElementById('saveastemplatename').value;
+                    menu.data.saveMappingAsTemplate(menu.getActiveMenu().currentQuestion, document.getElementById('saveastemplatename').value);
+                    menu.data.saveTemplateToQuestion(document.getElementById('saveastemplatename').value, menu.getActiveMenu().currentQuestion);
                     menu.getActiveMenu().loadHTMLtables('evaluationdiv');
                 }
 
-                for (var i = 0; i < menu.menuArray[3].choices.length; i++) {
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
                     document.getElementById("textinputevaluationmapping-" + i).onchange = function () {
                         if(menu.getActiveMenu().isInteger(this.value)){
                             var choice = this.id.substring(27, this.id.length);
-                            if (menu.getActiveMenu().chosenTemplates[menu.getActiveMenu().currentQuestion] == "none")
-                                menu.getActiveMenu().evaluationMapping[menu.getActiveMenu().currentQuestion][choice] = this.value;
+                            if (menu.data.mappingTemplatesChoosen[menu.getActiveMenu().currentQuestion] == "none")
+                                menu.data.mappingTemplates[menu.getActiveMenu().currentQuestion][choice] = this.value;
                             else {
-                                var templateName = menu.getActiveMenu().chosenTemplates[menu.getActiveMenu().currentQuestion];
-                                var pos = menu.getActiveMenu().templateNames.indexOf(templateName);
-                                var template = menu.getActiveMenu().templates[pos];
+                                var templateName = menu.data.mappingTemplatesChoosen[menu.getActiveMenu().currentQuestion];
+                                var pos = menu.data.mappingTemplatesName.indexOf(templateName);
+                                var template = menu.data.mappingTemplates[pos];
                                 template[choice] = this.value;
                             }
                         } else {
@@ -1010,11 +960,11 @@
             this.groupsFormula = [];
             this.defaultFormula = "SUM";
             //choice scale (name) -> array
-            this.scaleitems = [];
+            this.scaleitems = ["Very Good", " ", "Moderate", " ", "Bad"];
             //title -> string
             this.title = "Enter title here...";
             //description -> string
-            this.describtion = "Enter describtion here...";
+            this.instructions = "Enter instructions here...";
             /////////////////////////DATA-helpers
             this.mappingTemplatesName = [];
             this.mappingTemplates = [];
@@ -1022,7 +972,7 @@
             /////////////////////////SETTER
             this.addQuestion = function (questionTxt) {
                 this.questions.push(questionTxt);
-                this.questionsGroup("");
+                this.questionsGroup.push("");
                 this.addQuestionMapping();
                 this.mappingTemplatesChoosen.push("");
             };
@@ -1079,7 +1029,13 @@
                 this.resetQuestionMappings();
             };
             this.saveMappingAsTemplate = function (questionIndex,templateName) {
-                //...
+                if (this.mappingTemplatesName.indexOf(templateName) == -1) {
+                    this.mappingTemplates.push(this.questionsMapping[questionIndex]);
+                    this.mappingTemplatesName.push(templateName);
+                }
+            };
+            this.saveTemplateToQuestion = function (templateName,questionNumber) {
+                this.mappingTemplatesChoosen[questionNumber] = templateName;
             };
         }
 
