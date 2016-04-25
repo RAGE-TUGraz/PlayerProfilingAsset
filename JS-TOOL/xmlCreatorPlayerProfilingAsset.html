@@ -73,6 +73,10 @@
             cursor: pointer;
         }
 
+        .hover:hover{
+            cursor: pointer;
+        }
+
         #addChoiceButton {
             margin: 7px;
         }
@@ -489,7 +493,7 @@
                         html += ">" + menu.data.groups[j] + "</option>";
                     }
                     html += "</select>";
-                    html += "</td><td class='questiontableelement'  id='question-" + i + "'>" + menu.data.questions[i] + "<td><td class='questiontableelement'  id='deleteQuestion-" + i + "'>-</td></tr>";
+                    html += "</td><td class='questiontableelement'  id='question-" + i + "'>" + menu.data.questions[i] + "<td><td class='questiontableelement hover'  id='deleteQuestion-" + i + "'>-</td></tr>";
                 }
                 html += "<tr><td class='questiontableelement'  colspan='3'><input size='80' type='text' value='add new question' id='addNewQuestion'></td></tr>";
                 html += '</table>';
@@ -806,7 +810,7 @@
                 html += "<tr><th class='evaluationquestiontableclass' colspan='2'>questions and chosen evaluation template</th></tr>";
                 for (var i = 0; i < menu.data.questions.length; i++) {
                     if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[i] == "") || menu.data.questionsGroup[i] == choiceOfQuestions) {
-                        html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass'>" + menu.data.questions[i] + "</td><td>";
+                        html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass hover'>" + menu.data.questions[i] + "</td><td>";
                         html += "<select id='evaluationtemplate-" + i + "'>";
                         html += "<option value=''>-</option>";
                         for (var j = 0; j < menu.data.mappingTemplatesName.length; j++) {
@@ -876,21 +880,17 @@
 
             };
             this.loadQuestionEvaluationMapping = function (div) {
-                var mapping = menu.data.mappingTemplates[this.currentQuestion];
+                var mapping = menu.data.questionsMapping[this.currentQuestion];
                 var html = "<h3>" + menu.data.questions[this.currentQuestion] + "</h3>";
                 html += "<table>";
                 html += "<tr><th class='evaluationmappingtableelement' >answer</th><th class='evaluationmappingtableelement'>mapped to</th></tr>"
                 for (var i = 0; i < menu.data.scaleitems.length; i++) {
-                    alert("Z 884 -> none - undefiende ''");
                     if (menu.data.mappingTemplatesChoosen[this.currentQuestion] == "") {
                         html += "<tr><td class='evaluationmappingtableelement'>" + menu.data.scaleitems[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='"+mapping[i]+"'></td></tr>";
                     } else {
                         var templateName = menu.data.mappingTemplatesChoosen[this.currentQuestion];
                         var pos = menu.data.mappingTemplatesName.indexOf(templateName);
                         var template = menu.data.mappingTemplates[pos];
-                        alert(this.currentQuestion);
-                        alert(templateName);
-                        alert(pos);
                         html += "<tr><td class='evaluationmappingtableelement'>" + menu.data.scaleitems[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='" + template[i] + "'></td></tr>";
                     }
                 }
@@ -996,6 +996,7 @@
                 this.mappingTemplatesChoosen = [];
                 for (var i = 0; i < this.questions.length; i++) {
                     this.addQuestionMapping();
+                    this.mappingTemplatesChoosen.push("");
                 }
             };
             this.addGroup = function (groupName) {
