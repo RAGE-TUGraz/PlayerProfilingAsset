@@ -391,63 +391,179 @@
                     menu.data.mappingTemplatesChoosen = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
                     menu.data.groupsFormula = ["SUM/2", "SUM/2", "SUM/2", "SUM/2", "SUM/2"];
                 }
-                else if (name == "RIASEC 32") {
-                    menu.data.title = "Activity-based RIASEC interest scale ";
-                    menu.data.instructions = "to be added later...";
+                else if (name == "RIASEC Interest Types 48") {
+                    menu.data.title = "Your occupational interests";
+                    menu.data.instructions = "Please look at the following list of activities and respond to each by indicating how much you like the activity.";
 
                     menu.data.scaleitems = [];
                     menu.data.scaleitems.push("Strongly dislike");
                     menu.data.scaleitems.push("");
                     menu.data.scaleitems.push("");
-                    menu.data.scaleitems.push("Neutral");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("Strongly like");
+
+                    menu.data.questions = [];
+                    menu.data.questions.push("Test the quality of parts before shipment");
+                    menu.data.questions.push("Lay brick or tile");
+                    menu.data.questions.push("Work on an offshore oil-drilling rig ");
+                    menu.data.questions.push("Assemble electronic parts ");
+                    menu.data.questions.push("Operate a grinding machine in a factory");
+                    menu.data.questions.push("Fix a broken faucet");
+                    menu.data.questions.push("Assemble products in a factory");
+                    menu.data.questions.push("Install flooring in houses");
+                    menu.data.questions.push("Study the structure of the human body");
+                    menu.data.questions.push("Study animal behavior");
+                    menu.data.questions.push("Do research on plants or animals");
+                    menu.data.questions.push("Develop a new medical treatment or procedure");
+                    menu.data.questions.push("Conduct biological research");
+                    menu.data.questions.push("Study whales and other types of marine life");
+                    menu.data.questions.push("Work in a biology lab");
+                    menu.data.questions.push("Make a map of the bottom of an ocean ");
+                    menu.data.questions.push("Conduct a musical choir");
+                    menu.data.questions.push("Direct a play");
+                    menu.data.questions.push("Design artwork for magazines");
+                    menu.data.questions.push("Write a song");
+                    menu.data.questions.push("Write books or plays");
+                    menu.data.questions.push("Play a musical instrument");
+                    menu.data.questions.push("Perform stunts for a movie or television show");
+                    menu.data.questions.push("Design sets for plays");
+                    menu.data.questions.push("Give career guidance to people");
+                    menu.data.questions.push("Do volunteer work at a non-profit organization");
+                    menu.data.questions.push("Help people who have problems with drugs or alcohol");
+                    menu.data.questions.push("Teach an individual an exercise routine");
+                    menu.data.questions.push("Help people with family-related problems");
+                    menu.data.questions.push("Supervise the activities of children at a camp");
+                    menu.data.questions.push("Teach children how to read");
+                    menu.data.questions.push("Help elderly people with their daily activities");
+                    menu.data.questions.push("Sell restaurant franchises to individuals");
+                    menu.data.questions.push("Sell merchandise at a department store");
+                    menu.data.questions.push("Manage the operations of a hotel");
+                    menu.data.questions.push("Operate a beauty salon or barber shop");
+                    menu.data.questions.push("Manage a department within a large company");
+                    menu.data.questions.push("Manage a clothing store");
+                    menu.data.questions.push("Sell houses");
+                    menu.data.questions.push("Run a toy store ");
+                    menu.data.questions.push("Generate the monthly payroll checks for an office");
+                    menu.data.questions.push("Inventory supplies using a hand-held computer");
+                    menu.data.questions.push("Use a computer program to generate customer bills");
+                    menu.data.questions.push("Maintain employee records");
+                    menu.data.questions.push("Compute and record statistical and other numerical data");
+                    menu.data.questions.push("Operate a calculator");
+                    menu.data.questions.push("Handle customers’ bank transactions");
+                    menu.data.questions.push("Keep shipping and receiving records");
+
+
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Realistic", "Investigative", "Artistic", "Social", "Enterprising", "Conventional"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[Math.floor(i / 8)]);
+                    }
+                    menu.data.resetQuestionMappings();
+                    menu.data.mappingTemplatesName = ["N"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5]];
+                    menu.data.mappingTemplatesChoosen = [];
+                    for (var i = 0; i < menu.data.questions.length; i++)
+                        menu.data.mappingTemplatesChoosen.push("N");
+                    menu.data.groupsFormula = ["SUM/8", "SUM/8", "SUM/8", "SUM/8", "SUM/8","SUM/8"];
+
+                }
+                else if (name == "RIASEC Interest Types 24") {
+                    menu.data.title = "Your occupational interests";
+                    menu.data.instructions = "Please look at the following list of activities and respond to each by indicating how much you like the activity.";
+
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Strongly dislike");
+                    menu.data.scaleitems.push("");
                     menu.data.scaleitems.push("");
                     menu.data.scaleitems.push("");
                     menu.data.scaleitems.push("Strongly like");
 
                     menu.data.questions = [];
-                    menu.data.questions.push("Seat patrons at a restaurant");
-                    menu.data.questions.push("Oversee a hotel");
-                    menu.data.questions.push("Prepare financial reports");
-                    menu.data.questions.push("Oversee a data analysis group");
-                    menu.data.questions.push("Install electrical wiring");
-                    menu.data.questions.push("Categorize different types of wildlife");
-                    menu.data.questions.push("Sculpt a statue");
-                    menu.data.questions.push("Help children with learning problems");
-                    menu.data.questions.push("Interview people for a survey");
-                    menu.data.questions.push("Manage an office");
-                    menu.data.questions.push("Maintain office financial records");
-                    menu.data.questions.push("Manage an electrical power station");
-                    menu.data.questions.push("Oversee building construction");
-                    menu.data.questions.push("Write a scientific article");
-                    menu.data.questions.push("Paint a portrait");
-                    menu.data.questions.push("Teach people to dance");
-                    menu.data.questions.push("Sell clothes to others");
-                    menu.data.questions.push("Oversee sales");
-                    menu.data.questions.push("Keep records of stock sales");
-                    menu.data.questions.push("Write computer programs for business");
-                    menu.data.questions.push("Inspect construction sites for safety");
-                    menu.data.questions.push("Teach science");
-                    menu.data.questions.push("Write a play");
-                    menu.data.questions.push("Teach others cooking");
-                    menu.data.questions.push("Escort people through a television studio ");
-                    menu.data.questions.push("Organize office records");
-                    menu.data.questions.push("Establish a business accounting procedure");
-                    menu.data.questions.push("Analyze survey maps");
-                    menu.data.questions.push("Assemble precision optical instruments");
-                    menu.data.questions.push("Study wildlife");
-                    menu.data.questions.push("Draw cartoons");
-                    menu.data.questions.push("Supervise children in a nursery");
+                    menu.data.questions.push("Test the quality of parts before shipment");
+                    menu.data.questions.push("Lay brick or tile");
+                    menu.data.questions.push("Fix a broken faucet");
+                    menu.data.questions.push("Assemble products in a factory");
+
+                    menu.data.questions.push("Study the structure of the human body");
+                    menu.data.questions.push("Do research on plants or animals");
+                    menu.data.questions.push("Conduct biological research");
+                    menu.data.questions.push("Make a map of the bottom of an ocean ");
+
+                    menu.data.questions.push("Design artwork for magazines");
+                    menu.data.questions.push("Write books or plays");
+                    menu.data.questions.push("Play a musical instrument");
+                    menu.data.questions.push("Perform stunts for a movie or television show");
+
+                    menu.data.questions.push("Give career guidance to people");
+                    menu.data.questions.push("Do volunteer work at a non-profit organization");
+                    menu.data.questions.push("Teach an individual an exercise routine");
+                    menu.data.questions.push("Help elderly people with their daily activities");
+
+                    menu.data.questions.push("Sell restaurant franchises to individuals");
+                    menu.data.questions.push("Sell merchandise at a department store");
+                    menu.data.questions.push("Manage a department within a large company");
+                    menu.data.questions.push("Sell houses");
+
+                    menu.data.questions.push("Use a computer program to generate customer bills");
+                    menu.data.questions.push("Compute and record statistical and other numerical data");
+                    menu.data.questions.push("Handle customers’ bank transactions");
+                    menu.data.questions.push("Keep shipping and receiving records");
+
 
                     menu.data.questionsGroup = [];
                     menu.data.groups = ["Realistic", "Investigative", "Artistic", "Social", "Enterprising", "Conventional"];
                     for (var i = 0; i < menu.data.questions.length; i++) {
-                        menu.data.questionsGroup.push(menu.data.groups[i % 6]);
+                        menu.data.questionsGroup.push(menu.data.groups[Math.floor(i / 4) ]);
                     }
                     menu.data.resetQuestionMappings();
-                    //menu.menuArray[6].templateNames = ["N", "R"];
-                    //menu.menuArray[6].templates = [[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]];
-                    //menu.menuArray[6].chosenTemplates = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
-                    menu.data.groupsFormula = ["SUM", "SUM", "SUM", "SUM", "SUM","SUM"];
+                    menu.data.mappingTemplatesName = ["N"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5]];
+                    menu.data.mappingTemplatesChoosen = [];
+                    for (var i = 0; i < menu.data.questions.length; i++)
+                        menu.data.mappingTemplatesChoosen.push("N");
+                    menu.data.groupsFormula = ["SUM/4", "SUM/4", "SUM/4", "SUM/4", "SUM/4", "SUM/4"];
+
+                }
+                else if (name == "Achievement Goal Orientation") {
+                    menu.data.title = "Achievement Goal Orientation";
+                    menu.data.instructions = "Please choose an answer for each statement to indicate the extent to which the statement is true for you.";
+
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Not at all true for me");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("Very true for me");
+
+                    menu.data.questions = [];
+                    menu.data.questions.push("It is important for me to do better than other students.");
+                    menu.data.questions.push("It is important for me to do well compared to others in this class.");
+                    menu.data.questions.push("My goal in this class is to get a better grade than most of the other students.");
+                    menu.data.questions.push("I worry that I may not learn all that I possibly could in this class.");
+                    menu.data.questions.push("Sometimes I’m afraid that I may not understand the content of this class as thoroughly as I’d like.");
+                    menu.data.questions.push("I am often concerned that I may not learn all that there is to learn in this class.");
+                    menu.data.questions.push("I want to learn as much as possible from this class.");
+                    menu.data.questions.push("It is important for me to understand the content of this course as thoroughly as possible.");
+                    menu.data.questions.push("I desire to completely master the material presented in this class.");
+                    menu.data.questions.push("I just want to avoid doing poorly in this class.");
+                    menu.data.questions.push("My goal in this class is to avoid performing poorly.");
+                    menu.data.questions.push("My fear of performing poorly in this class is often what motivates me.");
+
+
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Performance approach", "Mastery avoidance", "Mastery approach", "Performance avoidance"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[Math.floor(i / 3)]);
+                    }
+                    menu.data.resetQuestionMappings();
+                    menu.data.mappingTemplatesName = ["N"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5, 6, 7]];
+                    menu.data.mappingTemplatesChoosen = [];
+                    for (var i = 0; i < menu.data.questions.length; i++)
+                        menu.data.mappingTemplatesChoosen.push("N");
+                    menu.data.groupsFormula = ["SUM/3", "SUM/3", "SUM/3", "SUM/3", "SUM/3", "SUM/3"];
 
                 }
 
@@ -467,8 +583,18 @@
                 this.structureDescribtions.push(desc);
 
                 //questionnaire C
-                this.structures.push("RIASEC 32");
-                var desc = "Questionnaire for Gathering RIASEC Profiles - Personal Globe Inventory Short (Tracey, 2010) – 32 items ";
+                this.structures.push("RIASEC Interest Types 48");
+                var desc = "Brief activity-based RIASEC interest scale (based on Interest Profiler) (Armstrong, Allison, & Rounds, 2008) – 48 items";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire D
+                this.structures.push("RIASEC Interest Types 24");
+                var desc = "Short version of the Brief activity-based RIASEC interest scale (based on Interest Profiler) (Armstrong, Allison, & Rounds, 2008) – 24 items";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire E
+                this.structures.push("Achievement Goal Orientation");
+                var desc = "Achievement Goal Questionnaire (Elliot & McGregor, 2001)";
                 this.structureDescribtions.push(desc);
             };
         }
