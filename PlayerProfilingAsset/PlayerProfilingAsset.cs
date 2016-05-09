@@ -122,15 +122,35 @@ namespace PlayerProfilingAssetNameSpace
         } 
 
         /// <summary>
-        /// Method for requesting questionnaire results by identifier string.
+        /// Method for requesting questionnaire results.
         /// </summary>
-        /// <param name="text"> Quantity for which the questionnaire should return a value.</param>
-        /// <returns> Value for the requested quantity.</returns>
-        public double getValue(string text)
+        /// 
+        /// <returns> Value for the questionnaire per group.</returns>
+        public Dictionary<String, Double> getResults()
         {
-            return 0;
+            return PlayerProfilerHandler.Instance.questionnaireResults;
         }
 
+        /// <summary>
+        /// Method for requestiong the questionnaire data.
+        /// </summary>
+        /// <returns> A string containing the questionnaire xml</returns>
+        public String getQuestionnaireXML()
+        {
+            return PlayerProfilerHandler.Instance.getQuestionnaireData().toXmlString();
+        }
+
+        /// <summary>
+        /// Method for returning the chosen answers of the questionnaire to the asset.
+        /// </summary>
+        /// 
+        /// <param name="answers">Dictionary containing the questionnaire questions as keys and the chosen answer as value.</param>
+        /// <returns> True if the supplied data is accurate, false otherwise.</returns>
+        public Boolean setQuestionnaireAnswers(Dictionary<String, int> answers)
+        {
+            return PlayerProfilerHandler.Instance.getQuestionnaireData().checkAnswerData(answers);
+        }
+        
         /// <summary>
         /// Method returning the Asset settings.
         /// </summary>

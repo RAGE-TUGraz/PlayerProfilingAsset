@@ -44,6 +44,8 @@ namespace TestPlayerProfiler
     {
         static void Main(string[] args)
         {
+
+
             AssetManager am = AssetManager.Instance;
             am.Bridge = new Bridge();
 
@@ -54,101 +56,100 @@ namespace TestPlayerProfiler
             Console.ReadLine();
 
         }
-    }
 
-    class Bridge : IBridge, ILog, IDataStorage, IWebServiceRequest
-    {
-        #region IDataStorage
-
-        public bool Delete(string fileId)
+        class Bridge : IBridge, ILog, IDataStorage, IWebServiceRequest
         {
-            throw new NotImplementedException();
-        }
+            #region IDataStorage
 
-        public bool Exists(string fileId)
-        {
-            string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
-            return (File.Exists(filePath));
-        }
-
-        public string[] Files()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Load(string fileId)
-        {
-            string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
-            try
-            {   // Open the text file using a stream reader.
-                using (StreamReader sr = new StreamReader(filePath))
-                {
-                    // Read the stream to a string, and write the string to the console.
-                    String line = sr.ReadToEnd();
-                    return (line);
-                }
-            }
-            catch (Exception e)
+            public bool Delete(string fileId)
             {
-                Console.WriteLine("Error by loading the DM!");
+                throw new NotImplementedException();
             }
 
-            return (null);
-        }
-
-        public void Save(string fileId, string fileData)
-        {
-            string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
-            using (StreamWriter file = new StreamWriter(filePath))
+            public bool Exists(string fileId)
             {
-                file.Write(fileData);
+                string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
+                return (File.Exists(filePath));
             }
-        }
 
-        #endregion IDataStorage
-        #region ILog
-
-        public void Log(Severity severity, string msg)
-        {
-            Console.WriteLine("BRIDGE:  " + msg);
-        }
-
-        #endregion ILog
-        #region IWebServiceRequest
-
-        public void WebServiceRequest(string method, Uri uri, Dictionary<string, string> headers, string body, IWebServiceResponse response)
-        {
-            string url = uri.AbsoluteUri;
-
-            if (string.Equals(method, "get", StringComparison.CurrentCultureIgnoreCase))
+            public string[] Files()
             {
+                throw new NotImplementedException();
+            }
+
+            public string Load(string fileId)
+            {
+                string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
                 try
-                {
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-                    HttpWebResponse webResponse = (HttpWebResponse)request.GetResponse();
-                    Stream resStream = webResponse.GetResponseStream();
-
-                    Dictionary<string, string> responseHeader = new Dictionary<string, string>();
-                    foreach (string key in webResponse.Headers.AllKeys)
-                        responseHeader.Add(key, webResponse.Headers[key]);
-
-                    StreamReader reader = new StreamReader(resStream);
-                    string dm = reader.ReadToEnd();
-
-                    response.Success(url, (int)webResponse.StatusCode, responseHeader, dm);
+                {   // Open the text file using a stream reader.
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        // Read the stream to a string, and write the string to the console.
+                        String line = sr.ReadToEnd();
+                        return (line);
+                    }
                 }
                 catch (Exception e)
                 {
-                    response.Error(url, e.Message);
+                    Console.WriteLine("Error by loading the DM!");
+                }
+
+                return (null);
+            }
+
+            public void Save(string fileId, string fileData)
+            {
+                string filePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\" + fileId;
+                using (StreamWriter file = new StreamWriter(filePath))
+                {
+                    file.Write(fileData);
                 }
             }
-            else
+
+            #endregion IDataStorage
+            #region ILog
+
+            public void Log(Severity severity, string msg)
             {
-                response.Error(url, "Requested method " + method + " not implemented!");
+                Console.WriteLine("BRIDGE:  " + msg);
             }
+
+            #endregion ILog
+            #region IWebServiceRequest
+
+            public void WebServiceRequest(string method, Uri uri, Dictionary<string, string> headers, string body, IWebServiceResponse response)
+            {
+                string url = uri.AbsoluteUri;
+
+                if (string.Equals(method, "get", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    try
+                    {
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                        HttpWebResponse webResponse = (HttpWebResponse)request.GetResponse();
+                        Stream resStream = webResponse.GetResponseStream();
+
+                        Dictionary<string, string> responseHeader = new Dictionary<string, string>();
+                        foreach (string key in webResponse.Headers.AllKeys)
+                            responseHeader.Add(key, webResponse.Headers[key]);
+
+                        StreamReader reader = new StreamReader(resStream);
+                        string dm = reader.ReadToEnd();
+
+                        response.Success(url, (int)webResponse.StatusCode, responseHeader, dm);
+                    }
+                    catch (Exception e)
+                    {
+                        response.Error(url, e.Message);
+                    }
+                }
+                else
+                {
+                    response.Error(url, "Requested method " + method + " not implemented!");
+                }
+            }
+
+            #endregion IWebServiceRequest
         }
-
-        #endregion IWebServiceRequest
     }
-
 }

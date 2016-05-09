@@ -59,6 +59,11 @@ namespace PlayerProfilingAssetNameSpace
         /// </summary>
         private static PlayerProfilerHandler instance;
 
+        /// <summary>
+        /// Dictionary holding group-evaluation results after the evaluation of the questionnaire
+        /// </summary>
+        internal Dictionary<string,double> questionnaireResults = null;
+
         #endregion Fields
         #region Constructors
 
@@ -218,6 +223,8 @@ namespace PlayerProfilingAssetNameSpace
             performTest1();
             performTest2();
             performTest3();
+            performTest4();
+            performTest5();
             loggingPPA("Tests PlayerProfilingAsset - done!");
             loggingPPA("*****************************************************************");
         }
@@ -271,6 +278,41 @@ namespace PlayerProfilingAssetNameSpace
             }
 
             loggingPPA("End test 3");
+        }
+
+        /// <summary>
+        /// Method requesting and printing out the questionnaire xml.
+        /// </summary>
+        internal void performTest4()
+        {
+            loggingPPA("Start Test 4");
+            String xml = getPPA().getQuestionnaireXML();
+            loggingPPA("XML:\n"+xml);
+            loggingPPA("End test 4");
+        }
+
+        /// <summary>
+        /// Method requesting the questionnaire xml and returning the results locally.
+        /// </summary>
+        internal void performTest5()
+        {
+            loggingPPA("Start Test 5");
+            String xml = getPPA().getQuestionnaireXML();
+
+            QuestionnaireData qd = getQuestionnaireDataFromXmlString(xml);
+            int numberOfChoices = qd.choiceList.choiceItemList.Count;
+            Dictionary<string, int> answers = new Dictionary<string, int>();
+            foreach(QuestionItem qi in qd.questionList.questionItemList)
+            {
+                answers.Add(qi.question, numberOfChoices - 2);
+            }
+            getPPA().setQuestionnaireAnswers(answers);
+
+            Dictionary<string, double> results = getPPA().getResults();
+            foreach (String groupName in results.Keys)
+                loggingPPA(groupName+": "+ results[groupName]);
+
+            loggingPPA("End test 5");
         }
 
         /// <summary>
@@ -392,6 +434,85 @@ namespace PlayerProfilingAssetNameSpace
 
         #endregion Constructors
         #region Methods
+
+        /// <summary>
+        /// Method for checking if supplied answers have the correct format and to calculate the indicators.
+        /// </summary>
+        /// <param name="answers"> Dictionary containing answers and questions of the questionnaire.</param>
+        /// <returns> True, if the data has the correct format - false otherwise.</returns>
+        internal Boolean checkAnswerData(Dictionary<String, int> answers)
+        {
+            if(this.questionList.questionItemList.Count != answers.Count)
+                return false;
+
+            foreach(QuestionItem qi in questionList.questionItemList)
+                if (!answers.ContainsKey(qi.question))
+                    return false;
+
+            //answer number ranging from 0 to maxIntRange
+            int maxIntRange = 0;
+            foreach (ChoiceItem ci in this.choiceList.choiceItemList)
+                if (ci.position > maxIntRange)
+                    maxIntRange = ci.position;
+
+            //check if values are in the correct range
+            foreach (QuestionItem qi in questionList.questionItemList)
+                if (answers[qi.question] < 0 || answers[qi.question] > maxIntRange)
+                    return false;
+
+            //do calculation
+            Dictionary<String, int> groupSums = new Dictionary<string, int>();
+            Dictionary<String, String> groupFormulas = new Dictionary<string, string>();
+            Dictionary<String, double> groupResult = new Dictionary<string, Double>();
+            foreach (QuestionnaireGroup group in this.groupList.groups)
+            {
+                groupSums.Add(group.name, 0);
+                groupFormulas.Add(group.name,group.formula);
+            }
+
+            /*
+            foreach (String str in answers.Keys)
+                groupSums[str] += getQuestionMappingFromAnswerId(str,answers[str]);
+            */
+
+            foreach (QuestionItem qi in this.questionList.questionItemList)
+                groupSums[qi.group] += getQuestionMappingFromAnswerId(qi.question,answers[qi.question]);
+
+            foreach(QuestionnaireGroup group in this.groupList.groups)
+            {
+                groupFormulas[group.name] = groupFormulas[group.name].Replace("SUM", groupSums[group.name].ToString());
+                groupResult.Add(group.name, MathInterpreter.eval(groupFormulas[group.name]));
+            }
+
+
+            PlayerProfilerHandler.Instance.questionnaireResults = groupResult;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Method for getting the mapped value of a answer to a specific question
+        /// </summary>
+        /// 
+        /// <param name="question">Specific question</param>
+        /// <param name="answerId">Specific answer</param>
+        /// <returns> Mapped value.</returns>
+        internal int getQuestionMappingFromAnswerId(String question, int answerId)
+        {
+            AnswerMappingList relevantAnswerMappingList = null;
+            foreach (QuestionItem qi in this.questionList.questionItemList)
+                if (qi.question == question)
+                {
+                    relevantAnswerMappingList = qi.answerMappingList;
+                    break;
+                }
+
+            foreach (AnswerMap am in relevantAnswerMappingList.answerMap)
+                if (am.answerPosition == answerId)
+                    return am.mappedValue;
+            
+            return 0;
+        }
 
         /// <summary>
         /// Method for converting a motivation model to a xml string.
@@ -666,8 +787,7 @@ namespace PlayerProfilingAssetNameSpace
             script += "</script>\n";
             return (script);
         }
-
-
+        
         public String getFormulaByGroupName(String groupName)
         {
             foreach (QuestionnaireGroup qg in this.groupList.groups)
@@ -1007,4 +1127,168 @@ namespace PlayerProfilingAssetNameSpace
     }
 
     #endregion SerilizationAnswer
+
+    /// <summary>
+    /// Class for doing simple math calculations
+    /// </summary>
+    public static class MathInterpreter
+    {
+        /// <summary>
+        /// Evaluates a given Formula containing the operators +,*,-,/,(,)
+        /// </summary>
+        /// 
+        /// <param name="str"> Formula to interpret </param>
+        public static double eval(String str)
+        {
+            if (!checkInput(str))
+                throw new Exception("Input corrupted!");
+
+
+            if (isPlainNumber(str))
+            {
+                Double result;
+                if (!Double.TryParse(str, out result))
+                    throw new Exception("Input corrupted!");
+                return (result);
+            }
+
+            while (str.Contains('('))
+            {
+                str = resolveBrackets(str);
+            }
+
+            return solveOperation(str);
+        }
+
+        /// <summary>
+        /// Method for resolving one pair of brackets within a formula-string
+        /// </summary>
+        /// <param name="str"> formula with brackets</param>
+        /// <returns> String with expression instead of one pair of brackets</returns>
+        public static String resolveBrackets(String str)
+        {
+            int open = -2;
+            int nextOpen = str.IndexOf('(');
+            int close = nextOpen + 1;
+            while (nextOpen < close && nextOpen != open)
+            {
+                open = nextOpen;
+                close = 1 + open + str.Substring(open + 1).IndexOf(')');
+                nextOpen = 1 + open + str.Substring(open + 1).IndexOf('(');
+            }
+            String inBrackets = str.Substring(open + 1, close - open - 1);
+            String returnValue = str.Substring(0, open) + solveOperation(inBrackets) + str.Substring(close + 1);
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Method for checking the input digits/operators
+        /// </summary>
+        /// <param name="str"> formula to evaluate</param>
+        /// <returns> true if the string contains valid characters, false otherwise</returns>
+        public static Boolean checkInput(String str)
+        {
+            String validOperators = "+-*/:().";
+            String digits = "0123456789";
+
+            for (int i = 0; i < str.Length; i++)
+                if (!validOperators.Contains(str[i]) && !digits.Contains(str[i]))
+                    return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Method for identifying strings, which can be casted to numbers
+        /// </summary>
+        /// <param name="str"> formula to evaluate</param>
+        /// <returns></returns>
+        public static Boolean isPlainNumber(String str)
+        {
+            String digits = "0123456789";
+            if (str.Length == 0 || (str.Length == 1 && str[0] == '-'))
+                return false;
+            if (str[0] == '-')
+                str = str.Substring(1, str.Length - 1);
+            if (str.Contains('-'))
+                return false;
+            if (str.Contains('.'))
+            {
+                String str1 = str.Substring(0, str.IndexOf('.'));
+                String str2 = str.Substring(str.IndexOf('.') + 1, str.Length - str.IndexOf('.') - 1);
+                str = str1 + str2;
+            }
+            for (int i = 0; i < str.Length; i++)
+                if (!digits.Contains(str[i]))
+                    return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Method for solving an arithmetic formula containing +,-,*,/
+        /// </summary>
+        /// <param name="str">formula to solve</param>
+        /// <returns>result of this formula</returns>
+        public static Double solveOperation(String str)
+        {
+            str = str.Replace("-+", "-");
+            //Console.WriteLine("::"+str);
+            if (isPlainNumber(str))
+            {
+                Double result;
+                if (!Double.TryParse(str, out result))
+                    throw new Exception("Input corrupted!");
+                return (result);
+            }
+
+            if (str.Contains('+'))
+            {
+                String str1 = str.Substring(0, str.IndexOf('+'));
+                String str2 = str.Substring(str.IndexOf('+') + 1, str.Length - str.IndexOf('+') - 1);
+                if (str1[str1.Length - 1] == '*' || str1[str1.Length - 1] == '/')
+                    goto ContinuePlus;
+                if (str1.Length == 0 || str2.Length == 0)
+                    throw new Exception("Input corrupted!");
+                return (solveOperation(str1) + solveOperation(str2));
+            }
+
+            ContinuePlus:
+
+            if (str.Contains('-'))
+            {
+                String str1 = str.Substring(0, str.IndexOf('-'));
+                String str2 = str.Substring(str.IndexOf('-') + 1, str.Length - str.IndexOf('-') - 1);
+                if (str1.Length > 0 && (str1[str1.Length - 1] == '*' || str1[str1.Length - 1] == '/'))
+                    goto ContinueMinus;
+                if (str2.Length == 0)
+                    throw new Exception("Input corrupted!");
+                if (str1.Length == 0)
+                    return (-solveOperation(str2));
+                return (solveOperation(str1) - solveOperation(str2));
+            }
+
+            ContinueMinus:
+
+            if (str.Contains('*'))
+            {
+                String str1 = str.Substring(0, str.IndexOf('*'));
+                String str2 = str.Substring(str.IndexOf('*') + 1, str.Length - str.IndexOf('*') - 1);
+                if (str1.Length == 0 || str2.Length == 0)
+                    throw new Exception("Input corrupted!");
+                return (solveOperation(str1) * solveOperation(str2));
+            }
+
+            if (str.Contains('/'))
+            {
+                String str1 = str.Substring(0, str.IndexOf('/'));
+                String str2 = str.Substring(str.IndexOf('/') + 1, str.Length - str.IndexOf('/') - 1);
+                if (str1.Length == 0 || str2.Length == 0)
+                    throw new Exception("Input corrupted!");
+                return (solveOperation(str1) / solveOperation(str2));
+            }
+
+            return 0.0;
+        }
+    }
 }
