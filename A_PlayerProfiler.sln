@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerProfiler", "PlayerProfiler\PlayerProfiler.csproj", "{4D1F98C7-6827-4F99-B676-F5C9AF632609}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerProfilingAsset", "PlayerProfilingAsset\PlayerProfilingAsset.csproj", "{4D1F98C7-6827-4F99-B676-F5C9AF632609}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPlayerProfiler", "TestPlayerProfiler\TestPlayerProfiler.csproj", "{9E5AC8C4-EC74-4DE8-B12C-AB170BE99D56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerProfiler_Portable", "PlayerProfiler_Portable\PlayerProfiler_Portable.csproj", "{A441FEE9-482A-418E-B046-795B2233B910}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerProfilingAsset_Portable", "PlayerProfilingAsset_Portable\PlayerProfilingAsset_Portable.csproj", "{A441FEE9-482A-418E-B046-795B2233B910}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

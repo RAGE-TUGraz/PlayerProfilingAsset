@@ -1,0 +1,1193 @@
+﻿<!DOCTYPE html>
+<!--
+  Copyright 2016 TUGraz, http://www.tugraz.at/
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  This project has received funding from the European Union’s Horizon
+  2020 research and innovation programme under grant agreement No 644187.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  This software has been created in the context of the EU-funded RAGE project.
+  Realising and Applied Gaming Eco-System (RAGE), Grant agreement No 644187,
+  http://rageproject.eu/
+  Development was done by Cognitive Science Section (CSS)
+  at Knowledge Technologies Institute (KTI)at Graz University of Technology (TUGraz).
+  http://kti.tugraz.at/css/
+  Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
+  Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
+-->
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>Player Profiling Asset - XML creator</title>
+
+    <style type='text/css'>
+        /* general style information */
+        h1 {
+            color: gray;
+        }
+
+        div#body {
+            display: block;
+        }
+
+        div.menu {
+            background-color: lightblue;
+            border-style: solid;
+            margin-bottom: 5px;
+            padding: 5px;
+            display: inline-block;
+        }
+
+        div#dataInputField {
+            background-color: lightgreen;
+            display: block;
+            border-style: solid;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        div.scaleitem {
+            min-width: 50px;
+            border: solid;
+            display: inline-block;
+            padding: 4px;
+        }
+
+        div.spacing {
+            width: 15px;
+            display: inline-block;
+            padding: 10px 0px;
+        }
+
+        div.scaleitem:hover {
+            cursor: pointer;
+        }
+
+        .hover:hover{
+            cursor: pointer;
+        }
+
+        #addChoiceButton {
+            margin: 7px;
+        }
+
+        #deleteChoiceDiv {
+            display: inline-block;
+        }
+
+        .m1div {
+            vertical-align: top;
+            display: inline-block;
+            width: 48%;
+            padding-left: 2%;
+        }
+
+        .m1loadingdiv {
+            display: inline-block;
+            padding-right: 10px;
+        }
+
+        div.question {
+            display: inline-block;
+            width: 25%;
+        }
+
+        div.choice {
+            display: inline-block;
+            width: 15%;
+        }
+
+        div.questionItem {
+        }
+
+        div.submit {
+            text-align: center;
+        }
+
+        #m5heading {
+            color: black;
+            text-align: center;
+        }
+
+        #m5div {
+            background-color: white;
+            border: solid;
+            padding: 10px;
+        }
+
+        .questiontableelement{
+            border: solid;
+            background-color:white;
+            padding: 5px;
+        }
+
+        #questiontable{
+            table-layout:fixed;
+        }
+
+         .evaluationquestiontableclass{
+            border: solid;
+            background-color:white;
+            padding: 5px;
+         }
+
+         .evaluationdivs{
+             vertical-align: top;
+             display:inline-block;
+             padding: 10px;
+         }
+
+         .evaluationmappingtableelement{
+            border: solid;
+            background-color:white;
+            padding: 5px;
+         }
+
+        /*  menu - specific style information */
+    </style>
+
+    <script>
+        //Method for storing text via the download functionality
+        function saveTextAsFile(textToWrite) {
+
+
+
+            //var textToWrite = document.getElementById("inputTextToSave").value;
+            var textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
+            var fileNameToSaveAs = "QuestionnaireData.xml"
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = "Download File";
+            if (window.webkitURL != null) {
+                // Chrome allows the link to be clicked
+                // without actually adding it to the DOM.
+                downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+            }
+            else {
+                // Firefox requires the link to be added to the DOM
+                // before it can be clicked.
+                downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                //downloadLink.onclick = destroyClickedElement;
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+            }
+
+            downloadLink.click();
+        }
+
+        //Method for creating the XML-string out of the information gathered from the user
+        function createXML() {
+            return menu.toXML();
+        }
+
+        //Method initiating the download
+        function startDownload() {
+            xml = createXML();
+            saveTextAsFile(xml);
+        }
+
+        //Method creating the data input for menu
+        function fillMenu() {
+            //recolor all menu points
+            var menuPoints = document.getElementsByClassName("menu")
+            for (var i = 0; i < menuPoints.length; i++) {
+                menuPoints[i].style.backgroundColor = "lightblue";
+            }
+            document.getElementById("m" + menu.activeMenu).style.backgroundColor = "lightgreen";
+
+            //store other stuff already inputed
+
+            //create content for the div
+            menu.fillHTML("dataInputField");
+        }
+
+        //perform actions when document is loaded.
+        function performStartupAction() {
+            menu = new Menu();
+            fillMenu();
+            var menuPoints = document.getElementsByClassName("menu")
+            for (var i = 0; i < menuPoints.length; i++) {
+                menuPoints[i].addEventListener("click", function () {
+                    menu.activeMenu = this.id[1];
+                    fillMenu();
+                });
+            }
+        }
+
+        //menu object - holding all information regarding all menues
+
+        function Menu() {
+            this.activeMenu = 1;
+            this.data = new Data();
+            this.menuArray = [];
+            this.menuArray[1] = new Menu1();
+            this.menuArray[2] = new Menu2();
+            this.menuArray[3] = new Menu3();
+            this.menuArray[4] = new Menu4();
+            this.menuArray[5] = new Menu5();
+            this.menuArray[6] = new Menu6();
+            this.getActiveMenu = function () {
+                return (this.menuArray[this.activeMenu])
+            }
+            this.fillHTML = function (div) {
+                this.getActiveMenu().fillHTML(div);
+            }
+            this.toXML = function () {
+                var xml = "<questionnairedata>\n";
+                xml += "<questionitemlist>\n";
+                xml += this.menuArray[2].toXML();
+                xml += "</questionitemlist>\n";
+                xml += "<choiceitemlist>\n";
+                xml += this.menuArray[3].choicesToXML();
+                xml += "</choiceitemlist>\n";
+                xml += "<title>" + this.data.title + "</title>\n";
+                xml += "<instructions>" + this.data.instructions + "</instructions>\n";
+                xml += "<groups>\n";
+                for (var i = 0; i < this.data.groups.length; i++) {
+                    xml += "<group>\n";
+                    xml += "<name>" + this.data.groups[i] + "</name>\n";
+                    xml += "<formula>" + this.data.groupsFormula[i] + "</formula>\n";
+                    xml += "</group>\n";
+                }
+                xml += "</groups>\n";
+                xml += "<defaultgroupformula>"+this.data.defaultFormula+"</defaultgroupformula>\n"
+                xml += "</questionnairedata>\n";
+                return (xml);
+            };
+
+        }
+
+        //menu object1
+        function Menu1() {
+            this.structures = [];
+            this.structureDescribtions = [];
+            this.fillHTML = function (div) {
+                this.settingStructuresToLoad();
+                var html = "<div class='m1div' id='m1text'></div>";
+                html += "<div class='m1div' id='m1load'></div>";
+                document.getElementById(div).innerHTML = html;
+                this.setTextHTML('m1text');
+                this.setLoaderHTML('m1load');
+            };
+            this.setTextHTML = function (div) {
+                var html = "<h3>How to use this tool.</h3>";
+                html += "<p>";
+                html += "This tool is intended to create a xml-file to use with the Player Profiler Asset within the RAGE-Project. The produced xml-file is used by the client-side Asset to generate a questionnaire for the player at the beginning of the game.";
+                html += "</p>";
+                html += "<p>";
+                html += "You can load already existing questionnaires to your right. Under the 'enter questions'-tab new questions can be added and old ones can be deleted. Metadata, like the questionnaires description, the titel or the rating scale can be modified using the 'enter metadata'-tab. A preiew is available, when choosing the 'questionnaire preview'-tab. To download the xml you can either press the 'Download XML file'-button, when choosing the 'get xml'-tab or copy the data into a file directly.";
+                html += "</p>";
+                document.getElementById(div).innerHTML = html;
+            };
+            this.setLoaderHTML = function (div) {
+                var html = "<h3>Load predefined questionnaires.</h3>";
+                html += "<div class='m1loadingdiv' id='m1loadingelements'>";
+                html += "<p>questionnaires:</p>";
+                html += "<select id='selectstructure' >";
+                for (var i = 0; i < this.structures.length; i++) {
+                    html += "<option value='" + this.structures[i] + "'>" + this.structures[i] + "</option>";
+                }
+                html += "</select>";
+                html += "<p><input type='button' value='load' id='m1loadstructurebutton'></p>";
+                html += "</div>";
+                html += "<div class='m1loadingdiv' id='m1loadingdescription'>";
+                html += "<textarea id='m1structuredescription' rows='5' cols='50' readonly>";
+                html += "</textarea>";
+                html += "</div>";
+                document.getElementById(div).innerHTML = html;
+                this.printStructureInformation();
+
+                document.getElementById('selectstructure').onchange = function () {
+                    menu.getActiveMenu().printStructureInformation();
+                }
+
+                document.getElementById('m1loadstructurebutton').onclick = function () {
+                    menu.getActiveMenu().loadStructure(document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text);
+                }
+
+            };
+            this.printStructureInformation = function () {
+                var selectedElement = document.getElementById('selectstructure').options[document.getElementById('selectstructure').selectedIndex].text;
+                var pos = this.structures.indexOf(selectedElement);
+                document.getElementById('m1structuredescription').innerHTML = this.structureDescribtions[pos];
+            };
+            this.loadStructure = function (name) {
+                if (name == "Sensation Seeking Tendency") {
+                    menu.data.title = "Interest and Preference Survey";
+                    menu.data.instructions = "Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Strongly disagree");
+                    menu.data.scaleitems.push("Disagree");
+                    menu.data.scaleitems.push("Neither disagree nor agree");
+                    menu.data.scaleitems.push("Agree");
+                    menu.data.scaleitems.push("Strongly agree");
+
+                    menu.data.questions = [];
+                    menu.data.questions.push("I would like to explore strange places.");
+                    menu.data.questions.push("I get restless when I spend too much time at home.");
+                    menu.data.questions.push("I like to do frightening things.");
+                    menu.data.questions.push("I like wild parties.");
+                    menu.data.questions.push("I would like to take off on a trip with no pre-planned routes or timetables.");
+                    menu.data.questions.push("I prefer friends who are excitingly unpredictable.");
+                    menu.data.questions.push("I would like to try bungee jumping.");
+                    menu.data.questions.push("I would love to have new and exciting experiences, even if they are illegal.");
+
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["sensation seeking tendency"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[0]);
+                    }
+
+                    menu.data.resetQuestionMappings();
+                    menu.data.groupsFormula = ["SUM"];
+
+                }
+                else if (name == "Big Five") {
+                    menu.data.title = "Ten-Item Personality Inventory ";
+                    menu.data.instructions = "Here are a number of personality traits that may or may not apply to you.";
+                    menu.data.instructions += " Please choose an answer for each statement to indicate the extent to which you agree or disagree with that statement.";
+                    menu.data.instructions += " You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other.";
+
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Disagree strongly");
+                    menu.data.scaleitems.push("Disagree moderately");
+                    menu.data.scaleitems.push("Disagree a little");
+                    menu.data.scaleitems.push("Neither agree nor disagree");
+                    menu.data.scaleitems.push("Agree a little");
+                    menu.data.scaleitems.push("Agree moderately");
+                    menu.data.scaleitems.push("Agree strongly");
+
+                    menu.data.questions = [];
+                    menu.data.questions.push("I see myself as extraverted, enthusiastic.");
+                    menu.data.questions.push("I see myself as critical, quarrelsome.");
+                    menu.data.questions.push("I see myself as dependable, selfdisciplined.");
+                    menu.data.questions.push("I see myself as Anxious, easily upset.");
+                    menu.data.questions.push("I see myself as Open to new experiences, complex.");
+                    menu.data.questions.push("I see myself as Reserved, quiet.");
+                    menu.data.questions.push("I see myself as Sympathetic, warm.");
+                    menu.data.questions.push("I see myself as Disorganized, careless.");
+                    menu.data.questions.push("I see myself as Calm, emotionally stable.");
+                    menu.data.questions.push("I see myself as Conventional, uncreative.");
+
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Extraversion", "Agreeableness", "Conscientiousness", "Emotional Stability", "Openness to Experience"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[i % 5]);
+                    }
+                    menu.data.resetQuestionMappings();
+                    menu.data.mappingTemplatesName = ["N", "R"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5, 6, 7], [7, 6, 5, 4, 3, 2, 1]];
+                    menu.data.mappingTemplatesChoosen = ["N", "R", "N", "R", "N", "R", "N", "R", "N", "R"];
+                    menu.data.groupsFormula = ["SUM/2", "SUM/2", "SUM/2", "SUM/2", "SUM/2"];
+                }
+                else if (name == "RIASEC Interest Types 48") {
+                    menu.data.title = "Your occupational interests";
+                    menu.data.instructions = "Please look at the following list of activities and respond to each by indicating how much you like the activity.";
+
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Strongly dislike");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("Strongly like");
+
+                    menu.data.questions = [];
+                    menu.data.questions.push("Test the quality of parts before shipment");
+                    menu.data.questions.push("Lay brick or tile");
+                    menu.data.questions.push("Work on an offshore oil-drilling rig ");
+                    menu.data.questions.push("Assemble electronic parts ");
+                    menu.data.questions.push("Operate a grinding machine in a factory");
+                    menu.data.questions.push("Fix a broken faucet");
+                    menu.data.questions.push("Assemble products in a factory");
+                    menu.data.questions.push("Install flooring in houses");
+                    menu.data.questions.push("Study the structure of the human body");
+                    menu.data.questions.push("Study animal behavior");
+                    menu.data.questions.push("Do research on plants or animals");
+                    menu.data.questions.push("Develop a new medical treatment or procedure");
+                    menu.data.questions.push("Conduct biological research");
+                    menu.data.questions.push("Study whales and other types of marine life");
+                    menu.data.questions.push("Work in a biology lab");
+                    menu.data.questions.push("Make a map of the bottom of an ocean ");
+                    menu.data.questions.push("Conduct a musical choir");
+                    menu.data.questions.push("Direct a play");
+                    menu.data.questions.push("Design artwork for magazines");
+                    menu.data.questions.push("Write a song");
+                    menu.data.questions.push("Write books or plays");
+                    menu.data.questions.push("Play a musical instrument");
+                    menu.data.questions.push("Perform stunts for a movie or television show");
+                    menu.data.questions.push("Design sets for plays");
+                    menu.data.questions.push("Give career guidance to people");
+                    menu.data.questions.push("Do volunteer work at a non-profit organization");
+                    menu.data.questions.push("Help people who have problems with drugs or alcohol");
+                    menu.data.questions.push("Teach an individual an exercise routine");
+                    menu.data.questions.push("Help people with family-related problems");
+                    menu.data.questions.push("Supervise the activities of children at a camp");
+                    menu.data.questions.push("Teach children how to read");
+                    menu.data.questions.push("Help elderly people with their daily activities");
+                    menu.data.questions.push("Sell restaurant franchises to individuals");
+                    menu.data.questions.push("Sell merchandise at a department store");
+                    menu.data.questions.push("Manage the operations of a hotel");
+                    menu.data.questions.push("Operate a beauty salon or barber shop");
+                    menu.data.questions.push("Manage a department within a large company");
+                    menu.data.questions.push("Manage a clothing store");
+                    menu.data.questions.push("Sell houses");
+                    menu.data.questions.push("Run a toy store ");
+                    menu.data.questions.push("Generate the monthly payroll checks for an office");
+                    menu.data.questions.push("Inventory supplies using a hand-held computer");
+                    menu.data.questions.push("Use a computer program to generate customer bills");
+                    menu.data.questions.push("Maintain employee records");
+                    menu.data.questions.push("Compute and record statistical and other numerical data");
+                    menu.data.questions.push("Operate a calculator");
+                    menu.data.questions.push("Handle customers’ bank transactions");
+                    menu.data.questions.push("Keep shipping and receiving records");
+
+
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Realistic", "Investigative", "Artistic", "Social", "Enterprising", "Conventional"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[Math.floor(i / 8)]);
+                    }
+                    menu.data.resetQuestionMappings();
+                    menu.data.mappingTemplatesName = ["N"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5]];
+                    menu.data.mappingTemplatesChoosen = [];
+                    for (var i = 0; i < menu.data.questions.length; i++)
+                        menu.data.mappingTemplatesChoosen.push("N");
+                    menu.data.groupsFormula = ["SUM/8", "SUM/8", "SUM/8", "SUM/8", "SUM/8","SUM/8"];
+
+                }
+                else if (name == "RIASEC Interest Types 24") {
+                    menu.data.title = "Your occupational interests";
+                    menu.data.instructions = "Please look at the following list of activities and respond to each by indicating how much you like the activity.";
+
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Strongly dislike");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("Strongly like");
+
+                    menu.data.questions = [];
+                    menu.data.questions.push("Test the quality of parts before shipment");
+                    menu.data.questions.push("Lay brick or tile");
+                    menu.data.questions.push("Fix a broken faucet");
+                    menu.data.questions.push("Assemble products in a factory");
+
+                    menu.data.questions.push("Study the structure of the human body");
+                    menu.data.questions.push("Do research on plants or animals");
+                    menu.data.questions.push("Conduct biological research");
+                    menu.data.questions.push("Make a map of the bottom of an ocean ");
+
+                    menu.data.questions.push("Design artwork for magazines");
+                    menu.data.questions.push("Write books or plays");
+                    menu.data.questions.push("Play a musical instrument");
+                    menu.data.questions.push("Perform stunts for a movie or television show");
+
+                    menu.data.questions.push("Give career guidance to people");
+                    menu.data.questions.push("Do volunteer work at a non-profit organization");
+                    menu.data.questions.push("Teach an individual an exercise routine");
+                    menu.data.questions.push("Help elderly people with their daily activities");
+
+                    menu.data.questions.push("Sell restaurant franchises to individuals");
+                    menu.data.questions.push("Sell merchandise at a department store");
+                    menu.data.questions.push("Manage a department within a large company");
+                    menu.data.questions.push("Sell houses");
+
+                    menu.data.questions.push("Use a computer program to generate customer bills");
+                    menu.data.questions.push("Compute and record statistical and other numerical data");
+                    menu.data.questions.push("Handle customers’ bank transactions");
+                    menu.data.questions.push("Keep shipping and receiving records");
+
+
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Realistic", "Investigative", "Artistic", "Social", "Enterprising", "Conventional"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[Math.floor(i / 4) ]);
+                    }
+                    menu.data.resetQuestionMappings();
+                    menu.data.mappingTemplatesName = ["N"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5]];
+                    menu.data.mappingTemplatesChoosen = [];
+                    for (var i = 0; i < menu.data.questions.length; i++)
+                        menu.data.mappingTemplatesChoosen.push("N");
+                    menu.data.groupsFormula = ["SUM/4", "SUM/4", "SUM/4", "SUM/4", "SUM/4", "SUM/4"];
+
+                }
+                else if (name == "Achievement Goal Orientation") {
+                    menu.data.title = "Achievement Goal Orientation";
+                    menu.data.instructions = "Please choose an answer for each statement to indicate the extent to which the statement is true for you.";
+
+                    menu.data.scaleitems = [];
+                    menu.data.scaleitems.push("Not at all true for me");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("");
+                    menu.data.scaleitems.push("Very true for me");
+
+                    menu.data.questions = [];
+                    menu.data.questions.push("It is important for me to do better than other students.");
+                    menu.data.questions.push("It is important for me to do well compared to others in this class.");
+                    menu.data.questions.push("My goal in this class is to get a better grade than most of the other students.");
+                    menu.data.questions.push("I worry that I may not learn all that I possibly could in this class.");
+                    menu.data.questions.push("Sometimes I’m afraid that I may not understand the content of this class as thoroughly as I’d like.");
+                    menu.data.questions.push("I am often concerned that I may not learn all that there is to learn in this class.");
+                    menu.data.questions.push("I want to learn as much as possible from this class.");
+                    menu.data.questions.push("It is important for me to understand the content of this course as thoroughly as possible.");
+                    menu.data.questions.push("I desire to completely master the material presented in this class.");
+                    menu.data.questions.push("I just want to avoid doing poorly in this class.");
+                    menu.data.questions.push("My goal in this class is to avoid performing poorly.");
+                    menu.data.questions.push("My fear of performing poorly in this class is often what motivates me.");
+
+
+                    menu.data.questionsGroup = [];
+                    menu.data.groups = ["Performance approach", "Mastery avoidance", "Mastery approach", "Performance avoidance"];
+                    for (var i = 0; i < menu.data.questions.length; i++) {
+                        menu.data.questionsGroup.push(menu.data.groups[Math.floor(i / 3)]);
+                    }
+                    menu.data.resetQuestionMappings();
+                    menu.data.mappingTemplatesName = ["N"];
+                    menu.data.mappingTemplates = [[1, 2, 3, 4, 5, 6, 7]];
+                    menu.data.mappingTemplatesChoosen = [];
+                    for (var i = 0; i < menu.data.questions.length; i++)
+                        menu.data.mappingTemplatesChoosen.push("N");
+                    menu.data.groupsFormula = ["SUM/3", "SUM/3", "SUM/3", "SUM/3", "SUM/3", "SUM/3"];
+
+                }
+
+            };
+            this.settingStructuresToLoad = function () {
+                this.structures = [];
+                this.structureDescribtions = [];
+
+                //questionnaire A
+                this.structures.push("Sensation Seeking Tendency");
+                var desc = "Brief Sensation Seeking Scale (Hoyle, 2002)";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire B
+                this.structures.push("Big Five");
+                var desc = "Ten-Item Personality Inventory (Gosling, Rentfrow & Swann, 2003) ";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire C
+                this.structures.push("RIASEC Interest Types 48");
+                var desc = "Brief activity-based RIASEC interest scale (based on Interest Profiler) (Armstrong, Allison, & Rounds, 2008) – 48 items";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire D
+                this.structures.push("RIASEC Interest Types 24");
+                var desc = "Short version of the Brief activity-based RIASEC interest scale (based on Interest Profiler) (Armstrong, Allison, & Rounds, 2008) – 24 items";
+                this.structureDescribtions.push(desc);
+
+                //questionnaire E
+                this.structures.push("Achievement Goal Orientation");
+                var desc = "Achievement Goal Questionnaire (Elliot & McGregor, 2001)";
+                this.structureDescribtions.push(desc);
+            };
+        }
+
+        //menu object2
+        function Menu2() {
+            this.fillHTML = function (div) {
+                var html = '';
+                html += '<div>';
+                //question-table
+                html += "<table id='questiontable'";
+                html += "<tr><th class='questiontableelement'>grouping</th><th class='questiontableelement' colspan='2'>questions</th></tr>";
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    html += "<tr><td class='questiontableelement' >";
+                    html += "<select class='groupselect' id='groupSelect-" + i + "'>";
+                    html += "<option value='none'>-</option>";
+                    for (var j = 0; j < menu.data.groups.length; j++) {
+                        html += "<option value='" + menu.data.groups[j] + "' ";
+                        if (menu.data.questionsGroup[i] == menu.data.groups[j]) {
+                            html += "selected";
+                        }
+                        html += ">" + menu.data.groups[j] + "</option>";
+                    }
+                    html += "</select>";
+                    html += "</td><td class='questiontableelement'  id='question-" + i + "'>" + menu.data.questions[i] + "<td><td class='questiontableelement hover'  id='deleteQuestion-" + i + "'>-</td></tr>";
+                }
+                html += "<tr><td class='questiontableelement'  colspan='3'><input size='80' type='text' value='add new question' id='addNewQuestion'></td></tr>";
+                html += '</table>';
+                //grouping table
+                html += "<table id='grouptable'>";
+                html += "<tr><th class='grouptableelement' colspan='2'>question-groups</th></tr>";
+                for (var i = 0; i < menu.data.groups.length; i++) {
+                    html += "<tr><td class='grouptableelement'>" + menu.data.groups[i] + "</td><td class='grouptableelement' id='deleteGroup-" + i + "'>-</td></tr>";
+                }
+                html += "<tr><td class='grouptableelement'  colspan='2'><input size='40' type='text' value='add new group' id='addNewGroup'></td></tr>";
+                html += "</table>";
+                html += "</div>";
+
+                document.getElementById(div).innerHTML = html;
+
+                //choose group for question
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    document.getElementById("groupSelect-" + i).onchange = function () {
+                        
+                        var pos = parseInt(this.id.substring(12, this.id.length));
+                        if (this.value == "none")
+                            menu.data.questionsGroup[pos] = "";
+                        else
+                            menu.data.questionsGroup[pos] = this.value;
+                        //fillMenu();
+                    }
+                }
+
+                document.getElementById("addNewGroup").onchange = function () {
+                    if (menu.data.groups.indexOf(this.value) == -1) {
+                        menu.data.groups.push(this.value);
+                        menu.data.groupsFormula.push("SUM");
+                        fillMenu();
+                    }
+                }
+
+                for (var i = 0; i < menu.data.groups.length; i++) {
+                    document.getElementById('deleteGroup-' + i).onclick = function () {
+                        var pos = this.id.substring(12, this.id.length);
+                        var elementToDelete = menu.data.groups[pos];
+                        var pos = menu.data.questionsGroup.indexOf(elementToDelete);
+                        menu.data.deleteGroup(pos);
+                        fillMenu();
+                    }
+                }
+
+                //new question
+                document.getElementById("addNewQuestion").onchange = function () {
+                    menu.data.addQuestion(this.value);
+                    fillMenu();
+                }
+
+                //delete question
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    document.getElementById('deleteQuestion-' + i).onclick = function () {
+                        var pos = this.id.substring(15, this.id.length);
+                        menu.data.deleteQuestion(pos);
+                        fillMenu();
+                    }
+                }
+            };
+            this.toXML = function () {
+                var xml = "";
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    xml += "<questionitem>\n";
+                    xml += "<question>" + menu.data.questions[i];
+                    xml += "</question>\n";
+                    xml += "<questionid>" + i;
+                    xml += "</questionid>\n";
+                    xml += "<answermapping>\n";
+                    for (var j = 0; j < menu.data.questionsMapping[i].length; j++) {
+                        xml += "<entry>\n";
+                        xml += "<from>" + j + "</from>\n";
+                        xml += "<to>" + menu.data.questionsMapping[i][j] + "</to>\n";
+                        xml += "</entry>\n";
+                    }
+                    xml += "</answermapping>\n";
+                    xml += "<group>" + menu.data.questionsGroup[i] + "</group>\n";
+                    xml += "</questionitem>\n";
+                }
+                return (xml);
+            }
+        }
+
+        //menu object3
+        function Menu3() {
+            this.mousedown;
+            this.fillHTML = function (div) {
+                var html = "<div>";
+                html += "<p>questionnaire heading:</p>";
+                html += "<input type='text' value='" + menu.data.title + "' id='qheading' size='100'>";
+                html += "<p>instruction text:</p>";
+                html += "<textarea cols='80' rows='10' id='qinstruction'>" + menu.data.instructions + "</textarea>";
+                html += "<p>rating options:</p>";
+                html += "<div id='scale'>";
+                html += "<div class='spacing' id='spacingAfter-start'></div>";
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    html += "<div draggable='true' class='scaleitem' id='scaleitem-" + i + "'>" + menu.data.scaleitems[i] + "</div>";
+                    html += "<div class='spacing' id='spacingAfter-" + i + "'></div>";
+                }
+                html += "</div>";
+                html += "<input type='button' id='addChoiceButton' value='add option'>";
+                html += "<div id='deleteChoiceDiv'> Drag here to delete &#10008</div>";
+                html += "<div>";
+                document.getElementById(div).innerHTML = html;
+
+                document.getElementById('qheading').onchange = function () {
+                    menu.data.title = this.value;
+                };
+
+                document.getElementById('qinstruction').onchange = function () {
+                    menu.data.instructions = this.value;
+                };
+
+                document.getElementById('addChoiceButton').onclick = function () {
+                    menu.data.addScaleitem("new");
+                    fillMenu();
+                }
+
+                document.getElementById('deleteChoiceDiv').onmouseup = function () {
+                    if (menu.getActiveMenu().mousedown != null) {
+                        menu.data.deleteGroup(menu.getActiveMenu().mousedown);
+                        fillMenu();
+                    }
+                }
+
+                var elements = document.getElementsByClassName('scaleitem');
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].onmousedown = function () {
+                        menu.getActiveMenu().mousedown = this.id.substring(10, this.id.length);
+                        window.onmouseup = function () {
+                            menu.getActiveMenu().mousedown = null;
+                            window.onmouseup = function () { };
+                        };
+                    }
+                    elements[i].ondblclick = function () {
+                        var pos = this.id.substring(10, this.id.length);
+                        var el = document.getElementById(this.id);
+                        el.innerHTML = "<input id='inputTextChoice-" + pos + "' type='text', value='" + menu.data.scaleitems[pos] + "'>";
+
+                        document.getElementById('inputTextChoice-' + pos).onchange = function () {
+                            var pos = this.id.substring(16, this.id.length);
+                            menu.data.scaleitems[parseInt(pos)] = this.value;
+                            fillMenu();
+                        }
+
+                        document.getElementById('inputTextChoice-' + pos).onblur = function () {
+                            var pos = this.id.substring(16, this.id.length);
+                            menu.data.scaleitems[parseInt(pos)] = this.value;
+                            fillMenu();
+                        }
+
+                        window.onmouseup = function () {
+                            fillMenu();
+                            window.onmouseup = function () { };
+                        };
+
+                    }
+                }
+
+
+                elements = document.getElementsByClassName('spacing');
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].onmouseup = function () {
+                        var redraw = true;
+                        var up = this.id.substring(13, this.id.length);
+                        if (up == "start" && menu.getActiveMenu().mousedown != 0)
+                            menu.data.shiftScaleitem(menu.getActiveMenu().mousedown, 0);
+                        else if (up != "start" && (parseInt(up) + 1) != menu.getActiveMenu().mousedown)
+                            menu.data.shiftScaleitem(menu.getActiveMenu().mousedown, parseInt(up) + 1);
+                        else
+                            redraw = false;
+                        if (redraw)
+                            fillMenu();
+                    }
+                }
+            };
+            this.choicesToXML = function () {
+                var xml = "";
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    xml += "<choiceitem>\n";
+                    xml += "<choice>" + menu.data.scaleitems[i];
+                    xml += "</choice>\n";
+                    xml += "<position>" + i;
+                    xml += "</position>\n";
+                    xml += "</choiceitem>\n";
+                }
+                return (xml);
+            }
+        };
+
+        //menu object 4
+        function Menu4() {
+            this.noLines;
+            this.fillHTML = function (div) {
+                var html = "<h3>The resulting XML:</h3>";
+                html += "<button type='button' onclick='startDownload()'>Download XML file.</button></br>";
+                var xml = createXML();
+                var formattedXml = this.formatXML(xml).replace(/<br>/g, "\n");
+                document.getElementById(div).innerHTML = html + "<textarea rows='" + (this.noLines + 10) + "' cols='120' readonly>" + formattedXml + "</texterea>";
+            };
+            this.formatXML = function (xml) {
+                //xml = xml.replace(/ /g, "");
+                xml = xml.replace(/\n/g, "");
+                var ret = "";
+                var newComp;
+                var oldComp;
+                var noSpacing = 0;
+                this.noLines = 0;
+                while (xml.length > 0) {
+                    newComp = this.getNextXMLComponent(xml);
+                    //alert("!"+newComp+"!");
+                    xml = xml.substring(newComp.length, xml.length);
+                    if (newComp.length >= 1 && newComp[1] == "/")
+                        noSpacing -= 1;
+                    for (var i = 0; i < noSpacing; i++) {
+                        ret += "&nbsp &nbsp &nbsp &nbsp";
+                    }
+                    oldComp = newComp;
+                    this.noLines++;
+                    ret += newComp.replace(/</g, "&lt").replace(/>/g, "&gt") + "<br>";
+                    if (oldComp.length >= 1 && oldComp[1] != "/" && oldComp[0] == "<")
+                        noSpacing += 1;
+                }
+                return (ret);
+            };
+            this.getNextXMLComponent = function (xml) {
+                if (xml.length == 0)
+                    return ("");
+                if (xml[0] != "<")
+                    return (xml.substring(0, xml.indexOf("<")));
+                else
+                    return (xml.substring(0, xml.indexOf(">") + 1));
+            };
+        };
+
+        //menu object 5
+        function Menu5() {
+            this.fillHTML = function (div) {
+                var html = "<div id='m5div'>";
+                html += "<div><h1 id='m5heading'>" + menu.data.title + "</h1>";
+                html += "<p>" + menu.data.instructions + "</p></div>";
+
+                //choices
+                html += "<div><div class='question'> &nbsp; </div>"
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    html += "<div class='choice'>" + menu.data.scaleitems[i] + "</div>";
+                }
+                html += "<br></div>";
+
+                //questions
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    html += "<div class='questionItem'>";
+                    html += "<div class='question'>" + menu.data.questions[i] + "</div>";
+                    for (var j = 0; j < menu.data.scaleitems.length; j++) {
+                        html += "<div class='choice'> <input type='radio' name='" + i + "' value='" + j + "'></div>";
+                    }
+                    html += "<br></div>";
+                }
+
+                //button
+                html += "<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>";
+
+                html += "</div>";
+                document.getElementById(div).innerHTML = html;
+                
+                var elements = document.getElementsByClassName('choice');
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].style.width = 75 / menu.data.scaleitems.length + "%";
+                }
+
+            };
+        };
+
+        //menu object 6
+        function Menu6() {
+            this.currentQuestion;
+            this.getNumberOfChoices = function () {
+                return(menu.data.scaleitems.length);
+            };
+            this.addEvaluationMapping = function () {
+                menu.data.addQuestionMapping();
+            };
+            this.addTemplateFromEvaluationMappings = function (name, evaluationMappingPos) {
+                menu.data.saveMappingAsTemplate(name, evaluationMappingPos);
+            };
+            this.fillHTML = function (div) {
+                var html = "<p>Work on evaluation for  ";
+                html += "<select id='selectevaluation'>";
+                html += "<option value='all'>default/no group</option>";
+                for (var i = 0; i < menu.data.groups.length; i++) {
+                    html += "<option value='" + menu.data.groups[i] + "'> group \"" + menu.data.groups[i] + "\"</option>";
+                }
+                html += "</select></p>";
+                html += "<div id='evaluationformuladiv'>";
+                html+="</div>"
+                html += "<div id='evaluationdiv'></div>";
+                document.getElementById(div).innerHTML = html;
+
+
+                this.loadHTMLtables('evaluationdiv');
+
+                document.getElementById('selectevaluation').onchange = function () {
+                    menu.getActiveMenu().loadHTMLtables('evaluationdiv');
+                }
+
+
+            };
+            this.loadHTMLtables = function (div) {
+                var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
+                var html = "";
+                html += "<div class='evaluationdivs' id='evaluationdivl2.1'>";
+                html += "<table>";
+                html += "<tr><th class='evaluationquestiontableclass' colspan='2'>questions and chosen evaluation template</th></tr>";
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[i] == "") || menu.data.questionsGroup[i] == choiceOfQuestions) {
+                        html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass hover'>" + menu.data.questions[i] + "</td><td>";
+                        html += "<select id='evaluationtemplate-" + i + "'>";
+                        html += "<option value=''>-</option>";
+                        for (var j = 0; j < menu.data.mappingTemplatesName.length; j++) {
+                            html += "<option value='" + menu.data.mappingTemplatesName[j] + "' ";
+                            if (menu.data.mappingTemplatesChoosen[i] == menu.data.mappingTemplatesName[j])
+                                html += "selected";
+                            html += ">" + menu.data.mappingTemplatesName[j] + "</option>";
+                        }
+                        html += "</select>";
+                        html+="</td></tr>";
+                    }
+                }
+                html += "</table>";
+                html+="</div>";
+                html += "<div class='evaluationdivs' id='evaluationdivl2.2'>";
+                html+="</div>";
+                document.getElementById(div).innerHTML = html;
+
+                for (var j = 0; j < menu.data.questions.length; j++) {
+                    if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[j] == "") || menu.data.questionsGroup[j] == choiceOfQuestions) {
+                        document.getElementById("evaluationtemplate-" + j).onchange = function () {
+
+                            var pos = parseInt(this.id.substring(19, this.id.length));
+                            menu.data.mappingTemplatesChoosen[pos] = this.value;
+                            menu.getActiveMenu().loadQuestionEvaluationMapping('evaluationdivl2.2');
+                        }
+                    }
+                }
+
+
+                for (var i = 0; i < menu.data.questions.length; i++) {
+                    if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[i] == "") || menu.data.questionsGroup[i] == choiceOfQuestions) {
+                        document.getElementById("evaluationquestion-" + i).onclick = function () {
+                            var questionPos = this.id.substring(19, this.id.length);
+                            menu.getActiveMenu().currentQuestion = questionPos;
+                            menu.getActiveMenu().loadQuestionEvaluationMapping('evaluationdivl2.2');
+                        }
+                    }
+                }
+
+                if (choiceOfQuestions=="all")
+                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + menu.data.defaultFormula + "' id='evaluationformulatext'>";
+                else
+                    document.getElementById('evaluationformuladiv').innerHTML = "evaluation formula: <input type='text' value='" + menu.data.groupsFormula[menu.data.groups.indexOf(choiceOfQuestions)] + "' id='evaluationformulatext'>";
+
+                document.getElementById('evaluationformulatext').onchange = function () {
+                    if(menu.getActiveMenu().isFormula(this.value)){
+                        var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
+                        if (choiceOfQuestions == "all") {
+                            menu.data.defaultFormula = this.value;
+                        }
+                        else {
+                            var pos = menu.data.groups.indexOf(choiceOfQuestions);
+                            menu.data.groupsFormula[pos]=this.value;
+                        }
+                    } else {
+                        var choiceOfQuestions = document.getElementById('selectevaluation').options[document.getElementById('selectevaluation').selectedIndex].value;
+                        if (choiceOfQuestions == "all") {
+                            this.value = menu.data.defaultFormula;
+                        }
+                        else {
+                            var pos = menu.menuArray[2].groups.indexOf(choiceOfQuestions);
+                            this.value = menu.data.groupsFormula[pos];
+                        }
+                    }
+                };
+
+            };
+            this.loadQuestionEvaluationMapping = function (div) {
+                var mapping = menu.data.questionsMapping[this.currentQuestion];
+                var html = "<h3>" + menu.data.questions[this.currentQuestion] + "</h3>";
+                html += "<table>";
+                html += "<tr><th class='evaluationmappingtableelement' >answer</th><th class='evaluationmappingtableelement'>mapped to</th></tr>"
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    if (menu.data.mappingTemplatesChoosen[this.currentQuestion] == "") {
+                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.data.scaleitems[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='"+mapping[i]+"'></td></tr>";
+                    } else {
+                        var templateName = menu.data.mappingTemplatesChoosen[this.currentQuestion];
+                        var pos = menu.data.mappingTemplatesName.indexOf(templateName);
+                        var template = menu.data.mappingTemplates[pos];
+                        html += "<tr><td class='evaluationmappingtableelement'>" + menu.data.scaleitems[i] + "</td><td class='evaluationmappingtableelement'><input type='text' size='5' id='textinputevaluationmapping-" + i + "' value='" + template[i] + "'></td></tr>";
+                    }
+                }
+                html += "</table>";
+                html += "<div>";
+                html += "save mapping as template: <input type='text' id='saveastemplatename' size='2' maxlength='2'><input type='button' value='save' id='saveastemplatebutton'>";
+                html += "</div>";
+                document.getElementById(div).innerHTML = html;
+
+                document.getElementById('saveastemplatebutton').onclick = function () {
+                    menu.data.saveMappingAsTemplate(menu.getActiveMenu().currentQuestion, document.getElementById('saveastemplatename').value);
+                    menu.data.saveTemplateToQuestion(document.getElementById('saveastemplatename').value, menu.getActiveMenu().currentQuestion);
+                    menu.getActiveMenu().loadHTMLtables('evaluationdiv');
+                }
+
+                for (var i = 0; i < menu.data.scaleitems.length; i++) {
+                    document.getElementById("textinputevaluationmapping-" + i).onchange = function () {
+                        if(menu.getActiveMenu().isInteger(this.value)){
+                            var choice = this.id.substring(27, this.id.length);
+                            if (menu.data.mappingTemplatesChoosen[menu.getActiveMenu().currentQuestion] == "none")
+                                menu.data.mappingTemplates[menu.getActiveMenu().currentQuestion][choice] = this.value;
+                            else {
+                                var templateName = menu.data.mappingTemplatesChoosen[menu.getActiveMenu().currentQuestion];
+                                var pos = menu.data.mappingTemplatesName.indexOf(templateName);
+                                var template = menu.data.mappingTemplates[pos];
+                                template[choice] = this.value;
+                            }
+                        } else {
+                            menu.getActiveMenu().loadQuestionEvaluationMapping('evaluationdivl2.2');
+                        }
+                    };
+                }
+            };
+            this.isInteger = function (int) {
+                var allowed = "0123456789 ";
+                if (int[0] == "-")
+                    int = int.substring(1, int.length);
+                for (var i = 0; i < int.length; i++) {
+                    if(allowed.indexOf(int[i])==-1)
+                        return(false);
+                }
+                return(true);
+            };
+            this.isFormula = function (formula) {
+                formula = formula.replace(/SUM/g, "")
+                var allowed = "-+*/:()0123456789 ";
+                for (var i = 0; i < formula.length; i++) {
+                    if (allowed.indexOf(formula[i]) == -1)
+                        return (false);
+                }
+                return (true);
+            };
+        };
+
+
+        //data object
+        function Data() {
+            /////////////////////////DATA
+            //questions (text, group) -> zwei arrays
+            this.questions = [];
+            this.questionsGroup = [];
+            //question groups -> array
+            this.groups = [];
+            //mapping answer->score (per question) ->array (einträge=fragen) mit arrays (einträge=answers)
+            this.questionsMapping = [];
+            //score formulas (formula) -> array
+            this.groupsFormula = [];
+            this.defaultFormula = "SUM";
+            //choice scale (name) -> array
+            this.scaleitems = ["Very Good", " ", "Moderate", " ", "Bad"];
+            //title -> string
+            this.title = "Enter title here...";
+            //description -> string
+            this.instructions = "Enter instructions here...";
+            /////////////////////////DATA-helpers
+            this.mappingTemplatesName = [];
+            this.mappingTemplates = [];
+            this.mappingTemplatesChoosen = [];
+            /////////////////////////SETTER
+            this.addQuestion = function (questionTxt) {
+                this.questions.push(questionTxt);
+                this.questionsGroup.push("");
+                this.addQuestionMapping();
+                this.mappingTemplatesChoosen.push("");
+            };
+            this.deleteQuestion = function (indexToDelete) {
+                this.questions.splice(indexToDelete, 1);
+                this.questionsMapping.splice(indexToDelete, 1);
+                this.questionsGroup.splice(indexToDelete, 1);
+                this.mappingTemplatesChoosen.splice(indexToDelete,1);
+            };
+            this.addQuestionMapping = function(){
+                questionMap = [];
+                for (var i = 0; i < this.scaleitems.length; i++) {
+                    questionMap.push(i+1);
+                }
+                this.questionsMapping.push(questionMap);
+            };
+            this.resetQuestionMappings = function () {
+                this.questionsMapping = [];
+                this.mappingTemplates = [];
+                this.mappingTemplatesName = [];
+                this.mappingTemplatesChoosen = [];
+                for (var i = 0; i < this.questions.length; i++) {
+                    this.addQuestionMapping();
+                    this.mappingTemplatesChoosen.push("");
+                }
+            };
+            this.addGroup = function (groupName) {
+                this.groups.push(groupName);
+                this.groupsFormula.push(this.defaultFormula);
+            };
+            this.deleteGroup = function (indexToDelete) {
+                var groupToDelete = this.groups[indexToDelete];
+                this.groups.splice(indexToDelete, 1);
+                this.groupsFormula.splice(indexToDelete, 1);
+                for (var i = 0; i < this.questionsGroup.length; i++) {
+                    if (this.questionsGroup[i] == groupToDelete)
+                        this.questionsGroup[i] = "";
+                }
+            };
+            this.addScaleitem = function (scaleitemTxt) {
+                this.scaleitems.push(scaleitemTxt);
+                this.resetQuestionMappings();
+            };
+            this.shiftScaleitem = function (scaleitemToShiftPosition,positionToShiftTo) {
+                var itemToShift = this.scaleitems[scaleitemToShiftPosition];
+                this.deleteScaleitem(scaleitemToShiftPosition);
+                if (positionToShiftTo < scaleitemToShiftPosition)
+                    this.scaleitems.splice(positionToShiftTo, 0, itemToShift);
+                else if (positionToShiftTo > scaleitemToShiftPosition)
+                    this.scaleitems.splice(positionToShiftTo - 1, 0, itemToShift);
+                this.resetQuestionMappings();
+            };
+            this.deleteScaleitem = function (position) {
+                this.scaleitems.splice(position, 1);
+                this.resetQuestionMappings();
+            };
+            this.saveMappingAsTemplate = function (questionIndex,templateName) {
+                if (this.mappingTemplatesName.indexOf(templateName) == -1) {
+                    this.mappingTemplates.push(this.questionsMapping[questionIndex]);
+                    this.mappingTemplatesName.push(templateName);
+                }
+            };
+            this.saveTemplateToQuestion = function (templateName,questionNumber) {
+                this.mappingTemplatesChoosen[questionNumber] = templateName;
+            };
+        }
+
+    </script>
+
+</head>
+<body>
+    <div id='body'>
+        <h1>Player Profiling Asset - XML creator</h1>
+
+        
+
+        <div id='m1' class='menu'>overview</div>
+        <div id='m2' class='menu'>enter questions</div>
+        <div id='m3' class='menu'>enter metadata</div>
+        <div id='m6' class='menu'>evaluation</div>
+        <div id='m5' class='menu'>questionnaire preview</div>
+        <div id='m4' class='menu'>get xml</div>
+        <div id='dataInputField'>
+            Chose a menu and start filling in the asset specifications.
+        </div>
+
+    </div>
+    <script>
+        performStartupAction();
+    </script>
+</body>
+</html>
