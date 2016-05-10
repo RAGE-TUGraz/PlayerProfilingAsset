@@ -25,7 +25,6 @@
 
   Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
   Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
-  Changed on: 2016-02-22
 */
 
 
@@ -200,6 +199,20 @@ namespace PlayerProfilingAssetNameSpace
             }
         }
 
+        /// <summary>
+        /// Method for retrieving the game storage - results of the questionnaire
+        /// </summary>
+        /// <returns> Dictionary containing the group as key and the value of the questionnaire </returns>
+        internal Dictionary<string,double> getQuestionnaireResultFromGameStorage()
+        {
+            throw new NotImplementedException();
+            /*
+            String xmlStringQuestionnaireResults = "";
+            questionnaireResults = getQuestionnaireAnswerDataFromXmlString(xmlStringQuestionnaireResults).getResults();
+            return questionnaireResults;
+            */
+        }
+
         #endregion InternalMethods
         #region TestMethods
 
@@ -302,9 +315,14 @@ namespace PlayerProfilingAssetNameSpace
             QuestionnaireData qd = getQuestionnaireDataFromXmlString(xml);
             int numberOfChoices = qd.choiceList.choiceItemList.Count;
             Dictionary<string, int> answers = new Dictionary<string, int>();
+            int i = 0;
             foreach(QuestionItem qi in qd.questionList.questionItemList)
             {
-                answers.Add(qi.question, numberOfChoices - 2);
+                if(i%2==0)
+                    answers.Add(qi.question, numberOfChoices - 2);
+                else
+                    answers.Add(qi.question, numberOfChoices - 1);
+                i++;
             }
             getPPA().setQuestionnaireAnswers(answers);
 
@@ -469,11 +487,6 @@ namespace PlayerProfilingAssetNameSpace
                 groupSums.Add(group.name, 0);
                 groupFormulas.Add(group.name,group.formula);
             }
-
-            /*
-            foreach (String str in answers.Keys)
-                groupSums[str] += getQuestionMappingFromAnswerId(str,answers[str]);
-            */
 
             foreach (QuestionItem qi in this.questionList.questionItemList)
                 groupSums[qi.group] += getQuestionMappingFromAnswerId(qi.question,answers[qi.question]);
@@ -1096,6 +1109,18 @@ namespace PlayerProfilingAssetNameSpace
             }
         }
         
+        /// <summary>
+        /// Method for creating the scores for each group.
+        /// </summary>
+        /// <returns></returns>
+        internal Dictionary<string, double> getResults()
+        {
+            Dictionary<string, double> result = new Dictionary<string, double>();
+            foreach (AnswerGroup ag in this.answerGroupList.groupList)
+                result.Add(ag.groupName, ag.groupRating);
+            return result;
+        }
+
         #endregion Methods
     }
 
@@ -1123,7 +1148,7 @@ namespace PlayerProfilingAssetNameSpace
         /// Answer id
         /// </summary>
         [XmlElement("rating")]
-        public float groupRating { set; get; }
+        public double groupRating { set; get; }
     }
 
     #endregion SerilizationAnswer

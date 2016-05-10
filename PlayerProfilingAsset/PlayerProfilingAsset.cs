@@ -25,7 +25,6 @@
 
   Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
   Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
-  Changed on: 2016-02-22
 */
 
 namespace PlayerProfilingAssetNameSpace
@@ -128,7 +127,10 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> Value for the questionnaire per group.</returns>
         public Dictionary<String, Double> getResults()
         {
-            return PlayerProfilerHandler.Instance.questionnaireResults;
+            if(PlayerProfilerHandler.Instance.questionnaireResults != null)
+                return PlayerProfilerHandler.Instance.questionnaireResults;
+            
+            return PlayerProfilerHandler.Instance.getQuestionnaireResultFromGameStorage();
         }
 
         /// <summary>
