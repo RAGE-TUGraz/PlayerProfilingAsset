@@ -75,7 +75,7 @@ namespace PlayerProfilingAssetNameSpace
         #region Properties
 
         /// <summary>
-        /// Getter for Instance of the MotivationAdaptionHandler - Singelton pattern
+        /// Getter for Instance of the PlayerProfilingAssetHandler - Singelton pattern
         /// </summary>
         public static PlayerProfilerHandler Instance
         {
