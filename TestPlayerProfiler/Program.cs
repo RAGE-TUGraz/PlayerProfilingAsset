@@ -116,15 +116,16 @@ namespace TestPlayerProfiler
             #endregion ILog
             #region IWebServiceRequest
 
-            public void WebServiceRequest(string method, Uri uri, Dictionary<string, string> headers, string body, IWebServiceResponse response)
-            {
-                string url = uri.AbsoluteUri;
 
-                if (string.Equals(method, "get", StringComparison.CurrentCultureIgnoreCase))
+            public void WebServiceRequest(RequestSetttings requestSettings, out RequestResponse requestResponse)
+            {
+                string url = requestSettings.uri.AbsoluteUri;
+
+                if (string.Equals(requestSettings.method, "get", StringComparison.CurrentCultureIgnoreCase))
                 {
                     try
                     {
-                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestSettings.uri);
                         HttpWebResponse webResponse = (HttpWebResponse)request.GetResponse();
                         Stream resStream = webResponse.GetResponseStream();
 
@@ -135,16 +136,30 @@ namespace TestPlayerProfiler
                         StreamReader reader = new StreamReader(resStream);
                         string dm = reader.ReadToEnd();
 
-                        response.Success(url, (int)webResponse.StatusCode, responseHeader, dm);
+                        requestResponse = new RequestResponse();
+                        requestResponse.method = requestSettings.method;
+                        requestResponse.requestHeaders = requestSettings.requestHeaders;
+                        requestResponse.responseCode = (int)webResponse.StatusCode;
+                        requestResponse.responseHeaders = responseHeader;
+                        requestResponse.responsMessage = dm;
+                        requestResponse.uri = requestSettings.uri;
                     }
                     catch (Exception e)
                     {
-                        response.Error(url, e.Message);
+                        requestResponse = new RequestResponse();
+                        requestResponse.method = requestSettings.method;
+                        requestResponse.requestHeaders = requestSettings.requestHeaders;
+                        requestResponse.responsMessage = "FAIL";
+                        requestResponse.uri = requestSettings.uri;
                     }
                 }
                 else
                 {
-                    response.Error(url, "Requested method " + method + " not implemented!");
+                    requestResponse = new RequestResponse();
+                    requestResponse.method = requestSettings.method;
+                    requestResponse.requestHeaders = requestSettings.requestHeaders;
+                    requestResponse.responsMessage = "FAIL";
+                    requestResponse.uri = requestSettings.uri;
                 }
             }
 

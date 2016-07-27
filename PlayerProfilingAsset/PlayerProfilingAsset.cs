@@ -24,7 +24,6 @@
   http://kti.tugraz.at/css/
 
   Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
-  Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
 */
 
 namespace PlayerProfilingAssetNameSpace

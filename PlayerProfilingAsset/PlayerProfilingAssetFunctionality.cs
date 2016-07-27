@@ -24,7 +24,6 @@
   http://kti.tugraz.at/css/
 
   Created by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
-  Changed by: Matthias Maurer, TUGraz <mmaurer@tugraz.at>
 */
 
 
@@ -654,7 +653,7 @@ namespace PlayerProfilingAssetNameSpace
             script += "  if(done()){\n";
             script += "    calculatGroupValue();\n";
             script += "    var xml=getXMLContent();\n";
-            script += "    alert('submitting:'+ xml);\n";
+            script += "    submit(xml);\n";
             script += "  }else{\n";
             script += "    alert('Please answer all questions!');";
             script += "  };\n";
@@ -796,7 +795,28 @@ namespace PlayerProfilingAssetNameSpace
             script += "  xml+= '<questionnaireid>"+ questionnaireId + "</questionnaireid>';\n";
             script += "  xml +='</questionnaireanswers>';\n";
             script += "  return(xml);\n";
-            script += "};\n";
+            script += "};\n\n";
+
+
+            //GET HEALTH REQUEST - A2
+            script += "function getHealth(){\n";
+            script += "  var httpGet  = new XMLHttpRequest();\n";
+            script += "  httpGet.onreadystatechange = function(){\n";
+            script += "    if(httpGet.readyState == 4 && httpGet.status == 200)\n";
+            script += "      alert(httpGet.responseText);\n";
+            script += "  }\n alert(\"http://192.168.222.166:3400/api/health\");";
+            script += "  httpGet.open(\"GET\",\"http://192.168.222.166:3400/api/health\",true);\n";
+            script += "  httpGet.send(null);\n";
+            script += "};\n\n";
+
+
+            //method for sending xml
+            script += "function submit(xml){\n";
+            script += "  getHealth();\n";
+            script += "  alert(xml);\n";
+            script += "};\n\n";
+
+
             script += "</script>\n";
             return (script);
         }
