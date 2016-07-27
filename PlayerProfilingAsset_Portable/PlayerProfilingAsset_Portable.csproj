@@ -35,21 +35,21 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\PlayerProfilingAsset.cs">
+    <Compile Include="..\PlayerProfilingAsset\PlayerProfilingAsset.cs">
       <Link>PlayerProfilingAsset.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\PlayerProfilingAssetSettings.cs">
+    <Compile Include="..\PlayerProfilingAsset\PlayerProfilingAssetSettings.cs">
       <Link>PlayerProfilingAssetSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\Properties\AssemblyInfo.cs">
+    <Compile Include="..\PlayerProfilingAsset\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\PlayerProfilingAssetFunctionality.cs">
+    <Compile Include="..\PlayerProfilingAsset\PlayerProfilingAssetFunctionality.cs">
       <Link>PlayerProfilingAssetFunctionality.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset\Resources\PlayerProfilingAsset.VersionAndDependencies.xml">
+    <Content Include="..\PlayerProfilingAsset\Resources\PlayerProfilingAsset.VersionAndDependencies.xml">
       <Link>Resources\PlayerProfilingAsset.VersionAndDependencies.xml</Link>
     </Content>
   </ItemGroup>
