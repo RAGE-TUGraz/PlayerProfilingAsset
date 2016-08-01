@@ -225,113 +225,7 @@ namespace PlayerProfilingAssetNameSpace
             getPPA().Log(severity, "[PPA]: " + msg);
         }
 
-        /// <summary>
-        /// Method calling all Tests of this Class.
-        /// </summary>
-        internal void performAllTests()
-        {
-            loggingPPA("*****************************************************************");
-            loggingPPA("Calling all tests (PlayerProfilingAsset):");
-            performTest1();
-            performTest2();
-            performTest3();
-            performTest4();
-            performTest5();
-            loggingPPA("Tests PlayerProfilingAsset - done!");
-            loggingPPA("*****************************************************************");
-        }
-
-        /// <summary>
-        /// Method creating example questionnaire data and outputting it.
-        /// </summary>
-        internal void performTest1()
-        {
-            loggingPPA("Start Test 1");
-            QuestionnaireData qd = createExampleQuestionnaireData();
-            loggingPPA(qd.toXmlString());
-            writeQuestionnaireDataToHTMLFile(qd, "QuestionnaireDataTest1.html");
-            loggingPPA("End test 1");
-        }
-
-        /// <summary>
-        /// Method loading Questionnaire data and outputting it.
-        /// </summary>
-        internal void performTest2()
-        {
-            loggingPPA("Start Test 2");
-            //QuestionnaireData qd = createExampleQuestionnaireData();
-            //writeQuestionnaireDataToXMLFile(qd,"QuestionnaireData");
-            string fileId = getPPA().getQuestionnaireFileId();
-            loggingPPA("FileId for created HTML: " + fileId);
-            loggingPPA("End test 2");
-        }
-
-        /// <summary>
-        /// Method for testing answer-xml deserilization.
-        /// </summary>
-        internal void performTest3()
-        {
-            loggingPPA("Start Test 3");
-            String xmlAnswer = @"<?xml version=""1.0"" encoding=""utf-16""?><questionnaireanswers xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">";
-            xmlAnswer += "<groups><group><name>A</name><rating>7</rating></group><group><name>B</name><rating>8</rating></group></groups>";
-            xmlAnswer += "<questionnaireid>testid</questionnaireid></questionnaireanswers>";
-
-            QuestionnaireAnswerData qad = this.getQuestionnaireAnswerDataFromXmlString(xmlAnswer);
-
-            if (qad.toXmlString().Equals(xmlAnswer))
-            {
-                loggingPPA("Serilization and deserilization successful!");
-            }
-            else
-            {
-                loggingPPA("Serilization and deserilization failed!");
-                loggingPPA(qad.toXmlString());
-                loggingPPA(xmlAnswer);
-            }
-
-            loggingPPA("End test 3");
-        }
-
-        /// <summary>
-        /// Method requesting and printing out the questionnaire xml.
-        /// </summary>
-        internal void performTest4()
-        {
-            loggingPPA("Start Test 4");
-            String xml = getPPA().getQuestionnaireXML();
-            loggingPPA("XML:\n"+xml);
-            loggingPPA("End test 4");
-        }
-
-        /// <summary>
-        /// Method requesting the questionnaire xml and returning the results locally.
-        /// </summary>
-        internal void performTest5()
-        {
-            loggingPPA("Start Test 5");
-            String xml = getPPA().getQuestionnaireXML();
-
-            QuestionnaireData qd = getQuestionnaireDataFromXmlString(xml);
-            int numberOfChoices = qd.choiceList.choiceItemList.Count;
-            Dictionary<string, int> answers = new Dictionary<string, int>();
-            int i = 0;
-            foreach(QuestionItem qi in qd.questionList.questionItemList)
-            {
-                if(i%2==0)
-                    answers.Add(qi.question, numberOfChoices - 2);
-                else
-                    answers.Add(qi.question, numberOfChoices - 1);
-                i++;
-            }
-            getPPA().setQuestionnaireAnswers(answers);
-
-            Dictionary<string, double> results = getPPA().getResults();
-            foreach (String groupName in results.Keys)
-                loggingPPA(groupName+": "+ results[groupName]);
-
-            loggingPPA("End test 5");
-        }
-
+        /*
         /// <summary>
         /// Method creating an example Questionnaire datastructure for test purpose4s.
         /// </summary>
@@ -376,6 +270,7 @@ namespace PlayerProfilingAssetNameSpace
             else
                 loggingPPA("No IDataStorage - Bridge implemented!", Severity.Warning);
         }
+        */
 
         #endregion TestMethods
     }
@@ -533,7 +428,7 @@ namespace PlayerProfilingAssetNameSpace
         ///<returns>
         /// A string representing the motivation model.
         /// </returns>
-        internal String toXmlString()
+        public String toXmlString()
         {
             try
             {
@@ -557,7 +452,7 @@ namespace PlayerProfilingAssetNameSpace
         /// Method for creating a html file from the data structure.
         /// </summary>
         /// <returns></returns>
-        internal string toHTMLString(String questionnaireId)
+        public string toHTMLString(String questionnaireId)
         {
             string html = "<!DOCTYPE html>  <html>";
 
@@ -1109,7 +1004,7 @@ namespace PlayerProfilingAssetNameSpace
         ///<returns>
         /// A string representing of the structure.
         /// </returns>
-        internal String toXmlString()
+        public String toXmlString()
         {
             try
             {
