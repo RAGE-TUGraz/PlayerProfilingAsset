@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AssetPackage.Properties {
+namespace PlayerProfilingAssetNameSpace.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
