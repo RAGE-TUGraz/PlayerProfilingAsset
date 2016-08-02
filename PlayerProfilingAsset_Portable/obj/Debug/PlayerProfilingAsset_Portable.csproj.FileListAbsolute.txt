@@ -1,6 +1,6 @@
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\bin\Debug\MyFirstAsset_Portable_Portable.dll
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\bin\Debug\MyFirstAsset_Portable_Portable.pdb
 C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\bin\Debug\RageAssetManager_Portable.dll
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\obj\Debug\MyFirstAsset_Portable_Portable.dll
-C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\obj\Debug\MyFirstAsset_Portable_Portable.pdb
 C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\obj\Debug\PlayerProfilingAsset_Portable.csprojResolveAssemblyReference.cache
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\bin\Debug\PlayerProfilingAsset_Portable.dll
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\bin\Debug\PlayerProfilingAsset_Portable.pdb
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\obj\Debug\PlayerProfilingAsset_Portable.dll
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\PlayerProfilingAsset_Portable\obj\Debug\PlayerProfilingAsset_Portable.pdb

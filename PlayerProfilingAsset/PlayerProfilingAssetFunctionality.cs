@@ -772,6 +772,15 @@ namespace PlayerProfilingAssetNameSpace
         public string formula { set; get; }
 
         #endregion Fields
+        #region Constructors
+        public QuestionnaireGroup() { }
+
+        public QuestionnaireGroup(string groupName, string formula)
+        {
+            this.name = groupName;
+            this.formula = formula;
+        }
+        #endregion Constructors
     }
 
     /// <summary>
@@ -1092,7 +1101,7 @@ namespace PlayerProfilingAssetNameSpace
                 return (result);
             }
 
-            while (str.Contains('('))
+            while (str.Contains("("))
             {
                 str = resolveBrackets(str);
             }
@@ -1132,7 +1141,7 @@ namespace PlayerProfilingAssetNameSpace
             String digits = "0123456789";
 
             for (int i = 0; i < str.Length; i++)
-                if (!validOperators.Contains(str[i]) && !digits.Contains(str[i]))
+                if (!validOperators.Contains(str[i].ToString()) && !digits.Contains(str[i].ToString()))
                     return false;
 
             return true;
@@ -1150,16 +1159,16 @@ namespace PlayerProfilingAssetNameSpace
                 return false;
             if (str[0] == '-')
                 str = str.Substring(1, str.Length - 1);
-            if (str.Contains('-'))
+            if (str.Contains("-"))
                 return false;
-            if (str.Contains('.'))
+            if (str.Contains("."))
             {
                 String str1 = str.Substring(0, str.IndexOf('.'));
                 String str2 = str.Substring(str.IndexOf('.') + 1, str.Length - str.IndexOf('.') - 1);
                 str = str1 + str2;
             }
             for (int i = 0; i < str.Length; i++)
-                if (!digits.Contains(str[i]))
+                if (!digits.Contains(str[i].ToString()))
                     return false;
 
             return true;
@@ -1182,7 +1191,7 @@ namespace PlayerProfilingAssetNameSpace
                 return (result);
             }
 
-            if (str.Contains('+'))
+            if (str.Contains("+"))
             {
                 String str1 = str.Substring(0, str.IndexOf('+'));
                 String str2 = str.Substring(str.IndexOf('+') + 1, str.Length - str.IndexOf('+') - 1);
@@ -1195,7 +1204,7 @@ namespace PlayerProfilingAssetNameSpace
 
             ContinuePlus:
 
-            if (str.Contains('-'))
+            if (str.Contains("-"))
             {
                 String str1 = str.Substring(0, str.IndexOf('-'));
                 String str2 = str.Substring(str.IndexOf('-') + 1, str.Length - str.IndexOf('-') - 1);
@@ -1210,7 +1219,7 @@ namespace PlayerProfilingAssetNameSpace
 
             ContinueMinus:
 
-            if (str.Contains('*'))
+            if (str.Contains("*"))
             {
                 String str1 = str.Substring(0, str.IndexOf('*'));
                 String str2 = str.Substring(str.IndexOf('*') + 1, str.Length - str.IndexOf('*') - 1);
@@ -1219,7 +1228,7 @@ namespace PlayerProfilingAssetNameSpace
                 return (solveOperation(str1) * solveOperation(str2));
             }
 
-            if (str.Contains('/'))
+            if (str.Contains("/"))
             {
                 String str1 = str.Substring(0, str.IndexOf('/'));
                 String str2 = str.Substring(str.IndexOf('/') + 1, str.Length - str.IndexOf('/') - 1);

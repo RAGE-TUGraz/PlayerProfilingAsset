@@ -90,10 +90,15 @@ namespace TestPlayerProfiler
         internal QuestionnaireData createExampleQuestionnaireData()
         {
             QuestionItem q1 = new QuestionItem(1, "How do you feel?");
+            q1.group = "A";
             QuestionItem q2 = new QuestionItem(2, "Do you like games?");
+            q2.group = "A";
             QuestionItem q3 = new QuestionItem(3, "Do you like fast cars?");
+            q3.group = "A";
             QuestionItem q4 = new QuestionItem(4, "Do you enjoy silence?");
+            q4.group = "A";
             QuestionItem q5 = new QuestionItem(5, "Do you like swimming?");
+            q5.group = "A";
             QuestionItem[] qia = { q1, q2, q3, q4, q5 };
             List<QuestionItem> qil = new List<QuestionItem>(qia);
 
@@ -106,6 +111,11 @@ namespace TestPlayerProfiler
             QuestionnaireData qd = new QuestionnaireData(qil, cil);
             qd.title = "Fancy questionnaire:";
             qd.instructions = "Please fill in the following form.";
+            qd.groupList = new QuestionnaireGroupList();
+
+            QuestionnaireGroup qg1 = new QuestionnaireGroup("A","SUM/5");
+            QuestionnaireGroup[] qga = { qg1};
+            qd.groupList.groups = new List<QuestionnaireGroup>(qga);
 
             return qd;
         }
@@ -167,6 +177,25 @@ namespace TestPlayerProfiler
             }
         }
 
+        internal void setQuestionnaireXMLData(QuestionnaireData qd)
+        {
+            string fileId = "QuestionnaireDataFileIdTest.xml";
+
+            //store dm to file
+            IDataStorage ids = (IDataStorage)AssetManager.Instance.Bridge;
+            if (ids != null)
+            {
+                log("Storing DomainModel to File.");
+                ids.Save(fileId, qd.toXmlString());
+            }
+            else
+                log("No IDataStorage - Bridge implemented!", Severity.Warning);
+
+            PlayerProfilingAssetSettings ppas = new PlayerProfilingAssetSettings();
+            ppas.QuestionnaireDataXMLFileId = fileId;
+            getPPA().Settings = ppas;
+        }
+
         #endregion HelperMethods
         #region TestMethods
 
@@ -206,6 +235,7 @@ namespace TestPlayerProfiler
             log("Start Test 2");
             //QuestionnaireData qd = createExampleQuestionnaireData();
             //writeQuestionnaireDataToXMLFile(qd,"QuestionnaireData");
+            setQuestionnaireXMLData(createExampleQuestionnaireData());
             string fileId = getPPA().getQuestionnaireFileId();
             log("FileId for created HTML: " + fileId);
             log("End test 2");
@@ -243,6 +273,7 @@ namespace TestPlayerProfiler
         internal void performTest4()
         {
             log("Start Test 4");
+            setQuestionnaireXMLData(createExampleQuestionnaireData());
             String xml = getPPA().getQuestionnaireXML();
             log("XML:\n" + xml);
             log("End test 4");
@@ -254,6 +285,7 @@ namespace TestPlayerProfiler
         internal void performTest5()
         {
             log("Start Test 5");
+            setQuestionnaireXMLData(createExampleQuestionnaireData());
             String xml = getPPA().getQuestionnaireXML();
 
             QuestionnaireData qd = getQuestionnaireDataFromXmlString(xml);
@@ -273,7 +305,7 @@ namespace TestPlayerProfiler
             Dictionary<string, double> results = getPPA().getResults();
             foreach (String groupName in results.Keys)
                 log(groupName + ": " + results[groupName]);
-
+            log("A" + ": " + results["A"]);
             log("End test 5");
         }
 
@@ -319,7 +351,8 @@ namespace TestPlayerProfiler
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error by loading the DM! - Maybe you need to change the path: \"" + IDataStoragePath + "\"");
+                Log(Severity.Error, e.Message);
+                Log(Severity.Error, "Error by loading the DM! - Maybe you need to change the path: \"" + IDataStoragePath + "\"");
             }
 
             return (null);
@@ -396,4 +429,5 @@ namespace TestPlayerProfiler
 
         #endregion IWebServiceRequest
     }
+
 }
