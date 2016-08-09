@@ -52,6 +52,10 @@
       <Project>{4d1f98c7-6827-4f99-b676-f5c9af632609}</Project>
       <Name>PlayerProfilingAsset</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTestPlayerProfiler\UnitTestPlayerProfiler.csproj">
+      <Project>{93eb1440-25f5-48cc-9fad-018181d6dc95}</Project>
+      <Name>UnitTestPlayerProfiler</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

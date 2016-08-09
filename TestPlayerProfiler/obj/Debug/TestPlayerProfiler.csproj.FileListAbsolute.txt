@@ -7,3 +7,6 @@ C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\TestPlay
 C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\PlayerProfilingAsset.dll
 C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\PlayerProfilingAsset.pdb
 C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\obj\Debug\TestPlayerProfiler.csprojResolveAssemblyReference.cache
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\UnitTestPlayerProfiler.dll
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\UnitTestPlayerProfiler.pdb
