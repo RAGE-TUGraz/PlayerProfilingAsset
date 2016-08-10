@@ -291,7 +291,9 @@ namespace UnitTestPlayerProfiler
             log("End test 5");
         }
 
-
+        /// <summary>
+        /// Method for testing creation of QuestionnaireData from XML String
+        /// </summary>
         [TestMethod]
         public void performTest6()
         {
