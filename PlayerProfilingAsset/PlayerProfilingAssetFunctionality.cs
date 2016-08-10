@@ -348,6 +348,16 @@ namespace PlayerProfilingAssetNameSpace
         #region Methods
 
         /// <summary>
+        /// Static method to create Questionnaire data from xml-string
+        /// </summary>
+        /// <param name="xml"> underlying XML string</param>
+        /// <returns> The Questionnaire data used to create the questionnaire based on the supplied xml string</returns>
+        public static QuestionnaireData getQuestionnaireData(String xml)
+        {
+            return PlayerProfilerHandler.Instance.getQuestionnaireDataFromXmlString(xml);
+        }
+
+        /// <summary>
         /// Method for checking if supplied answers have the correct format and to calculate the indicators.
         /// </summary>
         /// <param name="answers"> Dictionary containing answers and questions of the questionnaire.</param>
@@ -465,7 +475,11 @@ namespace PlayerProfilingAssetNameSpace
             foreach (QuestionItem qi in this.questionList.questionItemList)
                 html += createHTMLQuestionItem(qi, this.choiceList.choiceItemList);
             html += createSubmissionButton();
-            html += createSubmissionScript(this.defaultFormula, this.groupList.groups ,this.questionList.questionItemList, this.choiceList.choiceItemList.Count, questionnaireId);
+            String a2username = "student";
+            String a2pwd = "student";
+            String url = "http://192.168.222.166:3000";
+            html += createSubmissionScript(a2username,a2pwd,url,this.defaultFormula, this.groupList.groups,
+                this.questionList.questionItemList, this.choiceList.choiceItemList.Count, questionnaireId);
 
             return html + "</body>\n</html>";
         }
@@ -537,7 +551,7 @@ namespace PlayerProfilingAssetNameSpace
             return button;
         }
 
-        internal string createSubmissionScript(String defaultGroupFormula, List<QuestionnaireGroup> groupList, List<QuestionItem> questionItemList, int numberOfChoices, String questionnaireId)
+        internal string createSubmissionScript(String a2user, String a2pwd, String a2url, String defaultGroupFormula, List<QuestionnaireGroup> groupList, List<QuestionItem> questionItemList, int numberOfChoices, String questionnaireId)
         {
             string script = "<script>\n";
             script += "groupnames=[];\n";
@@ -694,29 +708,53 @@ namespace PlayerProfilingAssetNameSpace
 
 
             //GET HEALTH REQUEST - A2
-            script += "function getHealth(){\n";
+            script += "function getHealth(xml){\n";
             script += "  var httpGet  = new XMLHttpRequest();\n";
             script += "  httpGet.onreadystatechange = function(){\n";
             script += "    if(httpGet.readyState == 4 && httpGet.status == 200)\n";
-            script += "      alert(httpGet.responseText);\n";
-            script += "  }\n alert(\"http://192.168.222.166:3400/api/health\");";
-            script += "  httpGet.open(\"GET\",\"http://192.168.222.166:3400/api/health\",true);\n";
+            script += "      if(httpGet.responseText.indexOf(':\"Available\"')!=-1)\n";
+            script += "        login(xml);\n";
+            script += "  }\n";
+            script += "  httpGet.open('GET','"+a2url+"/api/proxy/gamestorage/health',true);\n";
             script += "  httpGet.send(null);\n";
             script += "};\n\n";
 
+            //POST LOGIN REQUEST - A2
+            script += "function login(xml){\n";
+            script += "  var httpPost  = new XMLHttpRequest();\n";
+            script += "  httpPost.onreadystatechange = function(){\n";
+            script += "    if(httpPost.readyState == 4 && httpPost.status == 200){\n";
+            script += "      var data = isolateData(httpPost.responseText);\n";
+            script += "      alert(data.token + ' - ' +data.id);\n";
+            script += "    }\n";
+            script += "  }\n";
+            script += "  httpPost.open('POST','"+a2url+"/api/login',true);\n";
+            script += "  var params = '{\"username\":\""+a2user+"\",\"password\":\""+a2pwd+"\"}';\n";
+            script += "  httpPost.setRequestHeader('Content-type', 'application/json');";
+            script += "  httpPost.send(params);";
+            script += "};\n\n";
+
+            //isolate id and token from LOGIN REQUEST
+            script += "function isolateData(json){\n";
+            script += "  id=json.substring(json.indexOf('\"_id\":')+7,json.indexOf(',\"username\":')-1);\n";
+            script += "  token=json.substring(json.indexOf('\"token\":')+9,json.length-3);\n";
+            script += "  var data = {id:id, token:token};\n";
+            script += "  return data;\n";
+            script += "};\n\n";
 
             //method for sending xml
             script += "function submit(xml){\n";
-            script += "  getHealth();\n";
-            script += "  alert(xml);\n";
+            script += "  getHealth(xml);\n";
+            //script += "  alert(xml);\n";
             script += "};\n\n";
+            //gethealt->login->(connected->)savestructure->savedata
 
 
             script += "</script>\n";
             return (script);
         }
         
-        public String getFormulaByGroupName(String groupName)
+        internal String getFormulaByGroupName(String groupName)
         {
             foreach (QuestionnaireGroup qg in this.groupList.groups)
             {

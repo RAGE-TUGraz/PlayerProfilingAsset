@@ -290,7 +290,29 @@ namespace UnitTestPlayerProfiler
 
             log("End test 5");
         }
-        
+
+
+        [TestMethod]
+        public void performTest6()
+        {
+            log("Start Test 6");
+            setQuestionnaireXMLData(createExampleQuestionnaireData());
+            String xml = getPPA().getQuestionnaireXML();
+
+            try
+            {
+                QuestionnaireData qd = QuestionnaireData.getQuestionnaireData(xml);
+                if (!xml.Equals(qd.toXmlString()))
+                    Assert.Fail();
+            }
+            catch
+            {
+                Assert.Fail();
+            }
+
+            log("End Test 6");
+        }
+
         #endregion TestMethods
     }
 
