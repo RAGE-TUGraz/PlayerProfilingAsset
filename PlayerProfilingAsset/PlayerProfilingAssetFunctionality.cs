@@ -212,7 +212,7 @@ namespace PlayerProfilingAssetNameSpace
             StorageLocations storageLocation = StorageLocations.Local;
             GameStorageClientAsset gameStorage = getGameStorageAsset();
 
-            String model = "PlayerProfilingAsset" + getQuestionnaireData().id;
+            String model = "PlayerProfilingAsset_" + getPPA().getPPASettings().PlayerId + "_" + getQuestionnaireData().id;
 
             Boolean isStructureRestored = gameStorage.LoadStructure(model, storageLocation);
             Boolean isDataRestored = gameStorage.LoadData(model, StorageLocations.Local, SerializingFormat.Json);
@@ -241,7 +241,7 @@ namespace PlayerProfilingAssetNameSpace
             StorageLocations storageLocation = StorageLocations.Local;
             GameStorageClientAsset gameStorage = getGameStorageAsset();
 
-            String model = "PlayerProfilingAsset" + getQuestionnaireData().id;
+            String model = "PlayerProfilingAsset_" + getPPA().getPPASettings().PlayerId + "_" + getQuestionnaireData().id;
 
             foreach (String group in results.Keys)
                 gameStorage[model].AddChild(group, storageLocation).Value = results[group];
@@ -259,7 +259,7 @@ namespace PlayerProfilingAssetNameSpace
                 storage = new GameStorageClientAsset();
                 storage.Bridge = AssetManager.Instance.Bridge;
 
-                String model = "PlayerProfilingAsset" + getQuestionnaireData().id;
+                String model = "PlayerProfilingAsset_"+ getPPA().getPPASettings().PlayerId + "_" + getQuestionnaireData().id;
                 storage.AddModel(model);
             }
             return storage;

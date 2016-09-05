@@ -50,6 +50,7 @@ namespace AssetPackage
             // Set Default values here.
             QuestionnaireDataXMLFileId = "QuestionnaireData.xml";
             HTMLQuestionnaireFileId = "QuestionnaireData.html";
+            PlayerId = "default";
         }
 
         #endregion Constructors
@@ -71,6 +72,16 @@ namespace AssetPackage
         /// </summary>
         [XmlElement()]
         public String HTMLQuestionnaireFileId
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Player Id for storing the questionnaire result data
+        /// </summary>
+        [XmlElement()]
+        public String PlayerId
         {
             get;
             set;
