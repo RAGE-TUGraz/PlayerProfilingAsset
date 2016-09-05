@@ -10,3 +10,5 @@ C:\Users\mmaurer\documents\visual studio 2015\Projects\A_PlayerProfiler\TestPlay
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\UnitTestPlayerProfiler.dll
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\UnitTestPlayerProfiler.pdb
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\ModelAsset.dll
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\TestPlayerProfiler\bin\Debug\ModelAsset.pdb

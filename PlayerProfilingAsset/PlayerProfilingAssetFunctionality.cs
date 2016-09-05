@@ -62,6 +62,11 @@ namespace PlayerProfilingAssetNameSpace
         /// </summary>
         internal Dictionary<string,double> questionnaireResults = null;
 
+        /// <summary>
+        /// Instance of the game storage asset
+        /// </summary>
+        private GameStorageClientAsset storage = null;
+
         #endregion Fields
         #region Constructors
 
@@ -201,15 +206,63 @@ namespace PlayerProfilingAssetNameSpace
         /// <summary>
         /// Method for retrieving the game storage - results of the questionnaire
         /// </summary>
-        /// <returns> Dictionary containing the group as key and the value of the questionnaire </returns>
+        /// <returns> Dictionary containing the group as key and the value of the questionnaire, is possible - null otherwise </returns>
         internal Dictionary<string,double> getQuestionnaireResultFromGameStorage()
         {
-            throw new NotImplementedException();
-            /*
-            String xmlStringQuestionnaireResults = "";
-            questionnaireResults = getQuestionnaireAnswerDataFromXmlString(xmlStringQuestionnaireResults).getResults();
-            return questionnaireResults;
-            */
+            StorageLocations storageLocation = StorageLocations.Local;
+            GameStorageClientAsset gameStorage = getGameStorageAsset();
+
+            String model = "PlayerProfilingAsset" + "dummyId";
+
+            gameStorage.AddModel(model);
+            Boolean isStructureRestored = gameStorage.LoadStructure(model, storageLocation);
+            Boolean isDataRestored = gameStorage.LoadData(model, StorageLocations.Local, SerializingFormat.Json);
+            if (isStructureRestored && isDataRestored)
+            {
+                loggingPPA("Questionnaire results were restored from local file.");
+                Dictionary<string, double> results = new Dictionary<string, double>();
+                foreach (Node node in storage[model].Children)
+                    results.Add(node.Name, (double)node.Value);
+                return results;
+            }
+            else
+            {
+                loggingPPA("Questionnaire results could not be restored from local file!");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Method for storing data via game storage
+        /// </summary>
+        /// <param name="results"> Dictionary containing the group as key and the value of the questionnaire </returns>
+        internal void storeQuestionnaireResultViaGameStorage(Dictionary<string, double> results)
+        {
+            StorageLocations storageLocation = StorageLocations.Local;
+            GameStorageClientAsset gameStorage = getGameStorageAsset();
+
+            String model = "PlayerProfilingAsset" + "dummyId";
+
+            foreach (String group in results.Keys)
+                gameStorage[model].AddChild(group, storageLocation).Value = results[group];
+
+
+            gameStorage.SaveStructure(model, storageLocation);
+            gameStorage.SaveData(model, storageLocation, SerializingFormat.Json);
+
+        }
+
+        internal GameStorageClientAsset getGameStorageAsset()
+        {
+            if (storage == null)
+            {
+                storage = new GameStorageClientAsset();
+                storage.Bridge = AssetManager.Instance.Bridge;
+
+                String model = "PlayerProfilingAsset" + "dummyId";
+                storage.AddModel(model);
+            }
+            return storage;
         }
 
         #endregion InternalMethods
@@ -403,6 +456,7 @@ namespace PlayerProfilingAssetNameSpace
 
 
             PlayerProfilerHandler.Instance.questionnaireResults = groupResult;
+            PlayerProfilerHandler.Instance.storeQuestionnaireResultViaGameStorage(groupResult);
 
             return true;
         }

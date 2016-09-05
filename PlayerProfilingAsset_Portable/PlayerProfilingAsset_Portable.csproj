@@ -54,6 +54,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="GameStorageClientAsset_Portable">
+      <HintPath>..\..\ClientSideGameStorageAsset\GameStorageClientAsset_Portable\bin\Debug\GameStorageClientAsset_Portable.dll</HintPath>
+    </Reference>
     <Reference Include="RageAssetManager">
       <HintPath>..\..\AssetManager\RageAssetManager_Portable\bin\Debug\RageAssetManager.dll</HintPath>
     </Reference>

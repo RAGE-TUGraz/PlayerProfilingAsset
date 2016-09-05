@@ -8,3 +8,5 @@ C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTest
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\obj\Debug\UnitTestPlayerProfiler.csprojResolveAssemblyReference.cache
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\obj\Debug\UnitTestPlayerProfiler.dll
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\obj\Debug\UnitTestPlayerProfiler.pdb
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\bin\Debug\ModelAsset.dll
+C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\bin\Debug\ModelAsset.pdb
