@@ -212,9 +212,8 @@ namespace PlayerProfilingAssetNameSpace
             StorageLocations storageLocation = StorageLocations.Local;
             GameStorageClientAsset gameStorage = getGameStorageAsset();
 
-            String model = "PlayerProfilingAsset" + "dummyId";
+            String model = "PlayerProfilingAsset" + getQuestionnaireData().id;
 
-            gameStorage.AddModel(model);
             Boolean isStructureRestored = gameStorage.LoadStructure(model, storageLocation);
             Boolean isDataRestored = gameStorage.LoadData(model, StorageLocations.Local, SerializingFormat.Json);
             if (isStructureRestored && isDataRestored)
@@ -223,6 +222,7 @@ namespace PlayerProfilingAssetNameSpace
                 Dictionary<string, double> results = new Dictionary<string, double>();
                 foreach (Node node in storage[model].Children)
                     results.Add(node.Name, (double)node.Value);
+                questionnaireResults = results;
                 return results;
             }
             else
@@ -241,7 +241,7 @@ namespace PlayerProfilingAssetNameSpace
             StorageLocations storageLocation = StorageLocations.Local;
             GameStorageClientAsset gameStorage = getGameStorageAsset();
 
-            String model = "PlayerProfilingAsset" + "dummyId";
+            String model = "PlayerProfilingAsset" + getQuestionnaireData().id;
 
             foreach (String group in results.Keys)
                 gameStorage[model].AddChild(group, storageLocation).Value = results[group];
@@ -259,7 +259,7 @@ namespace PlayerProfilingAssetNameSpace
                 storage = new GameStorageClientAsset();
                 storage.Bridge = AssetManager.Instance.Bridge;
 
-                String model = "PlayerProfilingAsset" + "dummyId";
+                String model = "PlayerProfilingAsset" + getQuestionnaireData().id;
                 storage.AddModel(model);
             }
             return storage;
@@ -341,6 +341,12 @@ namespace PlayerProfilingAssetNameSpace
     public class QuestionnaireData
     {
         #region Fields
+        /// <summary>
+        /// Id to distinguish questionnaires
+        /// </summary>
+        [XmlElement("uuid")]
+        public String id { get; set; }
+
         /// <summary>
         /// Class storing all questions.
         /// </summary>
