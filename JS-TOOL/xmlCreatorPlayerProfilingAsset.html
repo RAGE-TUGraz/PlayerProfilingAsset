@@ -306,12 +306,12 @@
                 var html = "<h3>Load predefined questionnaires.</h3>";
                 html += "<div class='m1loadingdiv' id='m1loadingelements'>";
                 html += "<p>questionnaires:</p>";
-                html += "<select id='selectstructure' >";
+                html += "<select id='selectstructure' class='hover'>";
                 for (var i = 0; i < this.structures.length; i++) {
                     html += "<option value='" + this.structures[i] + "'>" + this.structures[i] + "</option>";
                 }
                 html += "</select>";
-                html += "<p><input type='button' value='load' id='m1loadstructurebutton'></p>";
+                html += "<p><input type='button' value='load' id='m1loadstructurebutton' class='hover'></p>";
                 html += "</div>";
                 html += "<div class='m1loadingdiv' id='m1loadingdescription'>";
                 html += "<textarea id='m1structuredescription' rows='5' cols='50' readonly>";
@@ -622,7 +622,7 @@
                 html += "<tr><th class='questiontableelement'>grouping</th><th class='questiontableelement' colspan='2'>questions</th></tr>";
                 for (var i = 0; i < menu.data.questions.length; i++) {
                     html += "<tr><td class='questiontableelement' >";
-                    html += "<select class='groupselect' id='groupSelect-" + i + "'>";
+                    html += "<select class='groupselect hover' id='groupSelect-" + i + "'>";
                     html += "<option value='none'>-</option>";
                     for (var j = 0; j < menu.data.groups.length; j++) {
                         html += "<option value='" + menu.data.groups[j] + "' ";
@@ -640,7 +640,7 @@
                 html += "<table id='grouptable'>";
                 html += "<tr><th class='grouptableelement' colspan='2'>question-groups</th></tr>";
                 for (var i = 0; i < menu.data.groups.length; i++) {
-                    html += "<tr><td class='grouptableelement'>" + menu.data.groups[i] + "</td><td class='grouptableelement' id='deleteGroup-" + i + "'>-</td></tr>";
+                    html += "<tr><td class='grouptableelement'>" + menu.data.groups[i] + "</td><td class='grouptableelement hover' id='deleteGroup-" + i + "'>-</td></tr>";
                 }
                 html += "<tr><td class='grouptableelement'  colspan='2'><input size='40' type='text' value='add new group' id='addNewGroup'></td></tr>";
                 html += "</table>";
@@ -671,10 +671,8 @@
 
                 for (var i = 0; i < menu.data.groups.length; i++) {
                     document.getElementById('deleteGroup-' + i).onclick = function () {
-                        var pos = this.id.substring(12, this.id.length);
-                        var elementToDelete = menu.data.groups[pos];
-                        var pos = menu.data.questionsGroup.indexOf(elementToDelete);
-                        menu.data.deleteGroup(pos);
+                        var posi = this.id.substring(12, this.id.length);
+                        menu.data.deleteGroup(posi);
                         fillMenu();
                     }
                 }
@@ -734,7 +732,7 @@
                     html += "<div class='spacing' id='spacingAfter-" + i + "'></div>";
                 }
                 html += "</div>";
-                html += "<input type='button' id='addChoiceButton' value='add option'>";
+                html += "<input type='button' id='addChoiceButton' value='add option' class='hover'>";
                 html += "<div id='deleteChoiceDiv'> Drag here to delete &#10008</div>";
                 html += "<div>";
                 document.getElementById(div).innerHTML = html;
@@ -754,7 +752,7 @@
 
                 document.getElementById('deleteChoiceDiv').onmouseup = function () {
                     if (menu.getActiveMenu().mousedown != null) {
-                        menu.data.deleteGroup(menu.getActiveMenu().mousedown);
+                        menu.data.deleteScaleitem(menu.getActiveMenu().mousedown);
                         fillMenu();
                     }
                 }
@@ -829,7 +827,7 @@
             this.noLines;
             this.fillHTML = function (div) {
                 var html = "<h3>The resulting XML:</h3>";
-                html += "<button type='button' onclick='startDownload()'>Download XML file.</button></br>";
+                html += "<button type='button' onclick='startDownload()' class='hover'>Download XML file.</button></br>";
                 var xml = createXML();
                 var formattedXml = this.formatXML(xml).replace(/<br>/g, "\n");
                 document.getElementById(div).innerHTML = html + "<textarea rows='" + (this.noLines + 10) + "' cols='120' readonly>" + formattedXml + "</texterea>";
@@ -894,7 +892,7 @@
                 }
 
                 //button
-                html += "<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>";
+                html += "<div class='submit' id='submitbutton'> <button type='button' class='hover'>Submit!</button> </div>";
 
                 html += "</div>";
                 document.getElementById(div).innerHTML = html;
@@ -950,7 +948,7 @@
                 for (var i = 0; i < menu.data.questions.length; i++) {
                     if ((choiceOfQuestions == 'all' && menu.data.questionsGroup[i] == "") || menu.data.questionsGroup[i] == choiceOfQuestions) {
                         html += "<tr><td id='evaluationquestion-" + i + "' class='evaluationquestiontableclass hover'>" + menu.data.questions[i] + "</td><td>";
-                        html += "<select id='evaluationtemplate-" + i + "'>";
+                        html += "<select id='evaluationtemplate-" + i + "' class='hover'>";
                         html += "<option value=''>-</option>";
                         for (var j = 0; j < menu.data.mappingTemplatesName.length; j++) {
                             html += "<option value='" + menu.data.mappingTemplatesName[j] + "' ";
@@ -1035,7 +1033,7 @@
                 }
                 html += "</table>";
                 html += "<div>";
-                html += "save mapping as template: <input type='text' id='saveastemplatename' size='2' maxlength='2'><input type='button' value='save' id='saveastemplatebutton'>";
+                html += "save mapping as template: <input type='text' id='saveastemplatename' size='2' maxlength='2'><input type='button' value='save' id='saveastemplatebutton' class='hover'>";
                 html += "</div>";
                 document.getElementById(div).innerHTML = html;
 
@@ -1188,12 +1186,12 @@
 
         
 
-        <div id='m1' class='menu'>overview</div>
-        <div id='m2' class='menu'>enter questions</div>
-        <div id='m3' class='menu'>enter metadata</div>
-        <div id='m6' class='menu'>evaluation</div>
-        <div id='m5' class='menu'>questionnaire preview</div>
-        <div id='m4' class='menu'>get xml</div>
+        <div id='m1' class='menu hover'>overview</div>
+        <div id='m2' class='menu hover'>enter questions</div>
+        <div id='m3' class='menu hover'>enter metadata</div>
+        <div id='m6' class='menu hover'>evaluation</div>
+        <div id='m5' class='menu hover'>questionnaire preview</div>
+        <div id='m4' class='menu hover'>get xml</div>
         <div id='dataInputField'>
             Chose a menu and start filling in the asset specifications.
         </div>
