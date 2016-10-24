@@ -185,6 +185,18 @@
             downloadLink.click();
         }
 
+        //file upload
+        function openFile(event) {
+            var input = event.target;
+
+            var reader = new FileReader();
+            reader.onload = function () {
+                var text = reader.result;
+                menu.menuArray[7].readInXML(text);
+            };
+            reader.readAsText(input.files[0]);
+        };
+
         //Method for creating the XML-string out of the information gathered from the user
         function createXML() {
             return menu.toXML();
@@ -248,6 +260,7 @@
             this.menuArray[4] = new Menu4();
             this.menuArray[5] = new Menu5();
             this.menuArray[6] = new Menu6();
+            this.menuArray[7] = new Menu7();
             this.getActiveMenu = function () {
                 return (this.menuArray[this.activeMenu])
             }
@@ -1082,6 +1095,77 @@
             };
         };
 
+        //menu 7 object
+        function Menu7() {
+            this.fillHTML = function (div) {
+                var html = "<h3>Upload XML structure</h3>";
+                html += "<input type='file' id='selectedFile' style='display: none;' onchange='openFile(event);' />";
+                html += "<input type='button' value='Browse...' onclick=\"document.getElementById('selectedFile').click();\" />";
+                document.getElementById(div).innerHTML = html;
+            };
+            this.getParser = function (xml) {
+                if (window.DOMParser) {
+                    parser = new DOMParser();
+                    xmlDoc = parser.parseFromString(xml, "text/xml");
+                }
+                else // Internet Explorer
+                {
+                    xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                    xmlDoc.async = false;
+                    xmlDoc.loadXML(xml);
+                }
+                return (xmlDoc);
+            };
+            this.readInXML = function (xml) {
+                data = menu.data;
+                alert(xml);
+
+                //delete old data
+                data.questions = [];
+                data.questionsGroup = [];
+                data.groups = [];
+                data.questionsMapping = [];
+                data.groupsFormula = [];
+                data.scaleitems = [];
+                data.mappingTemplatesName = [];
+                data.mappingTemplates = [];
+                data.mappingTemplatesChoosen = [];
+
+                //fill data
+                parser = this.getParser(xml);
+                data.title = parser.getElementsByTagName('title')[0].childNodes[0].nodeValue;
+                data.instructions = parser.getElementsByTagName('instructions')[0].childNodes[0].nodeValue;
+                data.defaultFormula = parser.getElementsByTagName('defaultgroupformula')[0].childNodes[0].nodeValue;
+                var qitems = parser.getElementsByTagName('questionitem');
+                for (var i = 0; i < qitems.length; i++) {
+                    data.questions.push(qitems[i].getElementsByTagName('question')[0].childNodes[0].nodeValue);
+                    data.questionsGroup.push(qitems[i].getElementsByTagName('group')[0].childNodes[0].nodeValue);
+                    //answermapping
+                    var mapping = [];
+                    var map = qitems[i].getElementsByTagName('entry');
+                    for (var j = 0; j < map.length; j++) {
+                        //var from = map[j].getElementsByTagName('from')[0].childNodes[0].nodeValue;
+                        //var to = map[j].getElementsByTagName('to')[0].childNodes[0].nodeValue;
+                        mapping[map[j].getElementsByTagName('from')[0].childNodes[0].nodeValue] = map[j].getElementsByTagName('to')[0].childNodes[0].nodeValue;
+                    }
+                    data.questionsMapping.push(mapping);
+                    data.mappingTemplatesChoosen.push("");
+                }
+                var citems = parser.getElementsByTagName('choiceitem');
+                for (var i = 0; i < citems.length; i++) {
+                    //var choice = citems[i].getElementsByTagName('choice')[0].childNodes[0].nodeValue;
+                    //var position = citems[i].getElementsByTagName('position')[0].childNodes[0].nodeValue;
+                    //answermapping
+                    //alert(choice + " - " + position);
+                    data.scaleitems[citems[i].getElementsByTagName('position')[0].childNodes[0].nodeValue] = citems[i].getElementsByTagName('choice')[0].childNodes[0].nodeValue;
+                }
+                var groups = parser.getElementsByTagName('groups')[0].getElementsByTagName('group');
+                for (var i = 0; i < groups.length; i++) {
+                    data.groups.push(groups[i].getElementsByTagName('name')[0].childNodes[0].nodeValue);
+                    data.groupsFormula.push(groups[i].getElementsByTagName('formula')[0].childNodes[0].nodeValue);
+                }
+            };
+        };
 
         //data object
         function Data() {
@@ -1191,7 +1275,8 @@
         <div id='m3' class='menu hover'>enter metadata</div>
         <div id='m6' class='menu hover'>evaluation</div>
         <div id='m5' class='menu hover'>questionnaire preview</div>
-        <div id='m4' class='menu hover'>get xml</div>
+        <div id='m4' class='menu hover'>get XML</div>
+        <div id='m7' class='menu hover'>upload XML</div>
         <div id='dataInputField'>
             Chose a menu and start filling in the asset specifications.
         </div>
