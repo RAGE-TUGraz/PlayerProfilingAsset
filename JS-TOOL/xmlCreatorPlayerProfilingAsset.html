@@ -153,6 +153,7 @@
             padding: 5px;
          }
 
+
         /*  menu - specific style information */
     </style>
 
@@ -737,7 +738,7 @@
                 html += "<input type='text' value='" + menu.data.title + "' id='qheading' size='100'>";
                 html += "<p>instruction text:</p>";
                 html += "<textarea cols='80' rows='10' id='qinstruction'>" + menu.data.instructions + "</textarea>";
-                html += "<p>rating options:</p>";
+                html += "<p>rating options (drag and drop - some browser may require an extra click after the drop):</p>";
                 html += "<div id='scale'>";
                 html += "<div class='spacing' id='spacingAfter-start'></div>";
                 for (var i = 0; i < menu.data.scaleitems.length; i++) {
@@ -746,7 +747,7 @@
                 }
                 html += "</div>";
                 html += "<input type='button' id='addChoiceButton' value='add option' class='hover'>";
-                html += "<div id='deleteChoiceDiv'> Drag here to delete &#10008</div>";
+                html += "<div id='deleteChoiceDiv'> Drag here to delete (some browser may require an extra click after the drop) &#10008</div>";
                 html += "<div>";
                 document.getElementById(div).innerHTML = html;
 

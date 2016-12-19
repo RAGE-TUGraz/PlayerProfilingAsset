@@ -252,6 +252,10 @@ namespace PlayerProfilingAssetNameSpace
 
         }
 
+        /// <summary>
+        /// Method for returning the game storage asset instance.
+        /// </summary>
+        /// <returns>Instance of the game storage asset</returns>
         internal GameStorageClientAsset getGameStorageAsset()
         {
             if (storage == null)
