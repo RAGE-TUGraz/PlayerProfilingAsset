@@ -143,15 +143,6 @@ namespace PlayerProfilingAssetNameSpace
         {
             return PlayerProfilerHandler.Instance.getQuestionnaireData().checkAnswerData(answers);
         }
-        
-        /// <summary>
-        /// Method returning the Asset settings.
-        /// </summary>
-        /// <returns> Settings of the Asset. </returns>
-        internal PlayerProfilingAssetSettings getPPASettings()
-        {
-            return this.settings;
-        }
 
         #endregion Methods
     }

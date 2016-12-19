@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ModelAsset">
-      <HintPath>..\..\ClientSideGameStorageAsset\GameStorageClientAsset\bin\Debug\ModelAsset.dll</HintPath>
+    <Reference Include="GameStorageClientAsset">
+      <HintPath>..\..\ClientSideGameStorageAsset\GameStorageClientAsset\bin\Debug\GameStorageClientAsset.dll</HintPath>
     </Reference>
     <Reference Include="RageAssetManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
