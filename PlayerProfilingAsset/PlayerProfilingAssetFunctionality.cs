@@ -55,7 +55,7 @@ namespace PlayerProfilingAssetNameSpace
         /// <summary>
         /// Instance of the class PlayerProfilerHandler - Singelton pattern
         /// </summary>
-        private static PlayerProfilerHandler instance;
+        static readonly PlayerProfilerHandler instance = new PlayerProfilerHandler();
 
         /// <summary>
         /// Dictionary holding group-evaluation results after the evaluation of the questionnaire
@@ -85,10 +85,6 @@ namespace PlayerProfilingAssetNameSpace
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new PlayerProfilerHandler();
-                }
                 return instance;
             }
         }
