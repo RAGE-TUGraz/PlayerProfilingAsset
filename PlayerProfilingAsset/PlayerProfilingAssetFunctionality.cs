@@ -278,53 +278,6 @@ namespace PlayerProfilingAssetNameSpace
             getPPA().Log(severity, "[PPA]: " + msg);
         }
 
-        /*
-        /// <summary>
-        /// Method creating an example Questionnaire datastructure for test purpose4s.
-        /// </summary>
-        /// <returns> example Questionnaire datastructure </returns>
-        internal QuestionnaireData createExampleQuestionnaireData()
-        {
-            QuestionItem q1 = new QuestionItem(1, "How do you feel?");
-            QuestionItem q2 = new QuestionItem(2, "Do you like games?");
-            QuestionItem q3 = new QuestionItem(3, "Do you like fast cars?");
-            QuestionItem q4 = new QuestionItem(4, "Do you enjoy silence?");
-            QuestionItem q5 = new QuestionItem(5, "Do you like swimming?");
-            QuestionItem[] qia = { q1, q2, q3, q4, q5 };
-            List<QuestionItem> qil = new List<QuestionItem>(qia);
-
-            ChoiceItem c1 = new ChoiceItem(0, "Very good/much.");
-            ChoiceItem c2 = new ChoiceItem(1, "I do not know.");
-            ChoiceItem c3 = new ChoiceItem(2, "Very bad/Not very much.");
-            ChoiceItem[] cia = { c1, c2, c3 };
-            List<ChoiceItem> cil = new List<ChoiceItem>(cia);
-
-            QuestionnaireData qd = new QuestionnaireData(qil, cil);
-            qd.title = "Fancy questionnaire:";
-            qd.instructions = "Please fill in the following form.";
-
-            return qd;
-        }
-
-        /// <summary>
-        /// Method for storing Questionnaire data as xml in a File.
-        /// </summary>
-        /// 
-        /// <param name="qd"> Questionnaire data to store. </param>
-        /// <param name="fileId"> String containing the file identification. </param>
-        internal void writeQuestionnaireDataToXMLFile(QuestionnaireData qd, String fileId)
-        {
-            IDataStorage ids = (IDataStorage)AssetManager.Instance.Bridge;
-            if (ids != null)
-            {
-                loggingPPA("Storing Questionnaire data to XML File.");
-                ids.Save(fileId + ".xml", qd.toXmlString());
-            }
-            else
-                loggingPPA("No IDataStorage - Bridge implemented!", Severity.Warning);
-        }
-        */
-
         #endregion TestMethods
     }
 
