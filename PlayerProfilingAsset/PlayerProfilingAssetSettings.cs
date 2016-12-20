@@ -29,7 +29,6 @@
 namespace AssetPackage
 {
     using System;
-    using System.ComponentModel;
     using System.Xml.Serialization;
 
     /// <summary>
