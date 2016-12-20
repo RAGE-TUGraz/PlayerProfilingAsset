@@ -72,8 +72,7 @@ namespace TestPlayerProfiler
         /// <param name="msg"> Message to be logged </param>
         public void log(String msg, Severity severity = Severity.Information)
         {
-            ILog logger = (ILog)AssetManager.Instance.Bridge;
-            logger.Log(severity, "[PPA Test]" + msg);
+            AssetManager.Instance.Log(severity, "[PPA Test]: {0}", msg);
         }
 
         /// <summary>
