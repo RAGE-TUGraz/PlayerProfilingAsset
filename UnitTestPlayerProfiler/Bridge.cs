@@ -35,7 +35,7 @@ namespace UnitTestPlayerProfiler
 {
     public class Bridge : IBridge, ILog, IDataStorage, IWebServiceRequest
     {
-        string IDataStoragePath = @"C:\Users\mmaurer\Desktop\rageCsFiles\";
+        string IDataStoragePath = "./";// @"C:\Users\mmaurer\Desktop\rageCsFiles\";
 
         #region IDataStorage
 

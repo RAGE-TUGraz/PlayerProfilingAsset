@@ -1,0 +1,176 @@
+<!DOCTYPE html>  <html><head><meta charset='UTF-8'> <title>Questionnaire</title>
+<style type='text/css'>h1 {color:black; text-align: center; }div.question {display:inline-block; width: 25%;}div.choice {display:inline-block; width: 25%; }div.questionItem {}div.submit {text-align:center;}</style>
+</head>
+<body><div><h1>Fancy questionnaire:</h1><p>Please fill in the following form.</p></div>
+<div><div class='question'> &nbsp; </div><div class='choice'> Very good/much.</div><div class='choice'> I do not know.</div><div class='choice'> Very bad/Not very much.</div><br></div>
+<div id='qi-1' class='questionItem A'><div class='question'>How do you feel?</div><div class='choice'> <input type='radio' name='1' value='0'></div><div class='choice'> <input type='radio' name='1' value='1'></div><div class='choice'> <input type='radio' name='1' value='2'></div><br></div>
+<div id='qi-2' class='questionItem A'><div class='question'>Do you like games?</div><div class='choice'> <input type='radio' name='2' value='0'></div><div class='choice'> <input type='radio' name='2' value='1'></div><div class='choice'> <input type='radio' name='2' value='2'></div><br></div>
+<div id='qi-3' class='questionItem A'><div class='question'>Do you like fast cars?</div><div class='choice'> <input type='radio' name='3' value='0'></div><div class='choice'> <input type='radio' name='3' value='1'></div><div class='choice'> <input type='radio' name='3' value='2'></div><br></div>
+<div id='qi-4' class='questionItem A'><div class='question'>Do you enjoy silence?</div><div class='choice'> <input type='radio' name='4' value='0'></div><div class='choice'> <input type='radio' name='4' value='1'></div><div class='choice'> <input type='radio' name='4' value='2'></div><br></div>
+<div id='qi-5' class='questionItem A'><div class='question'>Do you like swimming?</div><div class='choice'> <input type='radio' name='5' value='0'></div><div class='choice'> <input type='radio' name='5' value='1'></div><div class='choice'> <input type='radio' name='5' value='2'></div><br></div>
+<div class='submit' id='submitbutton'> <button type='button'>Submit!</button> </div>
+<script>
+groupnames=[];
+groupformulas=[];
+groupvalues=[];
+
+document.getElementById('submitbutton').onclick=function(){
+  if(done()){
+    calculatGroupValue();
+    var xml=getXMLContent();
+    submit(xml);
+  }else{
+    alert('Please answer all questions!');  };
+};
+
+function done(){
+  var elements = document.getElementsByClassName('questionItem');
+  for(var i=0;i<elements.length;i++){
+    var id = elements[i].id.substring(3,elements[i].id.length);
+    if(findSelection(id)=='')
+      return(false);
+  };
+  return(true);
+};
+
+function findSelection(id){
+  var elements = document.getElementsByName(id);
+  for(var i=0; i<elements.length;i++){
+    if(elements[i].checked==true){
+      return(elements[i].value);
+    }
+  }
+  return('');
+};
+
+function getGroups(){
+  groupnames=[];
+  groupformulas=[];
+  groupvalues = [];
+  groupnames.push('A');
+  groupvalues.push(0);
+  groupformulas.push('SUM/5');
+};
+
+function calculateGroupSum(){
+  getGroups();
+  var elements = document.getElementsByClassName('questionItem');
+  for(var i=0;i<elements.length;i++){
+    var id = elements[i].id.substring(3,elements[i].id.length);
+    var group='';
+    if(elements[i].className.length > 13)
+        group = elements[i].className.substring(13,elements[i].className.length);
+    groupvalues[groupnames.indexOf(group)] += parseInt(findSelection(id));
+  };
+};
+
+function calculatGroupValue(){
+  calculateGroupSum();
+  for(var i=0;i<groupvalues.length;i++){
+    result = eval(groupformulas[i].replace(/SUM/g,groupvalues[i]));
+    groupvalues[i]=result;
+  };
+};
+
+function eval(term){
+  term = term.replace(/:/g,'/');
+  var numbers='0123456789';
+  var operators='-+*/';
+  var onlyNumbersSoFar = true;
+  for(var i=0;i<term.length;i++){
+    if(numbers.indexOf(term[i])>-1 || (i==0  && term[i]=='-'))
+      continue;
+    onlyNumbersSoFar = false;
+  };
+  if(onlyNumbersSoFar)
+    return(parseInt(term));  var control=term.indexOf('(');
+  var control1;
+  var control2;
+  var term1;
+  var term2;
+  if(control>-1){
+    term1=term.substring(0,control+1);
+    term2=term.substring(control+1,term.length);
+    while(true){
+      control1 = term2.indexOf(')');
+      control2 = term2.indexOf('(');
+      if(control2==-1 || control1<control2){
+        //alert(term1.substring(0,term1.length-1) +'&'+term2.substring(0,control1)+'&'+term2.substring(control1+1,term2.length));
+        return(eval(term1.substring(0,term1.length-1)+eval(term2.substring(0,control1))+term2.substring(control1+1,term2.length)));
+      }else{
+        term1 += term2.substring(0,control2+1);
+        term2 = term2.substring(control2+1,term2.length);
+      };
+    };
+  };
+  control=term.indexOf('*');
+  if(control>-1){
+    return(eval(term.substring(0,control))*eval(term.substring(control+1,term.length)));
+  };
+  control=term.indexOf('/');
+  if(control>-1){
+    return(eval(term.substring(0,control))/eval(term.substring(control+1,term.length)));
+  };
+  control=term.indexOf('+');
+  if(control>-1){
+    return(eval(term.substring(0,control))+eval(term.substring(control+1,term.length)));
+  };
+  control=term.indexOf('-');
+  if(control>-1){
+    return(eval(term.substring(0,control))-eval(term.substring(control+1,term.length)));
+  };
+};
+
+function getXMLContent(){
+  var xml = "";
+  xml += '<questionnaireanswers>';
+  xml += '<groups>';
+  for(var i=0;i<groupnames.length;i++){
+    xml += '<group>';
+    xml += '<name>'+groupnames[i]+'</name>';
+    xml += '<rating>'+groupvalues[i]+'</rating>';
+    xml += '</group>';
+  };
+  xml += '</groups>';
+  xml+= '<questionnaireid>testid</questionnaireid>';
+  xml +='</questionnaireanswers>';
+  return(xml);
+};
+
+function getHealth(xml){
+  var httpGet  = new XMLHttpRequest();
+  httpGet.onreadystatechange = function(){
+    if(httpGet.readyState == 4 && httpGet.status == 200)
+      if(httpGet.responseText.indexOf(':"Available"')!=-1)
+        login(xml);
+  }
+  httpGet.open('GET','http://192.168.222.166:3000/api/proxy/gamestorage/health',true);
+  httpGet.send(null);
+};
+
+function login(xml){
+  var httpPost  = new XMLHttpRequest();
+  httpPost.onreadystatechange = function(){
+    if(httpPost.readyState == 4 && httpPost.status == 200){
+      var data = isolateData(httpPost.responseText);
+      alert(data.token + ' - ' +data.id);
+    }
+  }
+  httpPost.open('POST','http://192.168.222.166:3000/api/login',true);
+  var params = '{"username":"student","password":"student"}';
+  httpPost.setRequestHeader('Content-type', 'application/json');  httpPost.send(params);};
+
+function isolateData(json){
+  id=json.substring(json.indexOf('"_id":')+7,json.indexOf(',"username":')-1);
+  token=json.substring(json.indexOf('"token":')+9,json.length-3);
+  var data = {id:id, token:token};
+  return data;
+};
+
+function submit(xml){
+  getHealth(xml);
+};
+
+</script>
+</body>
+</html>

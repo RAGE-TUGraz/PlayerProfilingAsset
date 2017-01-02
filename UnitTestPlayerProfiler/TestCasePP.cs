@@ -224,6 +224,7 @@ namespace UnitTestPlayerProfiler
             log("Start Test 2");
             try
             {
+                setQuestionnaireXMLData(createExampleQuestionnaireData());
                 string fileId = getPPA().getQuestionnaireFileId();
                 log("FileId for created HTML: " + fileId);
             }
@@ -271,6 +272,7 @@ namespace UnitTestPlayerProfiler
             log("Start Test 4");
             try
             {
+                setQuestionnaireXMLData(createExampleQuestionnaireData());
                 String xml = getPPA().getQuestionnaireXML();
                 log("XML:\n" + xml);
             }

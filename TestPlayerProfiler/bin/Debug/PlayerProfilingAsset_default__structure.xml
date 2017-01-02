@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Model>
+<Nodes>
+<NodePath>
+  <Path />
+  <Purpose>PlayerProfilingAsset_default_</Purpose>
+  <Location>Local</Location>
+</NodePath>
+<NodePath>
+  <Path>A</Path>
+  <Location>Local</Location>
+</NodePath>
+</Nodes>
+</Model>
