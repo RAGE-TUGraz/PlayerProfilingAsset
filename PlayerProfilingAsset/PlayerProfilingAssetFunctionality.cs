@@ -96,8 +96,6 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> Instance of the PlayerProfilingAsset </returns>
         internal PlayerProfilingAsset getPPA()
         {
-            if (playerProfilingAsset == null)
-                playerProfilingAsset = (PlayerProfilingAsset)AssetManager.Instance.findAssetByClass("PlayerProfilingAsset");
             return (playerProfilingAsset);
         }
 

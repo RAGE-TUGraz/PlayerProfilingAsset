@@ -66,6 +66,8 @@ namespace PlayerProfilingAssetNameSpace
                 this.Log(Severity.Error, "There is only one instance of the PlayerProfilingAsset permitted!");
                 throw new Exception("EXCEPTION: There is only one instance of the PlayerProfilingAsset permitted!");
             }
+
+            PlayerProfilerHandler.Instance.playerProfilingAsset = this;
         }
 
         #endregion Constructors
