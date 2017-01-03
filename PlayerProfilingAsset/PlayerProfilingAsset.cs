@@ -47,7 +47,6 @@ namespace PlayerProfilingAssetNameSpace
         private PlayerProfilingAssetSettings settings = null;
 
         #endregion Fields
-
         #region Constructors
 
         /// <summary>
@@ -71,7 +70,6 @@ namespace PlayerProfilingAssetNameSpace
         }
 
         #endregion Constructors
-
         #region Properties
 
         /// <summary>
@@ -100,7 +98,6 @@ namespace PlayerProfilingAssetNameSpace
         }
 
         #endregion Properties
-
         #region Methods
 
         /// <summary>
@@ -146,5 +143,18 @@ namespace PlayerProfilingAssetNameSpace
         }
 
         #endregion Methods
+        #region internal Methods
+
+        /// <summary>
+        /// Wrapper method for getting the getInterface method of the base Asset
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <returns>Corresponding Interface</returns>
+        internal T getInterfaceFromAsset<T>()
+        {
+            return this.getInterface<T>();
+        }
+
+        #endregion internal Methods
     }
 }
