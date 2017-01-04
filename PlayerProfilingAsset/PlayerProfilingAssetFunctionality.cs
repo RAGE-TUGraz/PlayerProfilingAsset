@@ -91,7 +91,7 @@ namespace PlayerProfilingAssetNameSpace
         /// <param name="fileId"> String containing the file identification. </param>
         internal void writeQuestionnaireDataToHTMLFile(QuestionnaireData qd, String fileId)
         {
-            IDataStorage ids = (IDataStorage)AssetManager.Instance.Bridge;
+            IDataStorage ids = PlayerProfilingAsset.Instance.getInterfaceFromAsset<IDataStorage>();
             if (ids != null)
             {
                 loggingPPA("Storing Questionnaire data to HTML File.");
@@ -109,8 +109,8 @@ namespace PlayerProfilingAssetNameSpace
         internal QuestionnaireData getQuestionnaireData()
         {
             string fileId = ((PlayerProfilingAssetSettings) getPPA().Settings).QuestionnaireDataXMLFileId;
-
-            IDataStorage ids = (IDataStorage)AssetManager.Instance.Bridge;
+            
+            IDataStorage ids = PlayerProfilingAsset.Instance.getInterfaceFromAsset<IDataStorage>();
             if (ids != null)
             {
                 if (!ids.Exists(fileId))
