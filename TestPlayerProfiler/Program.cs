@@ -45,7 +45,7 @@ namespace TestPlayerProfiler
             AssetManager am = AssetManager.Instance;
             am.Bridge = new Bridge();
 
-            PlayerProfilingAsset ppa = new PlayerProfilingAsset();
+            PlayerProfilingAsset ppa = PlayerProfilingAsset.Instance;
 
 
             TestPlayProfilingAsset tppa = new TestPlayProfilingAsset();

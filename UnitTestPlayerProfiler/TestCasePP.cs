@@ -190,7 +190,7 @@ namespace UnitTestPlayerProfiler
                 AssetManager.Instance.Bridge = new Bridge();
 
                 //creating the asset
-                PlayerProfilingAsset ppa = new PlayerProfilingAsset();
+                PlayerProfilingAsset ppa = PlayerProfilingAsset.Instance;
             }
         }
 

@@ -51,11 +51,6 @@ namespace PlayerProfilingAssetNameSpace
         internal PlayerProfilingAsset playerProfilingAsset = null;
 
         /// <summary>
-        /// Instance of the class PlayerProfilerHandler - Singelton pattern
-        /// </summary>
-        static readonly PlayerProfilerHandler instance = new PlayerProfilerHandler();
-
-        /// <summary>
         /// Dictionary holding group-evaluation results after the evaluation of the questionnaire
         /// </summary>
         internal Dictionary<string,double> questionnaireResults = null;
@@ -71,21 +66,10 @@ namespace PlayerProfilingAssetNameSpace
         /// <summary>
         /// private PlayerProfilerHandler-ctor for Singelton-pattern 
         /// </summary>
-        private PlayerProfilerHandler() { }
+        public PlayerProfilerHandler() { }
 
         #endregion Constructors
         #region Properties
-
-        /// <summary>
-        /// Getter for Instance of the PlayerProfilingAssetHandler - Singelton pattern
-        /// </summary>
-        public static PlayerProfilerHandler Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
 
         #endregion Properties
         #region InternalMethods
@@ -96,7 +80,7 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> Instance of the PlayerProfilingAsset </returns>
         internal PlayerProfilingAsset getPPA()
         {
-            return (playerProfilingAsset);
+            return PlayerProfilingAsset.Instance;
         }
 
         /// <summary>
@@ -362,7 +346,7 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> The Questionnaire data used to create the questionnaire based on the supplied xml string</returns>
         public static QuestionnaireData getQuestionnaireData(String xml)
         {
-            return PlayerProfilerHandler.Instance.getQuestionnaireDataFromXmlString(xml);
+            return PlayerProfilingAsset.Handler.getQuestionnaireDataFromXmlString(xml);
         }
 
         /// <summary>
@@ -410,8 +394,8 @@ namespace PlayerProfilingAssetNameSpace
             }
 
 
-            PlayerProfilerHandler.Instance.questionnaireResults = groupResult;
-            PlayerProfilerHandler.Instance.storeQuestionnaireResultViaGameStorage(groupResult);
+            PlayerProfilingAsset.Handler.questionnaireResults = groupResult;
+            PlayerProfilingAsset.Handler.storeQuestionnaireResultViaGameStorage(groupResult);
 
             return true;
         }

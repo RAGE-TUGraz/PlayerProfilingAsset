@@ -35,7 +35,7 @@ namespace PlayerProfilingAssetNameSpace
     using AssetPackage;
 
     /// <summary>
-    /// An asset.
+    /// A singelton asset.
     /// </summary>
     public class PlayerProfilingAsset : BaseAsset
     {
@@ -46,13 +46,23 @@ namespace PlayerProfilingAssetNameSpace
         /// </summary>
         private PlayerProfilingAssetSettings settings = null;
 
+        /// <summary>
+        /// Instance of the class PlayerProfilerHandler - Singelton pattern
+        /// </summary>
+        static readonly PlayerProfilingAsset instance = new PlayerProfilingAsset();
+
+        /// <summary>
+        /// Instance of the PlayerProfilingHandler
+        /// </summary>
+        static internal PlayerProfilerHandler playerProfilingHandler = new PlayerProfilerHandler();
+
         #endregion Fields
         #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the PlayerProfiler.Asset class.
         /// </summary>
-        public PlayerProfilingAsset()
+        private PlayerProfilingAsset()
             : base()
         {
             //! Create Settings and let it's BaseSettings class assign Defaultvalues where it can.
@@ -65,8 +75,7 @@ namespace PlayerProfilingAssetNameSpace
                 this.Log(Severity.Error, "There is only one instance of the PlayerProfilingAsset permitted!");
                 throw new Exception("EXCEPTION: There is only one instance of the PlayerProfilingAsset permitted!");
             }
-
-            PlayerProfilerHandler.Instance.playerProfilingAsset = this;
+            
         }
 
         #endregion Constructors
@@ -97,6 +106,28 @@ namespace PlayerProfilingAssetNameSpace
             }
         }
 
+        /// <summary>
+        /// Getter for Instance of the PlayerProfilingAsset - Singelton pattern
+        /// </summary>
+        public static PlayerProfilingAsset Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
+        /// <summary>
+        /// Getter for Instance of the PlayerProfilerHandler
+        /// </summary>
+        internal static PlayerProfilerHandler Handler
+        {
+            get
+            {
+                return playerProfilingHandler;
+            }
+        }
+
         #endregion Properties
         #region Methods
 
@@ -106,7 +137,7 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns></returns>
         public string getQuestionnaireFileId()
         {
-            return PlayerProfilerHandler.Instance.getHTMLQuestionnaire();
+            return playerProfilingHandler.getHTMLQuestionnaire();
         } 
 
         /// <summary>
@@ -116,10 +147,10 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> Value for the questionnaire per group.</returns>
         public Dictionary<String, Double> getResults()
         {
-            if(PlayerProfilerHandler.Instance.questionnaireResults != null)
-                return PlayerProfilerHandler.Instance.questionnaireResults;
+            if(playerProfilingHandler.questionnaireResults != null)
+                return playerProfilingHandler.questionnaireResults;
             
-            return PlayerProfilerHandler.Instance.getQuestionnaireResultFromGameStorage();
+            return playerProfilingHandler.getQuestionnaireResultFromGameStorage();
         }
 
         /// <summary>
@@ -128,7 +159,7 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> A string containing the questionnaire xml</returns>
         public String getQuestionnaireXML()
         {
-            return PlayerProfilerHandler.Instance.getQuestionnaireData().toXmlString();
+            return playerProfilingHandler.getQuestionnaireData().toXmlString();
         }
 
         /// <summary>
@@ -139,7 +170,7 @@ namespace PlayerProfilingAssetNameSpace
         /// <returns> True if the supplied data is accurate, false otherwise.</returns>
         public Boolean setQuestionnaireAnswers(Dictionary<String, int> answers)
         {
-            return PlayerProfilerHandler.Instance.getQuestionnaireData().checkAnswerData(answers);
+            return playerProfilingHandler.getQuestionnaireData().checkAnswerData(answers);
         }
 
         #endregion Methods
