@@ -30,8 +30,6 @@ namespace PlayerProfilingAssetNameSpace
 {
     using System;
     using System.Collections.Generic;
-
-    using AssetManagerPackage;
     using AssetPackage;
 
     /// <summary>
@@ -66,16 +64,7 @@ namespace PlayerProfilingAssetNameSpace
             : base()
         {
             //! Create Settings and let it's BaseSettings class assign Defaultvalues where it can.
-            // 
             settings = new PlayerProfilingAssetSettings();
-
-            //preventing multiple asset creation
-            if (AssetManager.Instance.findAssetsByClass(this.Class).Count > 1)
-            {
-                this.Log(Severity.Error, "There is only one instance of the PlayerProfilingAsset permitted!");
-                throw new Exception("EXCEPTION: There is only one instance of the PlayerProfilingAsset permitted!");
-            }
-            
         }
 
         #endregion Constructors
