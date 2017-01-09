@@ -189,9 +189,9 @@ namespace PlayerProfilingAssetNameSpace
             GameStorageClientAsset gameStorage = getGameStorageAsset();
 
             String model = "PlayerProfilingAsset_" + ((PlayerProfilingAssetSettings)getPPA().Settings).PlayerId + "_" + getQuestionnaireData().id;
-
+            
             Boolean isStructureRestored = gameStorage.LoadStructure(model, storageLocation, SerializingFormat.Xml);
-            Boolean isDataRestored = gameStorage.LoadData(model, StorageLocations.Local, SerializingFormat.Json);
+            Boolean isDataRestored = gameStorage.LoadData(model, StorageLocations.Local, SerializingFormat.Xml);
             if (isStructureRestored && isDataRestored)
             {
                 loggingPPA("Questionnaire results were restored from local file.");
@@ -224,7 +224,7 @@ namespace PlayerProfilingAssetNameSpace
 
 
             gameStorage.SaveStructure(model, storageLocation, SerializingFormat.Xml);
-            gameStorage.SaveData(model, storageLocation, SerializingFormat.Json);
+            gameStorage.SaveData(model, storageLocation, SerializingFormat.Xml);
 
         }
 

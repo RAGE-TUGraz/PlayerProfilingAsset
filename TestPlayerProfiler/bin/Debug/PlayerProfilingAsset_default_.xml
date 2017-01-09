@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Model>
+<Nodes>
+<Node>
+  <Value>&lt;double&gt;1.4&lt;/double&gt;</Value>
+  <Path>A</Path>
+  <ValueType>System.Double</ValueType>
+</Node>
+</Nodes>
+</Model>

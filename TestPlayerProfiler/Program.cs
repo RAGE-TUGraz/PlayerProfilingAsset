@@ -46,8 +46,7 @@ namespace TestPlayerProfiler
             am.Bridge = new Bridge();
 
             PlayerProfilingAsset ppa = PlayerProfilingAsset.Instance;
-
-
+            
             TestPlayProfilingAsset tppa = new TestPlayProfilingAsset();
             tppa.performAllTests();
 
