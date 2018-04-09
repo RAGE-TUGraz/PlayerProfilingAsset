@@ -224,6 +224,10 @@
              A Type extension method that assemblies the given type.
              </summary>
             
+             <remarks>
+             Fix for incompatability between normal and portable code.
+             </remarks>
+            
              <param name="type"> The type to act on. </param>
             
              <returns>
@@ -1086,6 +1090,11 @@
         <member name="F:AssetPackage.RequestSetttings.allowedResponsCodes">
             <summary>
             The allowed responses.
+            </summary>
+        </member>
+        <member name="F:AssetPackage.RequestSetttings.hasBinaryResponse">
+            <summary>
+            True to binary response.
             </summary>
         </member>
         <member name="M:AssetPackage.RequestSetttings.#ctor">

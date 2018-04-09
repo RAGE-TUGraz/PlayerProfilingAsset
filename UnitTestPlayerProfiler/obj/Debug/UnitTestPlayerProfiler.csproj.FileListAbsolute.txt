@@ -10,3 +10,16 @@ C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTest
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\obj\Debug\UnitTestPlayerProfiler.pdb
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\bin\Debug\GameStorageClientAsset.dll
 C:\Users\mmaurer\Documents\Visual Studio 2015\Projects\A_PlayerProfiler\UnitTestPlayerProfiler\bin\Debug\GameStorageClientAsset.pdb
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\UnitTestPlayerProfiler.dll
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\UnitTestPlayerProfiler.pdb
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\PlayerProfilingAsset.dll
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\RageAssetManager.dll
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\GameStorageClientAsset.dll
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\PlayerProfilingAsset.pdb
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\RageAssetManager.pdb
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\GameStorageClientAsset.pdb
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\bin\Debug\GameStorageClientAsset.dll.config
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\obj\Debug\UnitTestPlayerProfiler.csprojResolveAssemblyReference.cache
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\obj\Debug\UnitTestPlayerProfiler.dll
+C:\Users\mojaW\git\PlayerProfilingAsset\UnitTestPlayerProfiler\obj\Debug\UnitTestPlayerProfiler.pdb

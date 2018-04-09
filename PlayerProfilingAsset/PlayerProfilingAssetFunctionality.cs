@@ -116,7 +116,8 @@ namespace PlayerProfilingAssetNameSpace
                 if (!ids.Exists(fileId))
                 {
                     loggingPPA("File " + fileId + " not found for loading QuestionnaireData.", Severity.Error);
-                    throw new Exception("EXCEPTION: File " + fileId + " not found for loading QuestionnaireData.");
+                    //throw new Exception("EXCEPTION: File " + fileId + " not found for loading QuestionnaireData.");
+                    return null;
                 }
 
                 loggingPPA("Loading QuestionnaireData from File.");
@@ -125,7 +126,8 @@ namespace PlayerProfilingAssetNameSpace
             else
             {
                 loggingPPA("IDataStorage bridge absent for requested local loading method of the QuestionnaireData.", Severity.Error);
-                throw new Exception("EXCEPTION: IDataStorage bridge absent for requested local loading method of the QuestionnaireData.");
+                //throw new Exception("EXCEPTION: IDataStorage bridge absent for requested local loading method of the QuestionnaireData.");
+                return null;
             }
 
         }
